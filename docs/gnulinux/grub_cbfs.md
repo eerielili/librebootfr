@@ -102,7 +102,7 @@ variable flash chip sizes only apply for the Thinkpads that Libreboot supports (
 
 You can find the flash chip size, by running the following command:
 
-    # flashrom -p internal -V
+    # flashrom -p internal
 
 Look for a line like this:
 
