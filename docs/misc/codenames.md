@@ -57,6 +57,8 @@ under RAM sticks.
     -   with dGPU (radeon): Magi-0 (last number is the board revision)
     -   with iGPU: Lisa-0
 
+-   R60(e): RP-1, RP-2 - Rockwell / Picasso
+
 -   With ThinkPads on Intel platforms newer than Montevina (Except T410),
     the codenames become more consistent. All boards have the following
     appended based on the type of graphics they have:
