@@ -111,7 +111,7 @@ source code which can be built.
 Log in as root on your BBB, using the instructions in
 [bbb\_setup.html\#bbb\_access](bbb_setup.html#bbb_access).
 
-Test that flashrom works:
+Probe for chips with flashrom:
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512
 
