@@ -36,38 +36,24 @@ Initial BBB configuration
 Refer to [bbb\_setup.md](bbb_setup.md) for how to set up the BBB for
 flashing.
 
-The following shows how to connect the clip to the BBB (on the P9
-header), for SOIC-16 (clip: Pomona 5252):
+The following table shows how to connect the test clip to the BBB (on the P9
+header), for SOIC-8/SOIC-16:
 
-    POMONA 5252 (correlate with the BBB guide)
-    ===  front (display) on your X200 ====
-     NC              -       - 21
-     1               -       - 17
-     NC              -       - NC
-     NC              -       - NC
-     NC              -       - NC
-     NC              -       - NC
-     18              -       - 3.3V (PSU)
-     22              -       - NC - this is pin 1 on the flash chip
-    ===  back (palmrest) on your X200 ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
-    Here is a photo of the SOIC-16 flash chip. Pins are labelled:
+|BeagleBoneBlack|Pin on P9|SPI |25xx SOIC8 pin|SOIC16|Ball    |DTS      |
+|---------------|---------|----|--------------|------|--------|---------|
+|I2C1_SCL       |17       |/CS |1             |7     |A16     |spi0_cs0 |
+|I2C1_SDA       |18       |MOSI|5             |15    |B16     |spi0_d1  |
+|UART2_RXD      |22       |CLK |6             |16    |A17     |spi0_sclk|
+|UART2_TXD      |21       |MISO|2             |8     |B17     |spi0_d0  |
+|GND            |1 or 2   |GND |4             |10    |GND     |GND      |
+|VDD_3V3D       |3 or 4   |Vcc |8             |2     |VDD_3V3D|VDD_3V3D |
 
-The following shows how to connect the clip to the BBB (on the P9
-header), for SOIC-8 (clip: Pomona 5250):
+*Pictures of flash chip location are located further down on this page*
 
-    POMONA 5250 (correlate with the BBB guide)
-    ===  left side of the X200 (where the VGA port is) ====
-     18              -       - 1
-     22              -       - NC
-     NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip. in front of it is the screen.
-    ===  right side of the X200 (where the audio jacks are) ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
-    Here is a photo of the SOIC-8 flash chip. The pins are labelled:
-
-    Look at the pads in that photo, on the left and right. Those are for SOIC-16. Would it be possible to remove the SOIC-8 and solder a SOIC-16
-    chip on those pins?
+If onboard 3.3V supply happens to be insuficient, use a separate
+module/power supply and set its current limit to 400mA.
+Do not forget that in this case ground has to be continuous across between
+motherboard, BBB and PSU (all three)!
 
 On the X200S and X200 Tablet the flash chip is underneath the board, in a WSON
 package. The pinout is very much the same as a SOIC-8, but such package makes
@@ -125,7 +111,7 @@ source code which can be built.
 Log in as root on your BBB, using the instructions in
 [bbb\_setup.html\#bbb\_access](bbb_setup.html#bbb_access).
 
-Test that flashrom works:
+Probe for chips with flashrom:
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512
 
