@@ -216,22 +216,28 @@ Intel Turbo Memory
 ==================
 
 Some X200 devices were sold with Intel Turbo Memory installed in the top-most
-mini PCI-e slot. This has been [shown to be
-ineffective](http://www.anandtech.com/show/2252) at disk caching or battery
-saving in most use cases. While there are [Linux
-drivers](https://github.com/yarrick/turbomem) available, it is blacklisted in
-at least GNU+Trisquel, and possibly other free operating systems. It should
-probably be removed.
+mini PCI-e slot.
+
+If you have one installed, you should probably remove it as it mostly likely
+brings no benefits, while having many issues:
+-  It has been [shown to be
+   ineffective](http://www.anandtech.com/show/2252) at disk caching or battery
+   saving in most use cases. Having it installed might lead to more
+   battery consumption.
+-  Using it will most likely lead to data loss because with its
+   [driver](https://github.com/yarrick/turbomem),
+   "data cannot be written/read back reliably". The driver development
+   has also stopped.
+-  It might also be a security risk as it may have access to the system
+   RAM through the PCIe bus.
 
 Memory
 ======
 
 You need DDR3 SODIMM PC3-8500 RAM installed, in matching pairs
-(speed/size). Non-matching pairs won't work. You can also install a
-single module (meaning, one of the slots will be empty) in slot 0.
-
-NOTE: according to users repors, non matching pairs (e.g. 1+2 GiB) might
-work in some cases.
+(speed/size) as some non-matching pairs are known not to work.
+You can also install a single module (meaning, one of the
+slots will be empty) in slot 0.
 
 Make sure that the RAM you buy is the 2Rx8 density.
 
