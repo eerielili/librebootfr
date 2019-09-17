@@ -235,11 +235,9 @@ Memory
 ======
 
 You need DDR3 SODIMM PC3-8500 RAM installed, in matching pairs
-(speed/size). Non-matching pairs won't work. You can also install a
-single module (meaning, one of the slots will be empty) in slot 0.
-
-NOTE: according to users repors, non matching pairs (e.g. 1+2 GiB) might
-work in some cases.
+(speed/size) as some non-matching pairs are known not to work.
+You can also install a single module (meaning, one of the
+slots will be empty) in slot 0.
 
 Make sure that the RAM you buy is the 2Rx8 density.
 
