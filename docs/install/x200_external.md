@@ -216,12 +216,20 @@ Intel Turbo Memory
 ==================
 
 Some X200 devices were sold with Intel Turbo Memory installed in the top-most
-mini PCI-e slot. This has been [shown to be
-ineffective](http://www.anandtech.com/show/2252) at disk caching or battery
-saving in most use cases. While there are [Linux
-drivers](https://github.com/yarrick/turbomem) available, it is blacklisted in
-at least GNU+Trisquel, and possibly other free operating systems. It should
-probably be removed.
+mini PCI-e slot.
+
+If you have one installed, you should probably remove it as it mostly likely
+brings no benefits, while having many issues:
+-  It has been [shown to be
+   ineffective](http://www.anandtech.com/show/2252) at disk caching or battery
+   saving in most use cases. Having it installed might lead to more
+   battery consumption.
+-  Using it will most likely lead to data loss because with its
+   [driver](https://github.com/yarrick/turbomem),
+   "data cannot be written/read back reliably". The driver development
+   has also stopped.
+-  It might also be a security risk as it may have access to the system
+   RAM through the PCIe bus.
 
 Memory
 ======
