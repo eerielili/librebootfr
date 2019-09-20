@@ -1140,6 +1140,7 @@ Where can I learn more about electronics
         * [Wikipedia article on stubs](https://en.wikipedia.org/wiki/Stub_(electronics))
         * [Polar Instruments article on stubs](http://www.polarinstruments.com/support/si/AP8166.html)  
         With external SPI flashing we only care about unintended PCB stubs
+* [How to accurately measure header/connector pitch](https://www.microcontrollertips.com/accurately-measure-headerconnector-pitch/)
 * Other YouTube channels with useful content about electronics
     * [EEVblog](https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ)
     * [Louis Rossmann](https://www.youtube.com/channel/UCl2mFZoRqjw_ELax4Yisf6w)
