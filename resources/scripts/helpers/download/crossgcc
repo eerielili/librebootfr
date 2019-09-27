@@ -49,6 +49,8 @@ rm -Rf "crossgcc/"
     # workaround to fix the error on debian stretch and later, when building
     # GMP. If -pie is enabled in GCC, then --with-pic must be used when compiling
     git am ../resources/libreboot/patch/crossgcc/gccfix.diff
+    # Update URI pointing to the version of libelf we need
+    git am ../resources/libreboot/patch/crossgcc/libelf.patch
     #Patch to add hash checking to buildgcc
     git apply ../resources/libreboot/patch/crossgcc/buildgcc_hash_patch.diff
     rm -Rf .git* */*/.git*
