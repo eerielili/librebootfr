@@ -200,11 +200,15 @@ project_action_helper() {
 	local project="$1"
 	shift
 
-	if ! function_check "$helper"; then
-		return 0
-	fi
+	(
+		project_include "$project"
 
-	"$helper" "$@"
+		if ! function_check "$helper"; then
+			exit 0
+		fi
+
+		"$helper" "$@"
+	)
 }
 
 project_action_arguments() {
