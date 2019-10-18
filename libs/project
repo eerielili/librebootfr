@@ -282,10 +282,12 @@ project_action_arguments() {
 	local project="$1"
 	shift
 
-	project_include "$project"
+	(
+		project_include "$project"
 
-	project_action_arguments_verify_recursive "$action" "$project" "$@"
-	project_action_arguments_recursive "$action" "$project" "$@"
+		project_action_arguments_verify_recursive "$action" "$project" "$@"
+		project_action_arguments_recursive "$action" "$project" "$@"
+	)
 }
 
 project_action_arguments_verify_recursive() {
