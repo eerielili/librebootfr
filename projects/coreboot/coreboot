@@ -28,10 +28,6 @@ dependencies() {
 	project_dependencies "$project" "$@"
 }
 
-dependencies_check() {
-	project_dependencies_check "$project" "$@"
-}
-
 download() {
 	local repository=$project
 
