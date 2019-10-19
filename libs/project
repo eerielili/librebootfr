@@ -149,15 +149,11 @@ project_dependencies_check() {
 	local project=$1
 	shift
 
-	local -a dependencies
-	mapfile -t dependencies < <(project_dependencies "$project" "$@")
-
+	local dependency
 	local -i missing=0
 
-	for ((i = 0, nodeps = ${#dependencies[@]}; i < nodeps; ++i)); do
-		local -a dependency=(${dependencies[i]})
-
-		project_check "${dependency[0]}" || let ++missing
+	project_dependencies "$project" "$@" | while read -r dependency; do
+		project_check $dependency || let ++missing
 	done
 
 	return $missing
@@ -167,16 +163,11 @@ project_dependencies_sources_check() {
 	local project=$1
 	shift
 
-	local -a dependencies
-	mapfile -t dependencies < <(project_dependencies "$project" "$@")
-
+	local dependency
 	local -i missing=0
 
-	for ((i = 0, nodeps = ${#dependencies[@]}; i < nodeps; ++i)); do
-		local -a dependency=(${dependencies[i]})
-
-		project_sources_directory_filled_check "${dependency[0]}" ||
-		let ++missing
+	project_dependencies "$project" "$@" | while read -r dependency; do
+		project_sources_directory_filled_check $dependency || let ++missing
 	done
 
 	return $missing
@@ -187,12 +178,9 @@ project_dependencies_action_arguments() {
 	local project=$2
 	shift 2
 
-	local -a dependencies
-	mapfile -t dependencies < <(project_dependencies "$project" "$@")
+	local -a dependency
 
-	for ((i = 0, nodeps = ${#dependencies[@]}; i < nodeps; ++i)); do
-		local -a dependency=(${dependencies[i]})
-
+	project_dependencies "$project" "$@" | while read -ra dependency; do
 		if project_function_check "${dependency[0]}" "$action"; then
 			project_action_arguments "$action" "${dependency[@]}"
 		fi
