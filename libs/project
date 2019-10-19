@@ -60,12 +60,89 @@ project_dependencies() {
 	local project=$1
 	shift
 
-	local -a dependencies
-	mapfile -t dependencies < <(project_file_contents_herit "$project" "$CONFIGS" "$DEPENDENCIES" "$@")
+	if [[ -n "${PROJECTS_FORCE[*]}" ]]; then
+		local expanded
+		local project_force
 
-	if [[ -n ${dependencies[*]} ]]; then
-		printf '%s\n' "${dependencies[@]}"
+		for project_force in "${PROJECTS_FORCE[@]}"; do
+			project_arguments_expand_recursive $project_force | while IFS='' read -r expanded; do
+				project_dependencies_sort $expanded
+			done
+		done
 	fi
+
+	project_dependencies_sort "$project" "$@" | head -n -1
+}
+
+project_dependencies_collect() {
+	local project=$1
+	shift
+
+	local argument
+	local path
+
+	for argument in "" "$@"; do
+		if [[ -z $argument ]]; then
+			path=$CONFIGS
+		else
+			path=$path/$argument
+		fi
+
+		project_file_contents "$project" "$path" "$DEPENDENCIES"
+	done
+
+	project_dependencies_collect_recursive "$project" "$@"
+}
+
+project_dependencies_collect_recursive() {
+	local project=$1
+	shift
+
+	local argument
+	local path
+
+	for argument in "" "$@"; do
+		if [[ -z $argument ]]; then
+			path=$CONFIGS
+		else
+			path=$path/$argument
+		fi
+	done
+
+	project_action_helper arguments "$project" "$@" | while IFS='' read -r argument; do
+		project_file_contents "$project" "$path/$argument" "$DEPENDENCIES"
+		project_dependencies_collect_recursive "$project" "$@" "$argument"
+	done
+}
+
+project_dependencies_encode_recursive() {
+	local project=$1
+	shift
+
+	local project_arguments=$(arguments_concat ' ' "$project" "$@")
+	local project_arguments_encoded=$(base64 -w0 <<< "$project_arguments")
+
+	local dependency
+
+	project_dependencies_collect "$project" "$@" | while IFS='' read -r dependency; do
+		local dependency_arguments=$(arguments_concat ' ' $dependency)
+		local dependency_arguments_encoded=$(base64 -w0 <<< "$dependency_arguments")
+
+		printf '%s\n' "$project_arguments_encoded $dependency_arguments_encoded"
+
+		project_dependencies_encode_recursive $dependency
+	done
+}
+
+project_dependencies_sort() {
+	local project=$1
+	shift
+
+	(
+		set -o pipefail
+
+		project_dependencies_encode_recursive "$project" "$@" | tsort | base64 -d -w0 | tac
+	)
 }
 
 project_dependencies_check() {
@@ -703,6 +780,26 @@ project_arguments_targets() {
 	then
 		cat "$targets_path"
 	fi
+}
+
+project_arguments_expand_recursive() {
+	local project=$1
+	shift
+
+	local -a arguments
+	readarray -t arguments < <(project_action_helper arguments "$project" "$@")
+
+	if [[ -z "${arguments[*]}" ]]; then
+		echo "$project" "$@"
+
+		return 0
+	fi
+
+	local argument
+
+	for argument in "${arguments[@]}"; do
+		project_arguments_expand_recursive "$project" "$@" "$argument"
+	done
 }
 
 project_usage_actions() {
