@@ -378,6 +378,17 @@ project_action_projects() {
 	done < "$path"
 }
 
+project_action_usage() {
+	local project=$1
+	shift
+
+	(
+		project_include "$project"
+
+		project_action usage "$project" "$@"
+	)
+}
+
 project_path() {
 	local project=$1
 
