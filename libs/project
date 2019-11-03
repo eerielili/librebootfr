@@ -217,6 +217,8 @@ project_action() {
 		printf '%s\n' "Project $project $action (with ${arguments:-no argument})"
 
 		(
+			set -e
+
 			"$action" "$@"
 		)
 

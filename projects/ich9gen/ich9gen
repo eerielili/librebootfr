@@ -58,23 +58,20 @@ build() {
 	fi
 
 	local sources_path="$(project_sources_path "$project" "$repository" "$@")"
-
 	local build_path="$(project_build_path "$project" "$@")"
 
 	mkdir -p "$build_path"
 	make -C "$sources_path" -j"$TASKS" ich9gen
 
-	(
-		local macaddress="$(ich9gen_macaddress)"
+	local macaddress="$(ich9gen_macaddress)"
 
-		cd "$build_path"
+	cd "$build_path"
 
-		if [[ -n $macaddress ]]; then
-			"$sources_path"/ich9gen --macaddress "$macaddress"
-		else
-			"$sources_path"/ich9gen
-		fi
-	)
+	if [[ -n $macaddress ]]; then
+		"$sources_path"/ich9gen --macaddress "$macaddress"
+	else
+		"$sources_path"/ich9gen
+	fi
 
 	cp "$sources_path/ich9gen" "$build_path"
 	make -C "$sources_path" clean
