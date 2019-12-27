@@ -316,6 +316,8 @@ You should see within the output the following:
 
 You should also see within the output the following:
 
+    (...) failed during command execution at address 0x1f0000
+    ...
     Your flash chip is in an unknown state
     ...
     FAILED

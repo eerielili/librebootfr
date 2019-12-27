@@ -109,7 +109,7 @@ proprietary VGA Option ROM ('[Video
 BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS'), all
 known LCD panels are currently compatible:
 
-To find what LCD panel you have, see:
+Only panels with EDID are currently supported, see:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
 -   TMD-Toshiba LTD121ECHB: \#
@@ -136,7 +136,7 @@ Native gpu initialization ('native graphics') which replaces the
 proprietary VGA Option ROM ('[Video
 BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS').
 
-To find what LCD panel you have, see:
+Only panels with EDID are currently supported, see:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
 There are 6 known LCD panels for the X60 Tablet:
@@ -151,8 +151,7 @@ There are 6 known LCD panels for the X60 Tablet:
     -   BOE-Hydis HV121P01-101 (works)
 
 Most X60Ts only have digitizer (pen), but some have finger (touch)
-aswell as pen; finger/multitouch doesn't work, only digitizer (pen)
-does.
+as well as pen.
 
 You can remove an X61/X61s motherboard from the chassis and install an
 X60/X60s motherboard in its place (for flashing libreboot). The chassis
@@ -221,7 +220,7 @@ Native gpu initialization ('native graphics') which replaces the
 proprietary VGA Option ROM ('[Video
 BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS').
 
-To find what LCD panel you have, see:
+Only panels with EDID are currently supported, see:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
 *Some T60 variants have ATI GPUs, and all T60p laptops have ATI GPUs These are
@@ -246,7 +245,7 @@ Tested LCD panels: (working)
 -   Samsung LTN141XA-L01 (14.1" 1024x768)
 
 Tested LCD panels: *not working yet (incompatible; see
-[../future/\#lcd\_i945\_incompatibility](../future/#lcd_i945_incompatibility))*
+[Issue \#677](https://notabug.org/libreboot/libreboot/issues/677))*
 
 -   LG-Philips LP150X09 (15.1" 1024x768)
 -   Samsung LTN150XG (15.1" 1024x768)
@@ -291,7 +290,7 @@ is very easily replaced; just remove the card and install another one
 *after* libreboot is installed. See
 [\#recommended\_wifi](#recommended_wifi) for replacements.
 
-ThinkPad T60 (ATI GPU) and ThinkPad T60 (Intel GPU) differences
+ThinkPad T60/R60 dGPU (ATI GPU) and iGPU (Intel GPU) differences
 ----------------------------------------------------------------
 
 If your T60 is a 14.1" or 15.1" model with an ATI GPU, it won't work
@@ -299,12 +298,11 @@ with libreboot by default but you can replace the motherboard with
 another T60 motherboard that has an Intel GPU, and then libreboot should
 work.
 
-As far as I know, 14.1" (Intel GPU) and 15.1" (Intel GPU) T60
-motherboards are the same, where 'spacers' are used on the 15.1" T60.
-In any case, it makes sense to find one that is guaranteed to fit in
-your chassis.
-
 There is also a 15.4" T60 with Intel GPU.
+
+Widescreen T60/R60 can come with either boards taking full space or
+with non-widescreen motherboard and extension adapter for
+UltraBay/hard drive connectors.
 
 Note: the T60*p* laptops all have ATI graphics. The T60p laptops
 cannot be used with libreboot under any circumstances.

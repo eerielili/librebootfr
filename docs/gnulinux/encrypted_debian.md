@@ -199,28 +199,28 @@ directory from another system, so write it down and keep the note
 somewhere secret. Ideally, you should memorize it and then burn the note
 (or not even write it down, and memorize it still)>
 
-Modify grub.cfg (CBFS)
+Generate distro's grub.cfg
 ======================
 
 Now you need to set it up so that the system will automatically boot,
 without having to type a bunch of commands.
 
-Modify your grub.cfg (in the firmware) [using this
-tutorial](grub_cbfs.md); just change the default menu entry 'Load
-Operating System' to say this inside:
+Install grub-coreboot if not already installed:
 
-    cryptomount -a
-    set root='lvm/matrix-rootvol'
-    linux /vmlinuz root=/dev/mapper/matrix-rootvol cryptdevice=/dev/mapper/matrix-rootvol:root
-    initrd /initrd.img
-    
-Without specifying a device, the *-a* parameter tries to unlock all
-detected LUKS volumes. You can also specify -u UUID or -a (device).
+    # apt-get install grub-coreboot
+
+Modify or add following lines to /etc/default/grub
+
+    GRUB_CMDLINE_LINUX="cryptdevice=/dev/mapper/matrix-rootvol:root"
+    GRUB_ENABLE_CRYPTODISK=y
+
+Copy fonts/backgrounds to /boot/grub and
+generate grub.cfg using following command:
+
+    # grub-install --target=i386-coreboot
 
 [Refer to this guide](grub_hardening.md) for further guidance on
 hardening your GRUB configuration, for security purposes.
-
-Flash the modified ROM using [this tutorial](../install/#flashrom).
 
 Troubleshooting
 ===============
