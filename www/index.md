@@ -38,7 +38,8 @@ which makes computers functional whether for day to day usage or software
 development.
 
 Libreboot's main upstream provider is [coreboot](https://www.coreboot.org/),
-from which we [remove binary blobs](docs/#about-the-libreboot-project).
+and [we don't include binary blobs in our images]
+(docs/#about-the-libreboot-project).
 We upstream our custom patches to projects like coreboot,
 depthcharge, GRUB, and flashrom where possible. Together, our build system
 and documentation is provided with the aim of making free boot firmware
