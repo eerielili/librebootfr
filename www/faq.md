@@ -1122,6 +1122,32 @@ Are other operating systems compatible?
 
 Unknown. Probably not.
 
+Does libreboot make my machine 100% free?
+==========================================
+Libreboot on all devices only provides host hardware init firmware images,
+that can be written 25XX SPI NOR Flash. But on many systems there are
+a lot more computers running blob firmware.
+Some of them are not practicable to replace due to being located on Mask ROM.
+Some devices have EC firmware being build as well.
+Additionally, besides software components, there are hardware ones
+(from ICs to boards) that are not released on OSHW licenses.
+We do not have a single device that would be "100% free",
+and such absolutes are nearly impossible to reach.
+
+Notable proprietary blobs (not a complete list):
+* All devices
+	* SATA/PATA Hard Drive/Optical Disc Drive Firmware
+  ([often contain powerful ARM based computer](
+  http://spritesmods.com/?art=hddhack&page=1))
+	* Pendrives and any USB peripherals - they contain a computer
+  with code running to at the very least handle the USB protocol
+* ThinkPads:
+	* EC Firmware (H8S until including Sandy Bridge, later ARC based MEC16xx)
+	* TrackPoint Firmware (8051)
+	* Penabled devices contain µPD78F0514 MCU on wacom subboard,
+  and Atmega (AVR) on led indicator/button board
+	* Battery BMS, bq8030 (CoolRISC C816)
+
 Where can I learn more about electronics
 ==========================================
 
