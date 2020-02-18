@@ -354,12 +354,16 @@ Not to be confused with wifi (wifi is fine).
 Memory
 ======
 
-DDR3 SO-DIMM sticks will work at PC3-8500 clock and voltage, so make sure that
-timings of sticks are matched while they operate at its frequency.
-Non-matching pairs won't work. You can also install a
-single module (meaning, one of the slots will be empty) in slot 0.
+In DDR3 machines with Cantiga (GM45/GS45/PM45), northbridge requires sticks
+that will work as PC3-8500 (faster PC3/PC3L sticks can work as PC3-8500).
+Non-matching pairs may not work. Single module (meaning, one of the slots
+will be empty) will currently only work in slot 0.
 
-Make sure that the RAM you buy has 2Rx8 arrangement when buying 4GiB modules.
+NOTE: according to users reports, non matching pairs (e.g. 1+2 GiB) might
+work in some cases.
+
+Make sure that the RAM you buy is the 2Rx8 configuration when buying 4GiB sticks
+(In other words: maximum of 2GiB per rank, 2 ranks per card).
 
 [This page](http://www.forum.thinkpads.com/viewtopic.php?p=760721) might
 be useful for RAM compatibility info (note: coreboot raminit is
