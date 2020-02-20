@@ -234,12 +234,16 @@ brings no benefits, while having many issues:
 Memory
 ======
 
-You need DDR3 SODIMM PC3-8500 RAM installed, in matching pairs
-(speed/size) as some non-matching pairs are known not to work.
-You can also install a single module (meaning, one of the
-slots will be empty) in slot 0.
+In DDR3 machines with Cantiga (GM45/GS45/PM45), northbridge requires sticks
+that will work as PC3-8500 (faster PC3/PC3L sticks can work as PC3-8500).
+Non-matching pairs may not work. Single module (meaning, one of the slots
+will be empty) will currently only work in slot 0.
 
-Make sure that the RAM you buy is the 2Rx8 density.
+NOTE: according to users reports, non matching pairs (e.g. 1+2 GiB) might
+work in some cases.
+
+Make sure that the RAM you buy is the 2Rx8 configuration when buying 4GiB sticks
+(In other words: maximum of 2GiB per rank, 2 ranks per card).
 
 In this photo, 8GiB of RAM (2x4GiB) is installed:
 
