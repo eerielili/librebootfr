@@ -1,0 +1,92 @@
+Libreboot 20160907
+
+Pour les cartes existantes, il n'y a pas de nouveaux changements spécifiques à celles-ci.
+
+Cette version ajoute une nouvelle carte mère à libreboot:
+* Intel D945GCLF carte mère d'ordinateur de bureau (grâce à Arthur Heymans)
+
+Autres résolutions de bogues:
+* nombreuses améliorations de la documentation.
+* réajout de "unset superusers" dans le grub.cfg, qui était nécessaire pour certains utilisateurs selon la distributions qu'ils utilisaient.
+
+Libreboot 20160902
+
+C'est une version de fixage de bogue, basé sur la 20160818. Elle ne contient pas de changement sur les nouvelles cartes.
+La version précédente 20160818 avait des erreurs de build dans l'archive  _src, et l'archive
+_util était seulement du code source.
+
+Changement comparé à 20160818:
+* Résolution d'un bug où la commande ./build module coreboot retourné un statut toujours différent de 0.
+* Résolution du symlink manquant de crossgcc lors de la build depuis _src (merci Arthur
+Heymans)
+* Résolution de la build avec le payload depthcharge (ASUS C201)
+* Le changelog est désormais plus correct au lieu d'un simple copier coller du git log
+* L'Util archive est de nouveau un fichier binaire (le code source est dans l'archive _src)
+* La documentation est maintenant au format HTML.
+
+Libreboot 20160818
+
+NOUVELLES CARTES MÈRES AJOUTÉES:
+* ASUS Chromebook C201 (ordi portable ARM) (grâce à Paul Kocialkowski)
+* Gigabyte GA-G41M-ES2L carte mère (bureau) (grâce à Damien Zammit)
+* Intel D510MO carte mère (bureau) (grâce à Damien Zammit)
+* ASUS KCMA-D8 carte mère (bureau) (grâce à Timothy Pearson)
+* ASUS KFSN4-DRE carte mère (serveur) (grâce à Timothy Pearson)
+* ASUS KGPE-D16 carte mère (serveur) (grâce à Timothy Pearson)
+
+Pour les cartes précedemment supportées, de nombreuses corrections venant d'amont ont été fusionnées.
+
+Autre changements (par rapport à la version libreboot 20150518):
+(ceci est un résumé. Pour une liste plus détaillée des changements, veuillez vous référer au git log).
+
+256Mo VRAM alloué sur la GM45 (X200, T400, T500, R400) au lieu de 32Mo.
+C'est une amélioration par rapport au BIOS Lenovo et Libreboot 20150518, permettant le décodage vidéo à 1080p d'être plus fluide. (merci Arthur Heymans). Pour clarifier, la performance vidéo GM45 dans libreboot 20160818 est meilleure que le BIOS originel et la précédente version.
+
+64Mo VRAM sur i945 (X60, T60, MacBook2,1) maintenant supporté dans coreboot-libre, et utilisé par défaut (dans les précédentes versions, il y avait 8Mo alloué). Merci à Arthur Heymans.
+
+Une meilleure durée de vie de la batterie sur la GM45 (X200, T400, T500, R400) dû au niveau plus haut de cstates maitenant supportés.(merci Arthur Heymans). États de puissances C4 maintenant supportés.
+
+Le mode texte de la GM45 (X200, T400, T500, R400) marche maitenant, permettant d'utiliser MemText86+ comfortablement. (grâce à Nick High de coreboot)
+
+Les affichages LVDS à double canaux sur la GM45 (T400, T500) sont maintenant automatiquement détecté coreboot-libre. (merci Vladimir Serbinenko de coreboot)
+
+Résolution partielle dans coreboot-libre par rapport à l'affichage du GRUB sur la GM45, résolution plus haute pour les écrans LCD pour les affichages LVDS à double canaux (T400, T500). (merci Arthur Heymans)
+
+Améliorations massive de la configuration du GRUB, rendant plus facile le démarrage automatique 
+de nombreux systèmes d'exploitations chiffré, et généralement un menu plus utile pour démarrer (les remerciements grâce à Klemens Nanni du projet autoboot).
+Libreboot utilise maintenant automatiquement le grub.cfg fourni par la distribution
+GNU+Linux installée, si présente, passant sur cette configuration. Celà est fait à travers de multiples partitions où libreboot cherche activement pour un fichier de configuration
+(notamment sur les volumes chiffrés et LVM). Celà devrait rendre Libreboot plus facile
+à utiliser pour les utilisateurs non techniques, sans avoir à modifier la
+configuration GRUB utilisée dans libreboot.
+
+Les archives des utilitaires sont maitenant en mode source seulement . Vous aurez besoin de compiler les paquets
+dedans (scripts de builds sont compris, et un script pour installer les dépendances du build). (les archives de fichiers binaires sont de nouveau prévues dans une nouvelle version où le nouveau système de build sera fusionné).
+
+SeaGRUB est maintenant le payload par défaut des cartes x86. (SeaBIOS configuré pour immédiatement charger un payload GRUB depuis CBFS sans fournir une interface dans SeaBIOS. De cette façon, GRUB est encore utilisé mais maintenant les services du BIOS sont disponibles, vous obtenez donc le meilleur des deux mondes). Les remerciements reviennent à Timothy Pearson
+de coreboot pour cette idée.
+
+crossgcc est maintenant téléchargé et construit en tant que module séparé de coreboot-libre,
+avec une révision universelle utilisée pour build toutes les cartes.
+
+Les cartes mères spécifiques ont leur propre patchs et modification de coreboot, indépendantes des autres autres. Celà rend la maintenance plus facile.
+
+Mise à jour de tous les utilitaires et modules (coreboot, GRUB, etc) vers des versions plus récentes,
+avec de nombreuses correction de bogues et améliorations en amont.
+
+Le problème de l'octect "siècle" de l'Horloge Temps Réél (RTC/HTR) est mainteant corrigé sur la GM45 dans coreboot-libre, donc la date devrait maitenant s'afficher
+correctement lors de l'utilisation du dernier kernel linux, au lieu de voir 1970-01-01 au démarrage  (grâce à Alexander Couzens de coreboot)
+
+Le système de build utilise maintenant plusieurs coeurs d'un CPU, accélérant le build pour certaine personnes.
+La spécification manuelle du nombre de coeurs a utiliser est possible pour ceux qui utilise le système de build dans un environnement chrooté (les remerciements vont à 
+Timothy Pearson de coreboot).
+
+Dans le système de build (répo git), https:// est maitenant utilisée lors du clonage de coreboot.
+http:// est utilisé en tant qu'alternative pour GRUB si git:// échoue
+
+Nouveau chargeur d'amorçage, depthcharge (libre et maintenu par Google)
+prêt à l'utilisation sur l'ASUS Chromebook C201. (les remerciements vont à Paul Kocialkowski)
+
+
+Nombreuses corrections à l'utilitaire ich9gen (p.e maintenant la densité du composant flash est correctement mise dans la description, les descriptions gbe-less sont maintenant supportées.)
+

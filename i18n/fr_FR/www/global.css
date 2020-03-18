@@ -1,0 +1,66 @@
+html {
+    background-color: #eee;
+}
+
+body {
+    background-color: #fff;
+    margin: 0 auto;
+    max-width: 60em;
+    padding: 0.2em 1em;
+    box-shadow: 0 0 6px;
+}
+
+body {
+    line-height: 1.6;
+    font-family: Cantarell, sans-serif;
+    font-size: 1.1em;
+    color: #222;
+}
+
+pre {
+    padding: 0.3em;
+}
+
+pre,table {
+    overflow-x: auto;
+    display: block;
+}
+
+code, pre {
+    background-color: #DDD;
+}
+
+img {
+    max-width: 100%;
+}
+
+#logo {
+    width: 20%;
+    float: right;
+}
+
+a {
+    text-decoration: none;
+    color: #22D;
+}
+
+/* probably generated with autolink_bare_uris extension */
+a.uri {
+    word-wrap: break-word;
+}
+
+a:hover {
+    color: #008;
+}
+
+.date {
+    display: block;
+}
+
+h1, h2, h3, .h:hover a {
+    display: inline;
+}
+
+.h a {
+    display: none;
+}
