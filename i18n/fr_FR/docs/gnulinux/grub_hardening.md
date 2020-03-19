@@ -2,6 +2,37 @@
 title: GRUB hardening
 ...
 
+Ce guide traite des nombreuses façons dont vous pouvez renforcer votre
+configuration GRUB pour la sécurité. Ces étapes sont optionnelles, mais
+hautement recommandées par le projet Libreboot.
+
+Démarrage sécurisé de GRUB avec GPG
+=========================
+
+    Nous utiliserons l'implémentation libre du standard GPG pour le chiffrement et
+la signature/vérification des données et ainsi permettant de vérifier la signature d'un kernel Linux
+lors du démarrage. 
+Plus d'information à propos de GPG peuvent être trouvée sur le [site web du projet GPG](https://www.gnu.org/software/gnupg/).
+GRUB a quelques fonctionnalités de GPG nativement, notamment pour la vérification des signatures.
+
+Ce tutoriel présume que vous avez une image Libreboot (rom) que vous souhaitez
+modifier, que nous nommerons dès à présent comme "my.rom". Nous allons ici
+modifier grubtest.cfg, celà veut dire que la signature et la protection par mot
+de passe marchera après basculement sur celui-ci (grubtest.cfg) dans le menu principal
+de démarrage, et le bousillage (bricking) dû à une mauvaise configuration sera impossible.
+Dès lors que vous êtes satisfait avec le paramétrage, pensez-bien à transférer votre nouvelle
+configuration dans votre grub.cfg pour sécuriser votre machine.
+
+
+Premièrement, extrayez l'ancien grubtest.cfg de my.rom et enlevez le de celle-ci:
+
+    cbfstool my.rom extract -n grubtest.cfg -f my.grubtest.cfg
+    cbfstool my.rom remove -n grubtest.cfg
+
+Liens utiles :
+
+
+
 This guide deals with various ways in which you can harden your GRUB
 configuration, for security purposes. These steps are optional, but
 highly recommended by the Libreboot project.
