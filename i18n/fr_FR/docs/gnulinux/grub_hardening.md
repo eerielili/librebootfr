@@ -52,79 +52,68 @@ vérifier </chemin/vers/fichier> et alors donc il n'est pas possible de fournir
 des signatures dans un endroit différent.
 
 Notez que ça n'est pas votre mot de passe LUKS, mais c'est un mot de passe
+que vous avez à rentrer afin d'utiliser des fonctionalités restreintes (tel
+que la console). Celà protège votre système d'un attaquant qui démarrerai tout
+simplement une clef USB live et reflasherai votre micrologiciel. *Celui ci devrait
+être différent de la phrase de passe LUKS et utilisateur*.
 
-
-
-GRUB Password
-=============
-
-The security of this setup depends on a good GRUB password as GPG
-signature checking can be disabled through the interactive console:
-
-    set check_signatures=no
-
-This is good in that it allows you to occasionally boot unsigned liveCDs
-and such. You may think of supplying signatures on an usb key, but the
-signature checking code currently looks for
-</path/to/filename>.sig when verifying </path/to/filename>
-and as such it is not possible to supply signatures in an alternate
-location.
-
-Note that this is not your LUKS password, but it's a password that you
-have to enter in order to use "restricted" functionality (such as
-console). This protects your system from an attacker simply booting a
-live USB and re-flashing your firmware. *This should be different than
-your LUKS passphrase and user password.*
-
-Use of the *diceware method* is recommended, for generating secure
-passphrases (as opposed to passwords). Diceware method involves using
-dice to generate random numbers, which are then used as an index to pick
-a random word from a large dictionary of words. You can use any language
-(e.g. English, German). Look it up on a search engine. Diceware method
-is a way to generate secure passphrases that are very hard (almost
-impossible, with enough words) to crack, while being easy enough to
-remember. On the other hand, most kinds of secure passwords are hard to
-remember and easier to crack. Diceware passphrases are harder to crack
-because of far higher entropy (there are many words available to use,
-but only about 50 commonly used symbols in pass*words*).
+L'utilisation de la *méthode du lancer de dés* est recommandée pour générer
+des phrases de passe (et non mot de passes) sécurisées. La méthode du lancer
+de dés consiste en l'utilisation de ceux-ci pour générer des nombres au hasard qui
+seront ensuite utilisés en tant qu'index pour piocher un mot au hasard à partir
+d'un large dictionnaire. Vous pouvez utilisez n'importe quel language (p.e Anglais
+Allemand, Français, etc).
+Vous aurez plus de précisions sur un moteur de recherche (ou 
+[ici](https://fr.wikipedia.org/wiki/Diceware). La méthode du lancer de dés est un moyen
+de générer des phrases de passes qui sont très dures (presque impossible avec assez de mots)
+à cracker tout en étant plus facile à se souvenir.
+D'un autre côté, la majorité des types de mots de passes sont plus durs à
+retenir et plus faciles à cracker. Les phrases de passe produites grâce 
+au lancer de dés sont plus dure à cracker dû à l'entropie bien plus grande (il y a beaucoup
+de mots disponibles à l'utilisation à l'opposé de la cinquantaine de symboles
+communéments usés dans les *mots* de passe.
 
 -->
-The GRUB password can be entered in two ways:
+Le mot de passe GRUB peut être entré de deux façons:
 
--   plaintext
--   protected with [PBKDF2](https://en.wikipedia.org/wiki/Pbkdf2)
+-   texte pur
+-   protégé avec [PBKDF2](https://fr.wikipedia.org/wiki/Pbkdf2)
 
-We will (obviously) use the later. Generating the PBKDF2 derived key is
-done using the `grub-mkpasswd-pbkdf2` utility. You can get it by
-installing GRUB version 2. Generate a key by giving it a password:
+Nous utiliserons (évidemment) ce dernier. Générer la clé derivée
+PBKDF2 se fait grâce à l'utilisation de l'utilitaire `grub-mkpasswd-pbkdf2`.
+Vous pouvez l'avoir en installant GRUB version 2.
+Générez une clé en lui donnant un mot de passe en tapant:
     grub-mkpasswd-pbkdf2
 
-Its output will be a string of the following form:
+Ça vous sortira une chaîne de charactère semblable à la suivante:
 
-    grub.pbkdf2.sha512.10000.HEXDIGITS.MOREHEXDIGITS
+    grub.pbkdf2.sha512.10000.CHIFFREHEXADECIMAL.PLUSDECHIFFRESHEXA
 
-Now open my.grubtest.cfg and put the following before the menu entries
-(prefered above the functions and after other directives). Of course use
-the pbdkf string that you had generated yourself:
+Maintenant ouvrez my.grubtest.cfg et rentrez le suivant avant les menus
+(il vaut mieux que ce soit au dessus des fonctions et autres directives).
+Bien sûr, utilisez la chaîne de charactère PBDKF que vous avez précédemment
+générée:
 
     set superusers="root"
     password_pbkdf2 root grub.pbkdf2.sha512.10000.711F186347156BC105CD83A2ED7AF1EB971AA2B1EB2640172F34B0DEFFC97E654AF48E5F0C3B7622502B76458DA494270CC0EA6504411D676E6752FD1651E749.8DD11178EB8D1F633308FD8FCC64D0B243F949B9B99CCEADE2ECA11657A757D22025986B0FA116F1D5191E0A22677674C994EDBFADE62240E9D161688266A711
 
-Obviously, replace it with the correct hash that you actually got for
-the password that you entered. Meaning, not the hash that you see above!
+Encore une fois, remplacez la chaîne de charactère ci-dessus, le "hash", par
+celui que vous avez eu pour le mot de passe que vous avez entré dans `grub-mkpasswd-pbkdf2`, et
+non celui que vous voyez juste au-dessus !
 
-As enabling password protection as above means that you have to input it
-on every single boot, we will make one menu entry work without it.
-Remember that we will have GPG signing active, thus a potential attacker
-will not be able to boot an arbitrary operating system. We do this by
-adding option `--unrestricted` to a menuentry definition:
+Comme l'activation de la protection par mot de passe comme ci-dessus veut
+dire que vous devez le rentrer à chaque démarrage, nous allons confectionner
+un menu qui marche sans y avoir à le faire.
+Rappellez-vous que nous aurons la signature GPG active, donc un attaqueur potentiel
+ne sera pas capable de démarrer arbitrairement un système d'exploitation. Nous faisons ça
+en ajoutant l'option `--unrestricted` dans la définition d'une menuentry:
 
     menuentry 'Load Operating System (incl. fully encrypted disks)  [o]' --hotkey='o' --unrestricted {
     ...
 
-Another good thing to do, if we chose to load signed on-disk GRUB
-configurations, is to remove (or comment out) `unset superusers` in
-function try\_user\_config:
+Une autre bonne chose à faire, si nous choisissons de charger les configurations
+GRUB signées sur le disque, et d'enlever (ou commenter) `unset superusers` dans la
+fonction try\_user\_config:
 
     function try_user_config {
        set root="${1}"
@@ -138,14 +127,16 @@ function try\_user\_config:
        done
     }
 
-Why? We allowed booting normally without entering a password above. When
-we unset superusers and then load a signed GRUB configuration file, we
-can easily use the command line as password protection will be
-completely disabled. Disabling signature checking and booting whatever
-an attacker wants is then just a few GRUB commands away.
 
-As far as basic password setup is concerned we are done and we can now
-move on to signing.
+Pourquoi? Nous avons permis ci-dessus un démarrage normal sans rentrer de
+mot de passe. Quand on "unset superusers" et que l'on charge ensuite un fichier
+de configuration GRUB signé, on peut aisément utiliser la ligne de commande puisque
+la protection par mot de passe sera complètement désactivée.
+La désactivation de la vérification de signature et le démarrage de ce que veux
+l'attaquant est dès lors à la portée de quelques commandes GRUB.
+
+En tout ce qui concerne la configuration du mot de passe nous sommes OK, donc
+nous pouvons passer maintenant à la signature.
 
 GPG keys
 ========
