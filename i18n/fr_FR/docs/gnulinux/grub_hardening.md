@@ -31,41 +31,29 @@ Premièrement, extrayez l'ancien grubtest.cfg de my.rom et enlevez le de celle-c
 
 Liens utiles :
 
+-   [manuel GRUB](https://www.gnu.org/software/grub/manual/html_node/Security.html#Security)
+-   [pages 'info' GRUB](http://git.savannah.gnu.org/cgit/grub.git/tree/docs/grub.texi)
+-   [Espace de stockage connectés en SATA considerés dangereux.](../../faq.md#hddssd-firmware)
+-   [Tutoriel sécurité GRUB sur Coreboot](https://www.coreboot.org/GRUB2#Security)
+
+Mot de passe GRUB
+=============
+
+La sécurité de ce paramétrage dépend d'un bon mot de passe GRUB car
+la vérification de signature GPG peut être désactiver à travers la console
+interactive:
+    set check_signatures=no
+
+C'est une bonne chose dans le fait où celà permet d'occasionnellement 
+démarrer des liveCDs non signés et autres. Vous devriez penser à fournir
+les signatures sur une clef USB, mais actuellement le code de
+vérification de signature recherche </chemin/vers/fichier>.sig quand il veut
+vérifier </chemin/vers/fichier> et alors donc il n'est pas possible de fournir
+des signatures dans un endroit différent.
+
+Notez que ça n'est pas votre mot de passe LUKS, mais c'est un mot de passe
 
 
-This guide deals with various ways in which you can harden your GRUB
-configuration, for security purposes. These steps are optional, but
-highly recommended by the Libreboot project.
-
-GRUB secure boot with GPG
-=========================
-
-This uses the free implementation of the GPG standard for encryption and
-signing/verifying data. We will be using this for checking the signature
-of a Linux kernel at boot time. More information about GPG can be found
-on the [GPG project website](https://www.gnu.org/software/gnupg/). GRUB
-has some GPG support built in, for checking signatures.
-
-This tutorial assumes you have a libreboot image (rom) that you wish to
-modify, to which we shall henceforth refer to as "my.rom". This
-tutorial modifies grubtest.cfg, this means signing and password
-protection will work after switching to it in the main boot menu and
-bricking due to incorrect configuration will be impossible. After you
-are satisfied with the setup, you should transfer the new settings to
-grub.cfg to make your machine actually secure.
-
-First extract the old grubtest.cfg and remove it from the libreboot
-image:
-
-    cbfstool my.rom extract -n grubtest.cfg -f my.grubtest.cfg
-    cbfstool my.rom remove -n grubtest.cfg
-
-Helpful links:
-
--   [GRUB manual](https://www.gnu.org/software/grub/manual/html_node/Security.html#Security)
--   [GRUB info pages](http://git.savannah.gnu.org/cgit/grub.git/tree/docs/grub.texi)
--   [SATA connected storage considered dangerous.](../../faq.md#hddssd-firmware)
--   [Coreboot GRUB security howto](https://www.coreboot.org/GRUB2#Security)
 
 GRUB Password
 =============
