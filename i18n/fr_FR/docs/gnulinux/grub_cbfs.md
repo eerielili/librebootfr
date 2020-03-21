@@ -13,15 +13,15 @@ configuration GRUB qui est dans la ROM de l'ordinateur ou alors modifier
 celle qui existe dans le système d'exploitation même; les deux options
 seront expliquées ici.
 
+## Comment récupérer le fichier de configuration GRUB
 
-## How to Get the GRUB Configuration File
-The first step of the process is to actually get a hold of the GRUB configuration file
-that we need to modify. There are two ways to do this:
+La première étape du processus est de mettre la main sur le fichier de configuration
+GRUB que nous avons besoin de modifier. Il y a deux manières de faire ça:
 
-1. We can extract the one that already exists within the ROM
-2. We can use one of the pre-compiled ROMS supplied by the Libreboot project
+1. Nous pouvons extraire celle déjà existante dans la ROM.
+2. Nous pouvons utiliser une des ROMs pré-compilées fournise par le projet Libreboot.
 
-However, both ways will require us to download the Libreboot Utility Archive.
+Cependant, ces deux manières nous amènerons à télécharger l'Archive Utilitaire de Libreboot.
 
 ### Download the Libreboot Utility Archive
 The Libreboot Utility Archive contains the programs that we'll need
