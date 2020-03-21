@@ -1,16 +1,18 @@
 ---
-title: Modifying the GRUB Configuration in Libreboot Systems
+title: Modifier la configuration GRUB dans les systèmes Libreboot
 x-toc enable: true
 ...
 
+Ce guide montrera toutes les étapes nécessaires à la modification du fichier
+de configuration GRUB dans Libreboot; de telle manière que l'utilisateur n'a
+pas à démarrer manuellement son système d'exploitation à chaque fois en tapant
+des commandes dans console GRUB.
 
-This guide will go through all the steps to modify a GRUB configuration file
-in Libreboot; this is so that the user doesn't have to manually boot
-their operating system each time, by typing in commands at the GRUB command line.
+Pour les buts de ce guide, vous pouvez modifier le fichier de 
+configuration GRUB qui est dans la ROM de l'ordinateur ou alors modifier
+celle qui existe dans le système d'exploitation même; les deux options
+seront expliquées ici.
 
-For the purposes of this guide, you can either modify the GRUB configuration file
-that resides in the computer's ROM, or else you could modify the version that
-exists within the operating system itself; both options will be explained here.
 
 ## How to Get the GRUB Configuration File
 The first step of the process is to actually get a hold of the GRUB configuration file
