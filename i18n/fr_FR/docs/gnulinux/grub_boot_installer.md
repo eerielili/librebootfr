@@ -26,63 +26,71 @@ Pour cet example, assumons que le nom de notre clef est `sdb`. Assurez-vous qu'i
 
 C'est tout ! Vous devriez être maintenant capable de démarrer l'installeur depuis votre clef USB (les instructions sur comment faire celà seront données plus tard).
 
-## Prepare the USB drive in NetBSD
-[This page](https://wiki.netbsd.org/tutorials/how_to_install_netbsd_from_an_usb_memory_stick/) on the NetBSD website shows how to create a NetBSD bootable USB drive, from within NetBSD itself. You should the `dd` method documented there. This will work with any GNU+Linux ISO image.
+## Préparer la clef USB dans NetBSD
+[Cette page](https://wiki.netbsd.org/tutorials/how_to_install_netbsd_from_an_usb_memory_stick/) sur le site de NetBSD montre comment créer une clef USB NetBSD démarrable, depuis NetBSD même. Vous devriez utiliser la méthode `dd` documentée là bas. Ça marchera avec n'importe quelle image ISO GNU+Linux.
 
-## Prepare the USB drive in FreeBSD
-[This page](https://www.freebsd.org/doc/handbook/bsdinstall-pre.html) on the FreeBSD website shows how to create a bootable USB drive for installing FreeBSD. Use the `dd` method documented. This will work with any GNU+Linux ISO image.
+## Préparer la clef USB dans FreeBSD
+[Cette page](https://www.freebsd.org/doc/handbook/bsdinstall-pre.html) sur le site web de FreeBSD montre comment créer une clef USB démarrable pour installer FreeBSD. Utilisez la méthode `dd` documentée. Ça marchera sur n'importe quelle
+image ISO GNU+Linux.
 
-## Prepare the USB drive in LibertyBSD or OpenBSD
-If you downloaded your ISO on a LibertyBSD or OpenBSD system, here is
-how to create the bootable GNU+Linux USB drive:
 
-Connect the USB drive. Run `lsblk` to determine which drive it is:
+## Préparer la clef USB (sur LibertyBSD ou OpenBSD)
 
-    $ lsblk
+Si vous avez téléchargé votre ISO sur un système LibertyBSD ou OpenBSD, voici
+comment créer une clef USB FreeBSD démarrable:
 
-To confirm that you have the correct drive, use `disklabel`. For example, if you thought the correct drive were **sd3**, run this command:
+Connectez la clef USB. Regardez la sortie de dmesg:
+
+    $ dmesg | tail
+
+Vérifiez et confirmer de quel USB il s'agit si vous pensez par exemple que c'est sd3:
 
     $ disklabel sd3
 
-Make sure that the device isn't mounted, with `doas`; if it is, this command will unmount it:
+Vérifiez qu'elle n'a pas été montée automatiquement. Sinon, on l'éjecte. Par exemple :
 
     $ doas umount /dev/sd3i
 
-`lsblk` told you what device it is. Overwrite the drive, writing the OpenBSD installer to it with `dd`. Here's an example:
+dmesg vous a dit quel appareil/bloc c'était, donc on peut maintenant écrire par dessus
+l'installateur FreeBSD grâce à dd. Par exemple :
 
-    $ doas dd if=gnulinux.iso of=/dev/rsdXc bs=1M; sync
+    $ doas dd if=freebsd.img of=/dev/rsdXc bs=1M; sync
 
-That's it! You should now be able to boot the installer from your USB drive (the instructions for doing so will be given later).
+Vous devriez être maintenant capable de démarrer l'installeur depuis votre clef USB.
+Continuez à lire pour apprendre comme faire ceci.
 
-## Debian or Devuan net install
-Download the Debian or Devuan net installer. You can download the Debian ISO
-from [the Debian homepage](https://www.debian.org/), or the Devuan ISO from
-[the Devuan homepage](https://www.devuan.org/).
+## Installation par le net Debian ou Devuan
+Téléchargez le netinstalleur Debian ou Devuan. Vous pouvez télécharger l'ISO Debian 
+depuis [la page d'accueil de Debian](https://www.debian.org/), ou l'ISO Devuan depuis
+[la page d'accueil Devuan](https://www.devuan.org/).
 
-Secondly, create a bootable USB drive using the commands in
-[#prepare-the-usb-drive-in-gnulinux](#prepare-the-usb-drive-in-gnulinux).
+Deuxièmement, créez une clef USB démarrable en utilisant les commandes de
+[#preparer-la-clef-usb-dans-gnulinux](#preparer-la-clef-usb-dans-gnulinux).
 
-Thirdly, boot the USB and enter these commands in the GRUB terminal
-(for 64-bit Intel or AMD):
+Troisièmement, démarrez l'USB et entrez ces commandes dans le terminal GRUB
+(pour les intel 64-bit ou AMD):
 
     grub> set root='usb0'
     grub> linux /install.amd/vmlinuz
     grub> initrd /install.amd/initrd.gz
     grub> boot
 
-If you are on a 32-bit system (e.g. some Thinkpad X60's) then you will need to
-use these commands (this is also true for 32-bit running on 64-bit machines):
+Si vous êtes sur un système 32-bit (p.e. quelques ThinkPad X60) alors vous allez 
+avoir besoin de ces commandes (c'est aussi vrai pour le 32-bit s'éxecutant sur
+les machines 64-bit):
 
     grub> set root='usb0'
     grub> linux /install.386/vmlinuz
     grub> initrd /install.386/initrd.gz
     grub> boot
 
-NOTE FOR G41M USERS (32 bit, 64 bit): On the *linux* line, specify fb=false to
-boot in text mode or the installer won't have a display on your monitor.
+NOTE pour les utilisateurs de G41M (32/64bit): Sur la ligne *linux*, spécifiez fb=false
+pour démarrer en mode texte ou alors l'installeur n'aura pas d'affichage sur votre écran.
 
-## Booting ISOLINUX Images (Automatic Method)
-Boot it in GRUB using the `Parse ISOLINUX config (USB)` option. A new menu should appear in GRUB, showing the boot options for that distro; this is a GRUB menu, converted from the usual ISOLINUX menu provided by that distro.
+## Démarrer les Images ISOLINUX (méthode automatique)
+Démarrez le dans GRUB en utilisant l'option `Parse ISOLINUX config (USB)`. Un nouveau menu devrait apparaître
+dans GRUB, montrant les options de démarrage pour cette distribution; c'est un menu GRUB converti depuis le menu ISOLINUX habituel
+fourni par cette distribution.
 
 ## Booting ISOLINUX Images (Manual Method)
 These are generic instructions. They may or may not be correct for your distribution. You must adapt them appropriately, for whatever GNU+Linux distribution it is that you are trying to install.
