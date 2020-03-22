@@ -50,7 +50,7 @@ Pour une confidentialité améliorée, nous recommandons que vous utilisiez un [
 Le [site Tor](https://torproject.org/) a des renseignements sur la façon de faire passer votre trafic Internet à travers Tor.
 
 Légalement parlant, tout copyright est automatique selon la Convention de Berne sur la loi internationale du copyright. 
-Ça n'a pas d'importance pour quel nom, même si vous déclarez un copyright ( mais nous demandons que certains copyright soit utilis, vous pourrez en lire plus sur cette page ).
+Ça n'a pas d'importance pour quel nom, même si vous déclarez un copyright ( mais nous demandons que certains copyright soit utilisés, vous pourrez en lire plus sur cette page ).
 
 Si vous utilisez un email et un nom différent pour vos commits et patchs, alors vous devrez être plutôt anonyme.
 Utilisez [git log](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History) et [git show](https://git-scm.com/docs/git-show) pour confirmer ceci avant que vous poussiez vos changements dans un repértoire Git.
