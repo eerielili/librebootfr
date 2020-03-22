@@ -60,7 +60,7 @@ Vous devriez être maintenant capable de démarrer l'installeur depuis votre cle
 Continuez à lire pour apprendre comme faire ceci.
 
 ## Installation par le net Debian ou Devuan
-Téléchargez le netinstalleur Debian ou Devuan. Vous pouvez télécharger l'ISO Debian 
+Téléchargez le netinstallateur Debian ou Devuan. Vous pouvez télécharger l'ISO Debian 
 depuis [la page d'accueil de Debian](https://www.debian.org/), ou l'ISO Devuan depuis
 [la page d'accueil Devuan](https://www.devuan.org/).
 
@@ -151,7 +151,7 @@ Utilisez une des images ROM avec `vesafb` dans le nom de fichier (elle utilise l
 
 ### Corruption graphique du debian-installer en Text-Mode (Debian et Devuan)
 Lors de l'utilisation d'images ROM qui utilise le `text mode` de Coreboot au lieu du tampon d'image de Coreboot, démarrer
-le netinstalleur Debian ou Devuan résulte en une corruption graphique, parce qu'il essaye de basculer
+le netinstallateur Debian ou Devuan résulte en une corruption graphique, parce qu'il essaye de basculer
 sur un tampon d'image n'existant pas.
 Quand vous en démarrez une, utilisez ce paramètre de kernel sur la ligne `linux`:
 
