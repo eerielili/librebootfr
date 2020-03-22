@@ -140,35 +140,32 @@ de périphériques USB/partitions. Bien sûr, ça variera entre distributions. S
 ça devrait maintenant démarrer votre clef USB de la manière que vous avez spécifié.
 
 ## Dépannage
+La majorité de ces problèmes arrivent en utilisant Libreboot avec le `text-mode` de Coreboot, au lieu du tampon d'image de Coreboot.
+Ce mode est utile pour démarrer les charges utiles comme MemTest86+ qui s'attendent au `text-mode`, mais pas pour
+les distributions GNU+Linux, ça peut être problématique quand elles essayent de basculer sur un tampon d'image parce qu'il n'existe pas.
 
+Dans la plupart des cas, vous devriez utiliser les images ROM **vesafb**. Un exemple de nom de fichier serait **libreboot\_ukdvorak\_vesafb.rom**.
 
-GRUB works similarly; here are some example GRUB commands:
+### Parabola ne veut pas démarrer en Text-Mode
+Utilisez une des images ROM avec `vesafb` dans le nom de fichier (elle utilise le tampon d'image de Coreboot au lieu de `text-mode`).
 
-    grub> set root='usb0'
-    grub> linux /path/to/kernel PARAMETERS MAYBE\_MORE\_PARAMETERS
-    grub> initrd /path/to/initrd
-    grub> boot
-
-Note: `usb0` may be incorrect. Check the output of the `ls` command (in GRUB), to see a list of USB devices/partitions. Of course, this will vary from distro to distro. If you did all of that correctly, then it should now be booting your USB drive in the way that you specified.
-
-## Troubleshooting
-Most of these issues occur when using Libreboot with Coreboot's `text-mode`, instead of the Coreboot framebuffer. This mode is useful for booting payloads, like `MemTest86+`, which expect `text-mode`, but for GNU+Linux distributions, it can be problematic when they are trying to switch to a framebuffer, because it doesn't exist.
-
-In most cases, you should use the **vesafb** ROM images. An example filename would be **libreboot\_ukdvorak\_vesafb.rom**.
-
-### Parabola Won't Boot in Text-Mode
-Use one of the ROM images with `vesafb` in the filename (uses Coreboot framebuffer, instead of `text-mode`).
-
-### debian-installer Graphical Corruption in Text-Mode (Debian and Devuan)
-When using the ROM images that use Coreboot's `text mode`, instead of the Coreboot framebuffer, booting the Debian or Devuan net installer results in graphical corruption, because it is trying to switch to a framebuffer, which doesn't exist. Use that kernel parameter on the `linux` line, when booting it:
+### Corruption graphique du debian-installer en Text-Mode (Debian et Devuan)
+Lors de l'utilisation d'images ROM qui utilise le `text mode` de Coreboot au lieu du tampon d'image de Coreboot, démarrer
+le netinstalleur Debian ou Devuan résulte en une corruption graphique, parce qu'il essaye de basculer
+sur un tampon d'image n'existant pas.
+Quand vous en démarrez une, utilisez ce paramètre de kernel sur la ligne `linux`:
 
     vga=normal fb=false
 
-This forces debian-installer to start in `text-mode`, instead of trying to switch to a framebuffer.
+Ça force le debian-installer à démarrer en `text-mode`, au lieu d'essayer de basculer sur un
+tampon d'image.
 
-If selecting `text-mode` from a GRUB menu created using the ISOLINUX parser, you can press `E` on the menu entry to add this. Or, if you are booting manually (from GRUB terminal), then just add the parameters.
+Si vous sélectionnez `text-mode` depuis un menu GRUB créé en utilisant l'analyseur syntaxique d'ISOLINUX, vous pouvez tapez
+`E` sur l'entrée du menu pour ajouter ceci.
+Ou, si vous démarrer manuellement (depuis le terminal GRUB), alors ajoutez juste les paramètres.
 
-This workaround was found on the [Debian site](https://www.debian.org/releases/stable/i386/ch05s04.html). It should also work for Devuan, and any other `apt-get` distro that provides the debian-installer (i.e., text-mode) net install method.
+Ce contournement a été trouvé sur le [site web de Debian](https://www.debian.org/releases/stable/i386/ch05s04.html). Ça devrait
+aussi marcher pour Devuan et tout autre distributions `apt-get` fournissant la méthode d'installation par le net debian-installer (p.e. text-mode).
 
 Copyright © 2014, 2015, 2016 Leah Rowe <info@minifree.org>
 
@@ -176,4 +173,8 @@ Copyright © 2016 Scott Bonds <scott@ggr.com>
 
 Copyright © 2017 Elijah Smith <esmith1412@posteo.net>
 
-Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License Version 1.3 or any later version published by the Free Software Foundation with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts. A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
