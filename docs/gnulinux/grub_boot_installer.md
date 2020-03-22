@@ -1,15 +1,7 @@
 ---
-title: Comment préparer et démarrer un installeur USB sur les systèmes Libreboot
+title: How to Prepare and Boot a USB Installer on Libreboot Systems
 x-toc-enable: true
 ...
-
-Ce guide explique comment préparer une clef USB démarrable pour les systèmes libreboot, qui peut être utilisée pour installer de nombreuses distributions GNU+Linux.
-Pour ce guide, vous aurez seulement besoin d'une clef USB et de l'utilitaire `dd` (il est installé par défaut dans toute les distributions GNU+Linux).
-
-Pour des informations sur comment installer des distributions GNU+Linux spécifiques, référez-vous à [cette page](index.md).
-
-## Préparer la clef USB dans GNU+Linux
-
 
 This guide explains how to prepare a bootable USB for Libreboot systems that can be used to install several GNU+Linux distributions. For this guide, you will only need a USB flash drive and the `dd` utility (it's installed into all GNU+Linux distributions, by default).
 
