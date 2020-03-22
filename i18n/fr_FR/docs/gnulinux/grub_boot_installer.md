@@ -8,22 +8,23 @@ Pour ce guide vous allez avoir seulement besoin d'une clef USB et de l'utilitair
 
 Pour des informations sur comment installer des distributions GNU+Linux spécifiques, référez-vous à [cette page](index.md).
 
-## Prepare the USB Drive in GNU+Linux
-If you downloaded your ISO while on an existing GNU+Linux system, here is how to create the bootable GNU+Linux USB drive:
+## Préparer la clef USB dans GNU+Linux
+Si vous avez télécharger votre ISO sur un système GNU+Linux existant, voilà comment créer
+la clef USB GNU+Linux démarrable:
 
-Connect the USB drive. Check `lsblk`, to confirm its device name (e.g., **/dev/sdX**):
+Connectez la clef USB. Vérifiez `lsblk` pour confirmer son nom de périphérique (p.e., **/dev/sdX**):
 
     $ lsblk
 
-For this example, let's assume that our drive's name is `sdb`. Make sure that it's not mounted:
+Pour cet example, assumons que le nom de notre clef est `sdb`. Assurez-vous qu'il n'est pas monté:
 
     $ sudo umount /dev/sdb
 
-Overwrite the drive, writing your distro ISO to it with `dd`. For example, if we are installing Trisquel 7.0 64-bit, and it's located in our Downloads folder, this is the command we would run:
+Écrasez le disque, écrivant l'ISO de votre distribution dessus avec `dd`. Par example, si nous installons Trisquel 7.0 64-bit, et qu'il se situe dans notre fichier Téléchargements, c'est la commande que nous voudrons éxecuter;
 
-    $ sudo dd if=~/Downloads/trisquel_7.0_amd64.iso of=/dev/sdb bs=8M; sync
+    $ sudo dd if=~/Téléchargements/trisquel_7.0_amd64.iso of=/dev/sdb bs=8M; sync
 
-That's it! You should now be able to boot the installer from your USB drive (the instructions for doing so will be given later).
+C'est tout ! Vous devriez être maintenant capable de démarrer l'installeur depuis votre clef USB (les instructions sur comment faire celà seront données plus tard).
 
 ## Prepare the USB drive in NetBSD
 [This page](https://wiki.netbsd.org/tutorials/how_to_install_netbsd_from_an_usb_memory_stick/) on the NetBSD website shows how to create a NetBSD bootable USB drive, from within NetBSD itself. You should the `dd` method documented there. This will work with any GNU+Linux ISO image.
