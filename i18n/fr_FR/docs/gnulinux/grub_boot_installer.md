@@ -92,30 +92,55 @@ Démarrez le dans GRUB en utilisant l'option `Parse ISOLINUX config (USB)`. Un n
 dans GRUB, montrant les options de démarrage pour cette distribution; c'est un menu GRUB converti depuis le menu ISOLINUX habituel
 fourni par cette distribution.
 
-## Booting ISOLINUX Images (Manual Method)
-These are generic instructions. They may or may not be correct for your distribution. You must adapt them appropriately, for whatever GNU+Linux distribution it is that you are trying to install.
+## Démarrer les Images ISOLINUX (méthode manuelle)
+Ces instructions là sont génériques. Elle peuvent ou pas être correcte pour votre
+distribution. Vous devez les adapter en accordance pour n'importe quelle distribution
+GNU+Linux que vous essayez d'installer.
 
-If the `ISOLINUX parser` or `Search for GRUB configuration` options won't work, then press `C` in GRUB to access the command line, then run the `ls` command:
+Si les options `ISOLINUX parser` ou `Search for GRUB configuration` ne marche pas, alors
+tapez `C` dans GRUB pour accéder à la ligne de commande et ensuite éxecuter la commande
+`ls`:
 
     grub> ls
 
-Get the device name from the above output (e.g., `usb0`). Here's an example:
+Récupérez le nom de l'appareil à partir de la sortie ci-dessus (p.e., `usb0`). Voici
+un exemple:
 
     grub> cat (usb0)/isolinux/isolinux.cfg
 
-Either the output of this command will be the ISOLINUX menuentries for that ISO, or link to other `.cfg` files (e.g, **/isolinux/foo.cfg**). For example, if the file found were **foo.cfg**, you would use this command:
+La sortie de cette commande sera soit les entrées de menus ISOLINUX pour cette ISO,
+ou des liens vers d'autres fichiers `.cfg` (p.e. **/isolinux/foo.cfg**). Par exemple, si le fichier
+trouvé était **foo.cfg**, vous voudrez éxecuter cette commande:
 
     grub> cat (usb0)/isolinux/foo.cfg
 
-And so on, until you find the correct menuentries for ISOLINUX.
+Et ainsi de suite, jusqu'à que vous trouvez les bonnes entrées de menu pour ISOLINUX.
 
-For Debian-based distros (e.g., Trisquel, Devuan), there are typically menuentries listed in **/isolinux/txt.cfg** or **/isolinux/gtk.cfg**. For dual-architecture ISO images (i686 and x86\_64), there may be separate files directories for each architecture.  Just keep searching through the image, until you find the correct ISOLINUX configuration file.
+Pour les distributions basées Debian (p.e. Trisquel, Devuan), il y a typiquement des entrées de
+menu listées dans **/isolinux/txt.cfg** ou **/isolinux/gtk.cfg**. Pour les images ISO à double 
+architecture (i686 et x86\_64), il devrait avoir des répertoires de fichiers séparés pour chacunes.
+Contentez-vous de chercher à travers l'image jusqu'à ce que vous trouvez le bon fichier de configuration ISOLINUX.
 
-**NOTE: Debian 8.6 ISO only lists 32-bit boot options in txt.cfg. This is important, if you want 64-bit booting on your system. Devuan versions based on Debian 8.x may also have the same issue.**
+**NOTE: L'ISO de Debian 8.6 liste seulement des options de démarrage 32-bit dans txt.cfg. C'est important à retenir si vous
+voulez du démarrage 64-bit sur votre système. Les versions de Devuan basées sur Debian 8.x peuvent avoir le même soucis.**
 
-Now, look at the ISOLINUX menuentry; it'll look like this:
+Maintenant, regardez l'entrée de menu ISOLINUX; elle devrait ressembler à ça:
 
     kernel /path/to/kernel append PARAMETERS initrd=/path/to/initrd ...
+
+GRUB marche de façon similaire; voici quelques examples de commandes GRUB:
+
+    grub> set root='usb0'
+    grub> linux /chemin/vers/kernel PARAMÈTRES PEUTETRE_PLUS_DE_PARAMETRES
+    grub> initrd /chemin/vers/initrd
+    grub> boot
+
+Note: `usb0` peut être incorrect. Jetez un coup d'oeil à la sortie de la commande `ls` (dans GRUB), pour voir une liste
+de périphériques USB/partitions. Bien sûr, ça variera entre distributions. Si vous avez fait tout ça correctement, alors
+ça devrait maintenant démarrer votre clef USB de la manière que vous avez spécifié.
+
+## Dépannage
+
 
 GRUB works similarly; here are some example GRUB commands:
 
