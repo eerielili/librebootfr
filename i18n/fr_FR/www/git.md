@@ -87,7 +87,7 @@ Dans votre terminal :
 
     $ git clone https://notabug.org/libreboot/libreboot.git
 
-Un nouveau répertoire nommé `libreboot` sera créé, contenant lireboot.
+Un nouveau répertoire nommé `libreboot` sera créé, contenant libreboot.
 
 
 Comment soumettre vos patchs (via demandes de révisions)
