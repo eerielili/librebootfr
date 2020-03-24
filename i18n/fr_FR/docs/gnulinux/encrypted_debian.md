@@ -1,135 +1,153 @@
 ---
-title: Installing Debian or Devuan GNU+Linux with full disk encryption (including /boot)
+title: Installer Debian ou Devuan GNU+Linux avec chiffrement du disque en entier (incluant /boot)
 ...
 
-This guide is written for the Debian distribution, but it should also
-work for Devuan with the net installer.
+Ce guide est écrit pour la distribution Debian, mais ça devrait aussi
+marcher pour Devuan avec le netinstallateur.
 
-Gigabyte GA-G41M-ES2L
+Carte mère Gigabyte GA-G41M-ES2L
 =====================
 
-To boot the Trisquel net installer, make sure to specify fb=false on the linux
-kernel parameters in GRUB. This will boot the installer in text mode instead
-of using a framebuffer.
+Pour démarrer le netinstallateur de Trisquel, assurez-vous de rajouter fb=false
+aux paramètres du kernel dans GRUB. Ça démarrera l'installeur en mode texte au
+lieu d'utiliser un tampon d'image.
 
-Moving on...
+C'est parti...
 ============
+Libreboot sur l'architecture x86 utilise la
+[charge utile GRUB](http://www.coreboot.org/Payloads#GRUB_2) par défaut, ce
+qui veut dire que le fichier de configuration GRUB (d'où votre menu GRUB vient)
+est stocké directement aux côtés de libreboot et de sa charge utile GRUB
+éxecutable, à l'intérieur de la puce de flash. 
+Dans le contexte, ça veut dire qu'installer des distributions et les manager
+est pris en charge d'une manière légèrement différente comparé aux 
+systèmes BIOS traditionnels.
 
-Libreboot on x86 uses the GRUB
-[payload](http://www.coreboot.org/Payloads#GRUB_2) by default, which
-means that the GRUB configuration file (where your GRUB menu comes from)
-is stored directly alongside libreboot and its GRUB payload executable,
-inside the flash chip. In context, this means that installing
-distributions and managing them is handled slightly differently compared
-to traditional BIOS systems.
+Sur la majorité des systèmes, la partition /boot doit être laissée non chiffrée
+pendant que les autres le sont. C'est pour celà que GRUB, et donc le kernel, peut
+être chargé et éxecuté puisque le micrologiciel ne peut pas ouvrir un volume
+LUKS. Il n'en est pas ainsi avec libreboot ! Car GRUB est déjà inclus directement
+en tant que charge utile, même /boot peut être chiffré. Ça protège /boot d'altérations
+venant d'une personne ayant un accés physique à la machine.
 
-On most systems, the /boot partition has to be left unencrypted while
-the others are encrypted. This is so that GRUB, and therefore the
-kernel, can be loaded and executed since the firmware can't open a LUKS
-volume. Not so with libreboot! Since GRUB is already included directly
-as a payload, even /boot can be encrypted. This protects /boot from
-tampering by someone with physical access to the system.
-
-This guide is written for Debian net installer. You can download the ISO
-from the homepage on [debian.org](https://www.debian.org/). Use this on
-the GRUB terminal to boot it from USB (for 64-bit Intel or AMD):
+Ce guide est écrit pour le netinstallateur Debian. Vous pouvez télécharger
+l'ISO depuis la page d'accueil sur [debian.org](https://www.debian.org). Utilisez
+ceci dans le terminal GRUB pour le démarrer depuis une clef USB (pour architecture
+Intel 64-bit ou AMD):
 
     set root='usb0'
     linux /install.amd/vmlinuz
     initrd /install.amd/initrd.gz
     boot
-    
-If you are on a 32-bit system (e.g. X60):
+
+Si vous êtes sur un système 32-bit (p.e. X60):
+
+     set root='usb0'
+     linux /install.386/vmlinuz
+     initrd /install.i386/initrd.gz
+     boot
+
+[Ce guide](grub_boot_installer.md) montre comment créer une clef USB avec l'image
+ISO de Debian.
+
+*Ce guide est seulement pour la charge utile GRUB. Si vous utilisez la charge utile
+deptcharge, ignorez entièrement cette section*.
+
+Note: sur quelque ThinkPads, un lecteur DVD défectueux peut causer l'échec de l'étape
+cryptomount -a durant le démarrage. Si ça vous arrive, essayez d'enlever le lecteur.
+
 
     set root='usb0'
     linux /install.386/vmlinuz
     initrd /install.386/initrd.gz
     boot
-    
-[This guide](grub_boot_installer.md) shows how to create a boot USB
-drive with the Debian ISO image.
 
-*This guide is only for the GRUB payload. If you use the depthcharge payload,
-ignore this section entirely.*
+Définissez un mot de passe utilisateur robuste (beaucoups de lettres minuscules/majuscules,
+nombres et symboles). L'utilisation de la *méthode lancer de dés* est recommandée, pour
+générer des phrases de passe sécurisées (au lieu de mots de passes).
 
-Note: on some thinkpads, a faulty DVD drive can cause the cryptomount -a step
-during boot to fail. If this happens to you, try removing the drive.
+Quand l'installeur vous demande de mettre en place le chiffrement (ecryptfs)
+pour votre répertoire maison/personnel, choisissez 'Oui' si vous voulez : *LUKS
+est déjà sécurisé et marche bien. Avoir ecryptfs au-dessus ajoutera une pénalite
+remarquable aux perfomances pour un gain minime en sécurité dans la majorité des
+cas d'utilisation. C'est par conséquent optionnel et non recommandé. Choisissez
+'Non'.*
 
-Set a strong user password (lots of lowercase/uppercase, numbers and symbols).
+*Votre mot de passe utilisateur devrait être différent du mot de passe LUKS que 
+vous mettrez en place pls tard. Votre mot de passe LUKS devrait être comme le
+mot de passe utilisateur, c'est à dire sécurisé.*
 
-Use of the *diceware method* is recommended, for generating secure passphrases
-(instead of passwords).
-
-When the installer asks you to set up encryption (ecryptfs) for your home
-directory, select 'Yes' if you want to: *LUKS is already secure and performs
-well. Having ecryptfs on top of it will add noticeable performance penalty, for
-little security gain in most use cases. This is therefore optional, and not
-recommended. Choose 'no'.*
-
-*Your user password should be different from the LUKS password which
-you will set later on. Your LUKS password should, like the user
-password, be secure.*
-
-Partitioning
+Partitionnage
 ============
 
-Choose 'Manual' partitioning:
+Choisissez le partitionnage 'Manuel':
 
--   Select drive and create new partition table
--   Single large partition. The following are mostly defaults:
-    -   Use as: physical volume for encryption
-    -   Encryption: aes
-    -   key size: whatever default is given to you
-    -   IV algorithm: whatever default is given to you
-    -   Encryption key: passphrase
-    -   erase data: Yes (only choose 'No' if it's a new drive that
-        doesn't contain your private data)
+-    Sélectionnez le disque et créez une nouvelle table de partition
+-    Une seule large partition. Ce qui suit sont pour la plupart configurés par défaut:
+    -    Utiliser: en tant que volume physique pour le chiffrement
+    -    Chiffrement: aes
+    -    taille de clé: le paramètre par défaut donné
+    -    algorithme IV: le paramètre par défaut donné
+    -    Clé de chiffrement: phrase de passe
+    -    Effacer les données: Oui (choisissez 'Non' seulement si c'est un nouveau
+     disque qui ne contient pas vos données personnelles.)
 
--   Select 'configure encrypted volumes'
-    -   Create encrypted volumes
-    -   Select your partition
-    -   Finish
-    -   Really erase: Yes
-    -   (erase will take a long time. be patient)
-    -   (if your old system was encrypted, just let this run for about a
-        minute to make sure that the LUKS header is wiped out)
--   Select encrypted space:
-    -   use as: physical volume for LVM
-    -   Choose 'done setting up the partition'
--   Configure the logical volume manager:
-    -   Keep settings: Yes
--   Create volume group:
-    -   Name: `matrix` (use this exact name)
-    -   Select crypto partition
--   Create logical volume
-    -   select `matrix` (use this exact name)
-    -   name: `rootvol` (use this exact name)
-    -   size: default, minus 2048 MB
--   Create logical volume
-    -   select `matrix` (use this exact name)
-    -   name: `swap` (user this exact name)
-    -   size: press enter
+-    Sélectionnez 'configurer des volumes chiffrés'
+    -    Créer des volumes chiffrés
+    -    Sélectionnez votre partition
+    -    Finir
+    -    Vraiment effacer: Oui
+    -    (l'effaçage prend un certain temps. Soyez patient)
+    -    (si votre système précédent était chiffré, laissez tourner pour
+          une minute environ afin de s'assurer que l'en-tête LUKS est sorti)
+-    Sélectionner l'espace chiffré:
+    -    utiliser en tant que: volume physique pour LVM
+    -    Choisir 'Terminer le paramétrage de la partition'
+-    Configurer le manager des volumes logiques:
+    -    Garder les paramètres: Oui
+-    Créer un groupe de volumes:
+    -  Nom: `matrix` (utilisez ce nom à la lettre)
+    -  Sélectionner partition crypto
+-   Créer un volume logique
+    -   sélectionnez `matrix` (utilisez ce nom à la lettre)
+    -   nom: `rootvol` (utilisez ce nom à la lettre)
+    -   taille: défaut moins 2048Mo
+-   Créer un volume logique
+    -   sélectionnez `matrix` (utilisez ce nom à la lettre)
+    -   nom: `swap` (utilisez ce nom à la lettre)
+    -   taille: pressez Entrée
 
-Further partitioning
+Partitionnage avancé
 ====================
+Maintenant vous etes de retour sur l'écran de partitionnage
+principal. Vous allez simplement définir les points de montage et
+systèmes de fichier à utiliser.
 
-Now you are back at the main partitioning screen. You will simply set
-mountpoints and filesystems to use.
-
--   LVM LV rootvol
-    -   use as: btrfs
-    -   mount point: /
-    -   done setting up partition
--   LVM LV swap
-    -   use as: swap area
-    -   done setting up partition
--   Now you select 'Finished partitioning and write changes to disk'.
+-   LVM VL rootvol
+    -   utiliser en tant que : btrfs
+    -   point de montage: /
+    -   finir le paramétrage de cette partition
+-   LVM VL swap
+    -   utiliser en tant que: zone de swap
+    -   finir le paramétrage de cette partition
+-   Maintenant sélectionnez 'A fini le partitionnage et écrire les changements 
+    sur disque'.
 
 Kernel
 ======
 
-Installation will ask what kernel you want to use. linux-generic is
-fine.
+L'installation demandera quel kernel vous voulez utiliser. linux-generic 
+fait l'affaire.
+
+
+Tasksel
+=======
+
+Pour Debian, utilisez l'option *MATE* ou une des autres si vous le 
+voulez. Le projet libreboot recommande MATE, à moins que vous êtes
+assez expérimenté pour choisir quelque chose d'autre.
+
+Si vous voulez debian-testing
 
 Tasksel
 =======
