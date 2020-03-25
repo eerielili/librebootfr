@@ -147,55 +147,50 @@ Pour Debian, utilisez l'option *MATE* ou une des autres si vous le
 voulez. Le projet libreboot recommande MATE, à moins que vous êtes
 assez expérimenté pour choisir quelque chose d'autre.
 
-Si vous voulez debian-testing
+Si vous voulez debian-testing, alors vous devriez sélectionner le
+minimum d'options possibles et changer les lignes dans /etc/apt/sources.list
+après l'installation, afin de pointer vers la nouvelle distribution.
+Il faudra ensuite éxecuter `apt-get update` puis `apt-get dist-upgrade` en
+tant que root, redémarrer et éxecuter `tasksel` en tant que root.
+C'est pour éviter de télécharger de larges paquets deux fois.
 
-Tasksel
-=======
+NOTE: si vous voulez la toute dernière version mise à jour du kernel Linux,,
+le kernel de Debian est quelquefois en retard, même dans la distribution de test.
+Au lieu de ça, vous pouvez considérer d'utiliser [ce dépôt](https://jxself.org/linux-libre/)
+qui contient les versions les plus à jour du kernel Linux. Ces kernels sont aussi
+déblobbé comme sur Debian, donc vous pouvez vous assurez qu'aucuns blobs binaires ne sont
+présents.
 
-For Debian, use the *MATE* option, or one of the others if you want. The
-libreboot project recommends MATE, unless you're saavy enough to choose
-something else.
-
-If you want debian-testing, then you should only select barebones
-options here and change the entries in /etc/apt/sources.list after
-install to point to the new distro, and then run `apt-get update` and
-`apt-get dist-upgrade` as root, then reboot and run `tasksel` as
-root. This is to avoid downloading large packages twice.
-
-NOTE: If you want the latest up to date version of the Linux kernel,
-Debian's kernel is sometimes outdated, even in the testing distro. You
-might consider using [this repository](https://jxself.org/linux-libre/)
-instead, which contains the most up to date versions of the Linux
-kernel. These kernels are also deblobbed, like Debian's kernels, so you
-can be sure that no binary blobs are present.
-
-Postfix configuration
+Configuration Postfix 
 =====================
+Si demandé, choisissez *Pas de configuration* (ou peut-être vous voulez choisir 
+quelque chose d'autre. C'est votre choix.)
 
-If asked, choose *"No Configuration"* here (or maybe you want to
-select something else. It's up to you.)
-
-Install the GRUB boot loader to the master boot record
+Installer le chargeur d'amorçage GRUB sur le MBR
 ======================================================
 
-Choose 'Yes'. It will fail, but don't worry. Then at the main menu,
-choose 'Continue without a bootloader'. You could also choose 'No'.
-Choice is irrelevant here.
+Choisissez 'Oui'. Ça échouera, mais ne vous inquiétez pas. Ensuite sur
+le menu principal, choisissez 'Continuez sans un chargeur d'amorçage'.
+Vous pouviez aussi choisir 'Non'. Le choix n'a pas d'importance ici.
 
-*Don't forget to have grub-coreboot package installed, even though installing grub to MBR is irrelevant
-on libreboot system, grub tools are still needed to eg. generate config (`grub-mkconfig`)*
+*N'oubliez pas d'avoir le paquet grub-coreboot installé, même si l'installation de grub sur le MBR
+n'a pas d'intérêt sur les systèmes Libreboot, les outils grub sont encore nécessaires pour p.e.
+générer la configuration (`grub-mkconfig`)*
 
-Clock UTC
+
+Horloge UTC
 =========
 
-Just say 'Yes'.
+Répondez 'Oui'.
 
-Booting your system
+
+Démarrer votre système
 ===================
 
-At this point, you will have finished the installation. At your GRUB
-payload, press C to get to the command line, and enter:
-
+À ce point vous aurez fini l'installation. Quand vous
+arrivez sur votre charge utile GRUB, pressez C pour avoir
+la ligne de commande et entrez :
+    
     grub> cryptomount -a
     grub> set root='lvm/matrix-rootvol'
     grub> linux /vmlinuz root=/dev/mapper/matrix-rootvol cryptdevice=/dev/mapper/matrix-rootvol:root
@@ -205,17 +200,18 @@ payload, press C to get to the command line, and enter:
 ecryptfs
 ========
 
-If you didn't encrypt your home directory, then you can safely ignore
-this section.
+Si vous n'avez pas chiffré votre répertoire personnel/maison, alors vous
+pouvez ignorer sans souci cette section.
 
-Immediately after logging in, do that:
+Immédiatement après vous être authentifié, éxecutez :
 
     $ sudo ecryptfs-unwrap-passphrase
 
-This will be needed in the future if you ever need to recover your home
-directory from another system, so write it down and keep the note
-somewhere secret. Ideally, you should memorize it and then burn the note
-(or not even write it down, and memorize it still)>
+Ça sera nécessaire dans le futur si vous avez un quelconque besoin de récupérer
+votre répertoire personne depuis un autre système, donc notez la sortie et gardez
+la note dans un endroit tenu secret. Idéalement, vous devriez la mémoriser et ensuite
+brûler la note (ou ne même pas l'écrire et quand même la mémoriser).
+
 
 Modify grub.cfg (CBFS)
 ======================
