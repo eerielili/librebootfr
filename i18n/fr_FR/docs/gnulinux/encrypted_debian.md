@@ -212,42 +212,41 @@ votre répertoire personne depuis un autre système, donc notez la sortie et gar
 la note dans un endroit tenu secret. Idéalement, vous devriez la mémoriser et ensuite
 brûler la note (ou ne même pas l'écrire et quand même la mémoriser).
 
-
-Modify grub.cfg (CBFS)
+Modifier grub.cfg (CBFS)
 ======================
 
-Now you need to set it up so that the system will automatically boot,
-without having to type a bunch of commands.
+Maintenant vous avez besoin de le configurer de telle façon que le système démarrera
+automatiquement, sans avoir à taper tout un tas de commandes.
 
-Modify your grub.cfg (in the firmware) [using this
-tutorial](grub_cbfs.md); just change the default menu entry 'Load
-Operating System' to say this inside:
+Modifiez votre grub.cfg (dans le micrologiciel) [en suivant ce
+tutoriel](grub_cbfs.md); changez juste l'intérieur du menu par défaut
+'Load Operating System' par ceci :
 
     cryptomount -a
     set root='lvm/matrix-rootvol'
-    linux /vmlinuz root=/dev/mapper/matrix-rootvol cryptdevice=/dev/mapper/matrix-rootvol:root
+    linux /vmlinux root=/dev/mapper/matrix-rootvol cryptdevice=/dev/mapper/matrix-rootvol:root
     initrd /initrd.img
-    
-Without specifying a device, the *-a* parameter tries to unlock all
-detected LUKS volumes. You can also specify -u UUID or -a (device).
 
-[Refer to this guide](grub_hardening.md) for further guidance on
-hardening your GRUB configuration, for security purposes.
+Sans spécifier un appareil, le paramètre *-a* essaye de dévérouiiller tout les
+volumes LUKS détectés. Vous pouvez aussi -u UUID ou -a (appareil bloc).
 
-Flash the modified ROM using [this tutorial](../install/#flashrom).
+[Référez vous à ce guide](grub_hardening.md) pour des directives plus poussées sur
+l'endurcissement de votre configuration GRUB au niveau sécurité.
 
-Troubleshooting
+Flashez la ROM modifiée en utilisant [ce tutoriel](../install/#flashrom).
+
+Dépannage
 ===============
 
-A user reported issues when booting with a docking station attached on
-an X200, when decrypting the disk in GRUB. The error *AHCI transfer
-timed out* was observed. The workaround was to remove the docking
-station.
+Un utilisateur a rapporté des problèmes lors du démarrage et du déchiffrement du disque dans GRUB,
+sur son X200 avec station d'accueil attachée. L'erreur *AHCI transfer timed out* a été observée.
+La solution de contournement a été d'enlever la station d'accueil.
 
-Further investigation revealed that it was the DVD drive causing
-problems. Removing that worked around the issue.
+Une investigation plus poussée a révélé que c'était le lecteur CD/DVD
+qui causait problème. L'enlever a résolu l'affaire.
 
-    "sudo wodim -prcap" shows information about the drive:
+    "sudo wodim -prcap" montre des informations à propos du lecteur:
+    
     Device was not specified. Trying to find an appropriate drive...
     Detected CD-R drive: /dev/sr0
     Using /dev/cdrom of unknown capabilities
@@ -325,8 +324,8 @@ problems. Removing that worked around the issue.
 
 Copyright © 2014, 2015, 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
