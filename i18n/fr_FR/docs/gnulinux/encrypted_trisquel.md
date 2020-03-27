@@ -1,15 +1,15 @@
 ---
-title: Installing Trisquel GNU+Linux with Full-Disk Encryption (including /boot)
+title: Installer Trisquel GNU+Linux avec le chiffrement de tout le disque (incluant /boot)
 x-toc enable: true
 ...
 
-This guide is written for the Trisquel 7.0 (Belenos) GNU+Linux distribution, but it should also work for Trisquel 6.0 (Toutatis).
+Ce guide est écrit pour la distribution GNU+Linux Trisquel version 7.0 (Belenos) mais ça devrait aussi marcher pour Trisquel version 6.0 (Toutatis).
 
 ## Gigabyte GA-G41M-ES2L
-
-To boot the Trisquel net installer, make sure to specify fb=false on the linux
-kernel parameters in GRUB. This will boot the installer in text mode instead
-of using a framebuffer.
+Pour démarrer le netinstalleur Trisquel, assurez-vous de spécifier
+fb=false dans les paramètres du kernel linux dans grub.
+Ça démarrera l'installeur en mode texte au lieu d'utiliser un tampon
+d'image.
 
 ## Boot the Installation Media
 Boot your operating system, with the installation media. If you don't know how to do so, refer to [How to Prepare and Boot a USB Installer in Libreboot Systems](grub_boot_installer.md).
