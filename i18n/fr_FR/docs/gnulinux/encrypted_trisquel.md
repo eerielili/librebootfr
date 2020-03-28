@@ -11,25 +11,34 @@ fb=false dans les paramètres du kernel linux dans grub.
 Ça démarrera l'installeur en mode texte au lieu d'utiliser un tampon
 d'image.
 
-## Boot the Installation Media
-Boot your operating system, with the installation media. If you don't know how to do so, refer to [How to Prepare and Boot a USB Installer in Libreboot Systems](grub_boot_installer.md).
+## Démarrer le média d'installation
+Démarrez votre système d'exploitation avec le média d'installation. 
+Si vous ne savez pas comment le faire, référez-vous à 
+['Comment préparer et démarrer un installeur USB dans les 
+systèmes Libreboot'](grub_boot_installer.md).
 
-When the Trisquel GRUB screen appears, select the `Install Trisquel in Text Mode` option.
+## Sélectionner un language
+La première partie de l'installation est de sélectionner le language
+du système; on choisira `Français`.
 
-## Select a Language
-The first part of the installation is to select your system's language; I chose `English`.
+## Sélectionner votre emplacement
+Vous aurez besoin de choisir votre emplacement; on choisira `France`.
 
-## Select Your Location
-You will need to select your location; I choose `United States`.
+## Configurer le clavier
+Vous aurez besoin de sélectionner la bonne disposition pour votre 
+clavier; si vous voulez que l'installeur le fasse automatiquement
+choissisez `Oui`, et il vous demandera si oui ou non certaines touches.
+sont présentes sur votre clavier. Dites simplement `Oui` ou `Non` quand
+il le faut.
 
-## Configure the Keyboard
-You need to select the right layout for your keyboard; if you want to installer to do it automatically, choose `Yes`, and it will ask you whether or not a series of keys are present on your keyboard. Simply choose `Yes` or `No`, accordingly.
+Sinon, choisissez `Non` afin que l'installeur ne choisisse pas 
+automatiquement la disposition de votre clavier, il faudra alors simplement
+la sélectionner depuis une liste.
 
-If you don't want the installer to automatically detect your keyboard layout, choose `No`, and simply select it from a list.
+## Configurer le réseau
 
-## Configure the Network
+## Choisir l'interface réseau
 
-### Choose the Network Inteface
 You will need to select the network interface to be used for the installation. If you have an ethernet (i.e., wired) connection, choose `etho0`; otherwise, choose `wlan0` (for wireless).
 
 If you choose `wlan0`, enter the passphrase that corresponds to your wireless network's WPA/WPA2 key (Your wireless network should have a password, and no modern router should be using the [WEP protocol](https://en.wikipedia.org/wiki/Wired_Equivalent_Privacy)).
