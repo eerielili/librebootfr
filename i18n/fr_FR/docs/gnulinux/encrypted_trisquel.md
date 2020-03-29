@@ -220,39 +220,62 @@ cette partition`.
 vérifier si vous voulez vraiment le faire; choisissez `Oui`.
 
 ## Installer le système de base
+La partie la plus dure de l'installation est faite; l'installeur téléchargera et installera 
+maintenant les paquets nécessaires pour le démarrage et l'éxecution du système.
+Le reste du processus sera en majorité automatisé, mais il y aura quelques choses que
+vous allez devoir faire vous même.
 
-The hardest part of the installation is done; the installer will now download and install the packages necessary for your system to boot/run. The rest of the process will be mostly automated, but there will be a few things that you have to do yourself.
+### Choisir un kernel
+Ça vous demandera quel kernel vous voulez utilisez; choisissez `linux-generic`.
 
-### Choose a Kernel
-It will ask you which kernel you want to use; choose `linux-generic`.
+**NOTE: Après installation, si vous voulez obtenir la version la plus à jour
+ du kernel Linux (le kernel de Trisquel est parfois obsolète; même dans la
+ distribution de test), vous devriez peut-être considérer l'utilisation
+ de [ce dépôt](https://jxself.org/linux-libre/). Ces kernels sont aussi
+ débloblés, comme ceux de Trisquel (voulant dire qu'il n'y a pas de
+ blobs binaires présents.**
 
-**NOTE: After installation, if you want the most up-to-date version of the Linux kernel (Trisquel's kernel is sometimes outdated, even in the testing distro), you might consider using [this repository](https://jxself.org/linux-libre/) instead. These kernels are also deblobbed, like Trisquel's (meaning there are no binary blobs present).**
+### Règles de mises à jour
+Vous devez sélectionner une politique par rapport à l'installation des
+mises à jour de sécurité; je recommande que vous choisissez `Installer les
+mises à jour de sécurité automatiquement`, mais vous pouvez ne pas le choisir
+si vous préférez.
 
-### Update Policy
-You have to select a policy for installing security updates; I recommend that you choose `Install security updates automatically`, but you can choose not to, if you prefer.
+### Choisir un environnement de bureau
+Quand amené à choisir un environnement de bureau, utilisez les flèches directionnelles
+pour naviguer parmi les choix, et pressez `Espace` pour choisir une option; voici quelques
+indications:
 
-### Choose a Desktop Environment
-When prompted to choose a desktop environment, use the arrow keys to navigate the choices, and press `Spacebar` to choose an option; here are some guidelines:
+* Si vous voulez *GNOME*, choisissez **Environnement de bureau Trisquel**
+* Si vous voulez *LXDE*, choisissez **Environnement de bureau Trisquel-mini**
+* Si vous voulez *KDE*, choisissez **Environnement de bureau Triskel**
 
-* If you want *GNOME*, choose **Trisquel Desktop Environment**
-* If you want *LDXE*, choose **Trisquel-mini Desktop Environment**
-* If you want *KDE*, choose **Triskel Desktop Environment**
+Vous allez peut-être vouloir choisir quelques-un des autres groupes de paquets (ou
+aucun, si vous voulez une interface en ligne de commande basique); c'est à vous de
+choisir. Une fois le choix voulu fait, pressez `Tabulation` puis choisissez `Continuer`.
 
-You might also want to choose some of the other package groups (or none of them, if you want a basic shell); it's up to you. Once you've chosen the option you want, press `Tab`, and then choose `Continue`.
+## Installer le chargeur d'amorçage GRUB sur le MBR (master boot record)
+L'installer vous demandera si vous voulez installer GRUB sur le MBR; choisissez `Non`.
+Vous n'avez pas du tout besoin d'installer GRUB, puisque dans Libreboot, vous utilisez
+la charge utile contenue dans la ROM pour démarrer votre système.
 
-## Install the GRUB boot loader to the master boot record
-The installer will ask you if you want to install the GRUB bootloader to the master boot record; choose `No`. You do not need to install GRUB at all, since in Libreboot, you are using the GRUB payload on the ROM to boot your system.
+La fenêtre suivante vous demandera d'entrer un `Appareil pour l'installation 
+du chargeur d'amorçage`. Laissez la ligne vide; pressez `Tabulation`, et choi-
+-sissez `Continuer`.
 
-The next window will prompt you to enter a `Device for boot loader installation`. Leave the line blank; press `Tab`, and choose `Continue`.
+## Horloge système
+L'installeur demande si votre horloge système est définie sur UTC; choi-
+-sissez `Oui`.
 
-## System Clock
-The installer will ask if your system clock is set to UTC; choose `Yes`.
+## Finir l'installation
+L'installeur donnera maitenant un message comme quoi l'installation est
+complète. Choisissez `Continuer`, enlevez le média d'installation (clef USB)
+et le système redémarrera automatiquement.
 
-## Finishing the Installation
-The installer will now give you a message that the installation is complete. Choose `Continue`, remove the installation media, and the system will automatically reboot.
-
-## Booting your system
-At this point, you will have finished the installation. At your GRUB boot screen, press `C` to get to the command line, and enter the following commands at the `grub>` prompt:
+## Démarrer votre système
+À ce point vous aurez fini l'installation. Quand vous
+arrivez sur votre charge utile GRUB, pressez C pour avoir
+la ligne de commande et entrez :
 
     grub> cryptomount -a
     grub> set root='lvm/grubcrypt-trisquel'
@@ -261,25 +284,49 @@ At this point, you will have finished the installation. At your GRUB boot screen
     grub> initrd /initrd.img
     grub> boot
 
-Without specifying a device, **cryptomount's** `-a` parameter tries to unlock *all* detected LUKS volumes (i.e., any LUKS-encrypted device that is connected to the system). You can also specify `-u` (for a UUID). Once logged into the operating system, you can find the UUID by using the `blkid` command:
+Sans spécifier un appareil, le paramètre `-a` de **cryptomount** es-
+saye de dévérouiller *tous* les volumes LUKS détectés (p.e., n'importe
+quel appareil chiffré LUKS qui est relié au système).
+Vous pouvez aussi spécifier le paramètre `-u` (pour un UUID).
+Une fois authentifié dans le système d'exploitation, vous pouvez
+trouver l'UUID en utilisant la commande `blkid`:
 
     $ sudo blkid
 
 ## ecryptfs
-If you didn't encrypt your home directory, then you can safely ignore this section; if you did choose to encrypt it, then after you log in, you'll need to run this command:
+Si vous n'avez pas chiffré votre répertoire personnel, alors vous 
+pouvez ignorer sûrement cette section; sinon, juste après que vous
+êtes authentifié, vous aurez besoin d'éxecuter cette commande:
 
     $ sudo ecryptfs-unwrap-passphrase
 
-This will be needed in the future, if you ever need to recover your home directory from another system. Write it down, or (preferably) store it using a password manager (I recommend `keepass`,`keepasX`, or `keepassXC`).
+Ça sera nécessaire dans le futur, si jamais vous avez besoin de
+récupérer votre répertoire depuis un autre système. 
+Écrivez-la (sortie de la commande), ou (préférablement) stockez-la 
+en utilisant un gestionnaire de mots de passe (je recommande `keepass`
+`keepasX`, ou `keepassXC`).
 
-## Modify grub.cfg (CBFS)
-The last step of the proccess is to modify your **grub.cfg** file (in the firmware), and flash the new configuration, [using this tutorial](grub_cbfs.md); this is so that you don't have to manually type in the commands above, every single time you want to boot your computer. You can also make your GRUB configuration much more secure, by following [this guide](grub_hardening.md).
+## Modifier grub.cfg (CBFS)
+La dernière étape du processus est de modifier votre fichier **grub.cfg**
+(dans le micrologiciel), et flasher la nouvelle configuration en [utilisant
+ce tutoriel](grub_cbfs.md); de ce fait vous n'avez plus à insérer manuellement
+les commandes ci-dessus à chaque fois que vous voulez démarrer votre
+ordinateur. Vous pouvez aussi rendre votre configuration GRUB bien plus
+sécurisée, en suivant [ce guide](grub_hardening.md).
 
-## Troubleshooting
-During boot, some Thinkpads have a faulty DVD drive, which can cause the `cryptomount -a` command to fail, as well as the error `AHCI transfer timed out` (when the Thinkpad X200 is connected to an UltraBase). For both issues, the workaround was to remove the DVD drive (if using the UltraBase, then the whole device must be removed).
+## Dépannage
+Pendant le démarrage, quelques ThinkPads ont un lecteur DVD défectueux, ce qui
+peut causer l'échec de la commande `cryptomount -a`, ainsi que l'erreur `AHCI transfer
+timed out` (quand le ThinkPad X200 est connecté à la station d'accueil UltraBase). Pour les deux problèmes
+la solution était d'enlever le lecteur DVD (si utilisation de l'UltraBase, alors la station d'accueil
+toute entière doit être enlevé).
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>
 
 Copyright © 2017 Elijah Smith <esmith1412@posteo.net>
 
-Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License Version 1.3 or any later version published by the Free Software Foundation with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts. A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
