@@ -39,102 +39,188 @@ la sélectionner depuis une liste.
 
 ## Choisir l'interface réseau
 
-You will need to select the network interface to be used for the installation. If you have an ethernet (i.e., wired) connection, choose `etho0`; otherwise, choose `wlan0` (for wireless).
+Vous aurez besoin de sélectionner l'interface réseau devant être utilisé 
+pour l'installation. Si vous avez une connexion ethernet (p.e. filaire), 
+choisissez `eth0`; sinon choisissez `wlan0` (pour le sans fil).
 
-If you choose `wlan0`, enter the passphrase that corresponds to your wireless network's WPA/WPA2 key (Your wireless network should have a password, and no modern router should be using the [WEP protocol](https://en.wikipedia.org/wiki/Wired_Equivalent_Privacy)).
+Si vous choisissez `wlan0`, entrez la phrase/mot de passe de votre réseau 
+sans fil WPA/WPA2 (Votre réseau sans fil devrait avoir un mot de passe, et
+aucun routeur moderne ne devrait utiliser le 
+[protocole WEP](https://en.wikipedia.org/wiki/Wired_Equivalent_Privacy)).
 
-### Choose Your Hostname
-You will need to choose a hostname for the system, which identifies your computer to the network; it can be anything, but it must only consist of numbers, uppercase and lowercase letters, and dashes `-`.
+### Choisir votre nom d'hôte
+Vous aurez besoin de choisir un nom d'hôte pour le système, identifiant
+votre ordinateur sur le réseau; ça peut être n'importe quoi, mais ça doit
+consister seulement de nombres, lettres majuscules et miniscules, et de tirets `-`.
 
-### Choose a Mirror of the Trisquel Archive
-Choose the server from where you will download the Trisquel packages needed for the installation. The choices are separated by country; simply select the one that is closest to where you are.
+### Choisir un mirroir de l'Archive Trisquel
+Choisissez le serveur depuis lequel vous téléchargerez les paquets Trisquel
+requis pour l'installation. Les choix sont séparés par pays; choisissez simplement
+le votre.
 
-After you select the country, you will be taken to a list of different individual servers. If there is more than one option, choose the one that is closest to you; otherwise, select whichever one is available.
+Après avoir choisi le pays, vous serez amenés vers une liste de divers serveurs 
+individuels. Si il y a plus d'une option, choisissez celui qui est la plus proche
+de vous, sinon choisissez n'importe quel autre disponible.
 
-The last step of setting up the network will be entering an HTTP proxy (if you need one to access the network). If you have one, type it here; otherwise, press `Tab`, and then choose `Continue` (using the arrow keys).
+La dernière étape de la configuration du réseau est d'entrer un proxy HTTP (si vous
+avez besoin d'un pour accéder le réseau ). Si vous en avez un, insérez le, sinon pressez
+`Tabulation` puis choisissez `Continuer` avec les flèches directionnelles.
 
-## Loading Additional Components
-Now the installer needs to download some more packages, to continue the installation. Depending on your network bandwidth, this could take up to a few minutes to complete.
+## Charger des composants additionnels
+Maintenant l'installateur a besoin de télécharger quelques paquets de plus pour continuer
+l'installation. Selon votre bande passante, ça peut prendre jusqu'à quelques minutes pour
+se terminer.
 
-## Set Up Users and Passwords
-Enter the full name of the user here. You can use your real name, or just a pseudonym; then, choose `Continue`.
+## Configurer les utilisateurs et mots de passe.
+Entrez ici le nom complet de l'utilisateur : vous pouvez utiliser votre vrai nom ou 
+juste un pseudonyme, puis sélectionnez `Continuer`.
 
-Then it will ask you to enter a *username*. Pick whatever you like, and enter it here. Select `Continue`.
+On vous demandera alors un *nom d'utilisateur*. Prenez ce que vous voulez et 
+rentrez-le, puis sélectionnez `Continuer`.
 
-Choose a passphrase (better than a password). The [diceware](http://world.std.com/~reinhold/diceware.html) method is highly recommended for coming up with one.
+Choisissez une phrase de passe (mieux qu'un mot de passe). La méthode du 
+[lancer de dés](http://world.std.com/~reinhold/diceware.html) (NdT:diceware en anglais) est hautement recom-
+-mandée pour en dégoter un.
 
-I recommend combining the *diceware* method with something personal about yourself. An example of this would be to choose four words from the *diceware* list, and then come up with a fifth "word" (i.e., a combination of characters that is unique to you, like some name plus a number/special character); this combination dramatically increases the security of a *diceware* passphrase (i.e., even if someone had the entire *diceware* word list, they couldn't figure out your passphrase through brute force).
+Je recommande la combinaison de la méthode *diceware*  avec quelque chose de personnel.
+Un example de ça serait de choisir quatre mots de la liste du lancer de dés, et vous
+y mettez un cinquième "mot" (p.e. une combinaison de caractères qui vous est propre, co-
+-mme un nom plus un nombre/caractère spécial); cet alliage augmente dramatiquement la
+sécurité d'une phrase de passe aux *lancer de dés* (p.e. même si quelqu'un avait la liste
+complète des mots de la liste du lancer de dés, il ne pourrait pas deviner votre phrase
+de passe en utilisant le brute force/attaque dictionnaire).
 
-**NOTE: This would be difficult for a person to do, even if you *only* used words from the list**.
+**NOTE: Ça serait difficile à faire pour une personne, même si vous utilisez *seulement*  
+les mots de la liste**
 
-For example, say that your cat's name is **Max**, and he is three years old; you could do something like this:
+Par exemple, supposons que le nom de votre chat est **Max** et qu'il a trois ans, on pourrait
+faire quelque chose comme ça :
 
-    diceware_word_1 diceware_word_2 diceware_word_3 diceware_word_4 Max=3old
+    mot_dés_1 mot_dés_2 mot_dés_3 mot_dés_4 Max=3ans
 
-This has a large degree of randomness (due to the usage of the *diceware* method), and also contains a unique piece of personal information that someone would need to know you, in order to guess; it's a very potent combination.
+Ça a un large degré d'aléatoire (dû à l'utilisation de la méthode du *lancer de dés*), 
+et contient aussi une pièce unique d'information personnelle dont quelqu'un 
+aurait besoin pour devenir la phrase de passe; c'est une combinaison avec
+beaucoup de potentiel.
 
-After entering this password twice, choose `Continue`.
+Après avoir rentré un mot/phrase de passe deux fois, sélectionnez `Continuer`.
 
-It will now ask you if you want to encrypt your home directory. Remember, this is *NOT* to be confused with encrypting your entire disk (the purpose of this guide); it will just be the files that reside in `~`, and it uses a different encryption protocol (`ecryptfs`). If you want to encrypt your home directory here, choose `Yes`; however, since we are going to encrypt the entire installation, that would not only be redundant, but it would also add a noticeable performance penalty, for little security gain in most use cases. This is therefore optional, and *NOT* recommended. Choose `No`.
+Ça vous demandera maintenant si vous voulez chiffrer votre répertoire personnel.
+Rappel, ce ne doit *PAS* être confondu avec le chiffrement de votre disque en entier
+(le but de ce guide); ça sera juste les fichiers reposant dans `~`, et ça utilise un
+protocole de chiffrement différent  (`ecryptfs`).
+Si ici vous voulez chiffrer votre répertoire personnel, choisissez `Oui`; cependant,
+puisque nous allons chiffrer l'entière installation, ça sera non seulement redondant mais
+ça ajoutera une pénalité de perfomance remarquable, pour un gain de sécurité minime dans
+la majorité des cas d'utilisations.
+C'est donc optionnel, et *NON* recommandé. Choisissez `Non`.
 
-## Configure the Clock
-The installer will try to auto-detect your time zone; if it chooses correctly, select `Yes`; otherwise, choose `No`, and it will prompt you to select the correct one.
+## Configurer la date et l'heure
+L'installeur essayera de détecter automatiquement votre fuseau horaire; si il le choisit
+correctement, sélectionnez `Oui`, sinon `Non` et il vous demandera de choisir le bon.
 
-## Partition Disks
-Now it's time to partition the disk; you will be shown several options; choose `Manual` partitioning.
+## Partitionner les disques
+Maintenant il est temps de partitionner le disque; plusieurs options vous seront montrées;
+choisissez le partitionnement `Manuel`.
 
-1. Use the arrow keys to select the drive (look for a matching size and manufacturer name in the description), and press `Enter`. It will ask you if you want to create a new, empty partition table on the device; choose `Yes`.
+1. Utilisez les touches directionnelles pour sélectionner le disque (cherchez une taille
+correspondante et un nom de constructeur dans la description), et pressez `Entrée`. Ça
+vous demandera si vous voulez créer une nouvelle table de partition vide sur le péri-
+-phérique; choisissez `Oui`.
 
-2. Your drive will now show as having a single partition, labeled `#1`; select it (it will say `FREE SPACE` beside it), and press `Enter`.
+2. Votre disque sera maintenant montré avec une seule partition, labellisé `#1`; sélectionnez-
+la (il y sera écrit `Espace libre` en dessous) et pressez `Entrée`.
 
-3. Choose `Create a new partition`. By default, the partition size will be the whole drive; leave it as-is, and select `Continue`.
+3. Choisissez `Créer une nouvelle partition`. Par défaut, la taille de la partition sera
+le disque tout entier; laissez-la tel quel et sélectionnez `Continuer`.
 
-4. When it asks for partition type, go with `Primary`; you'll be taken to a screen with a list of information about your new partition; make sure to fill out each field as follows (using the up and down arrows to navigate, and `Enter` to modify an option):
+4. Quand ça demande le type de la partition, partez pour `Primaire`; vous serez amenés
+vers un écran contenant une liste d'information à propos de votre nouvelle partition;
+assurez-vous de remplir chaque champ comme il suit (en utilisant les flèches haut et bas
+pour naviguer, `Entrée` pour modifier une option):
 
-    * Use as: `physical volume for encryption`
-    * Encryption method: `Device-mapper (dm-crypt)`
-    * Encryption: `aes`
-    * key size: `256`
-    * IV algorithm: `xts-plain64`
-    * Encryption key: `passphrase`
-    * Erase data: `Yes`
+    * Utiliser en tant que : `volume physique pour le chiffrement` 
+    * Méthode de chiffrement : `Device-mapper (dm-crypt)`
+    * Chiffrement: `aes`
+    * Taille de la clé: `256`
+    * Algorithme IV: `xts-plain64`
+    * Clé de chiffrement: `phrase de passe`
+    * Supprimer les données: `Oui`
 
-        For the `Erase data` field, only choose `No`, if this is either a new drive that doesn't have any of your plaintext data, or else if it previously had full-disk encryption.
+        Pour le champ `Supprimer les données` choisissez seulemyent `Non`, si c'est soit un nouveau
+disque qui ne contienne aucune de vos données non chiffrées ou qu'il était chiffré tout entier
+auparavant.
 
-5. Choose `Done setting up the partition`. It will take you back to the main partitioning menu.
+5. Choisissez `Finir avec la configuration de cette partition`. Ça vous aménera au menu principal
+du partitionnage.
 
-6. Choose `Configure encrypted volumes`; the installer will ask if you want to write the changes to disk, and configure the encrypted volumes; choose `Yes`.
+6. Choisissez `Configurer les volumes chiffrés`; l'installeur demandera si vous voulez écrire les
+changements sur le disque et configurer les volumes chiffrés; choisissez `Oui`.
 
-7. Select `Create encrypted volumes`.
+7. Sélectionnez `Créer des volumes chiffrés`
 
-8. Select your partition with the arrow keys (pressing `Spacebar` will make an `*` appear between the brackets; that's how you know it's been selected). Press `Tab`, and choose `Continue`.
+8. Sélectionnez votre partition avec les flèches directionnelles (presser `Espace` fera apparaître
+une étoile `*` entre les crochets; c'est comme ça que vous savez qu'elle a été sélectionnée). Pressez
+`Tabulation`, et choisissez `Continuer`.
 
-9. Select `Finish`. You will be asked if you really want to erase the drive; choose `Yes` (Erase will take a long time, so be patient. If your old system were encrypted, just let this run for about a minute, and then choose `Cancel`; this will make sure that the LUKS header is completely wiped out).
+9. Sélectionnez `Finir`. Vous serez demandé si vous voulez vraiment effacer le disque; choisissez `Oui`
+(la suppression est longue alors soyez patient. Si votre système précédent était chiffré, éxecutez la
+pour environ une minute puis choisissez `Annuler`; ça prendra soin que l'en-tête LUKS soit
+complétement rasé).
 
-10. Now you need to enter a passphrase for encrypting the entire disk. Make sure that this is different from your user password that you created earlier, but still use the [diceware](http://world.std.com/~reinhold/diceware.html) method to create it. You will have to enter the password twice; afterwards, you will be returned to the main partitioning menu.
+10. Maintenant vous avez besoin d'entrer une phrase de passe pour chiffrer le disque en entier.
+Assurez-vous qu'elle est différente du mot de passe utilisateur créé plus tôt, mais utilise encore
+la méthode du [lancer de dés](http://world.std.com/~reinhold/diceware.html) pour la créer. Vous
+aurez à rentrer la phrase/mot de passe deux fois; après coup, vous serez redirigé vers le
+menu de partitionnage principal.
 
-11. You will now see your encrypted device at the top of the device list. It will begin with something like this: `Encrypted volume (sdXY_crypt)`. Choose the partition labeled `#1`.
+11. Vous verrez maintenant votre périphérique chiffré au sommet de la liste. Ça commencera par 
+quelque chose comme : `Volume chiffré (sdXY_crypt)`. Choisissez la partition labellé `#1`.
 
-12. Change the value of `Use as` to `physical volume for LVM`. Then choose `Done setting up the partition`; you will be taken back to the main partitioning menu.
+12. Changez la valeur d'`Utiliser en tant que` sur `Volume physique pour LVM`. Choisissez ensuite
+`Finir avec la configuration de cette partition`; vous retournerez au menu principal du partitionnage.
 
-13. Choose `Configure the Logical Volume Manager`. You will be asked if you want to `Keep current partition layout and configure LVM`; choose `Yes`.
+13. Choisissez `Configurer le Gérant de Volume Logique (LVM)`. On vous demandera si vous voulez
+`Garder la disposition du partitionnement en cours et configurer LVM`, choisissez `Oui`.
 
-14. Choose `Create volume group`. You will have to enter a name for the group; use **grubcrypt**. Select the encrypted partition as the device (by pressing `Spacebar`, which will make an `*` appear between the brackets; that's how you know it's been selected). Press `Tab`, and choose `Continue`.
+14. Choisissez `Créer un groupe de volumes`. Vous allez devoir entrer le nom du groupe; utilisez
+**grubcrypt**. Sélectionnez la partition chiffré pour en tant que périphérique cible (en pressant 
+`Espace`, qui fera apparaître une étoile `*` entre crochets; c'est comme ça que vous savez qu'elle
+a été choisie). Pressez `Tabulation`, et choisissez `Continuer`.
 
-15. Choose `Create logical volume`. Select the volume group you created in the previous step (i.e., **grubcrypt**), and name it **trisquel**; make the size the entire drive minus 2048 MB (for the swap space). Press `Enter`.
+15. Choisissez `Créer un volume logique`. Sélectionnez le groupe de volumes que vous avez créé 
+précédemment (ici, **grubcrypt**), et nommez-le **trisquel**; la taille de la partition est 
+celle du disque tout entier moins 2048Mo (pour faire de la place pour l'espace d'échange, ou swap).
+Pressez `Entrée`.
 
-16. Choose `Create logical volume` again, and select **grubcrypt**. Name this one **swap**, and make the size the default value (it should be about 2048MB). Press `Enter`, and then choose `Finish`.
+16. Choisissez de nouveau `Créer un volume logique`, en sélectionnant le même groupe de volume
+que l'étape précédente. Nommez-le **swap** et laissez la taille par défaut (elle devrait être de
+2048Mo). Pressez `Entrée` puis choisissez `Finir`.
 
-17. Now you are back at the main partitioning screen. You will simply set the mount points and filesystems to use for each partition you just created. Under `LVM VG grubcrypt, LV trisquel`, select the first partition: `#1`. Change the values in this section to reflect the following; then choose `Done setting up partition`:
+NdT: La taille de l'espace d'échange, ou *swap* en anglais, doit être généralement d'une 
+à deux fois la taille de votre mémoire vive réelle. Les 2048Mo de l'étape 15 et 16 peuvent
+être donc adaptés en accordance.
 
-    * use as: `ext4`
-    * mount point: `/`
+17. Maintenant vous êtes de retour à l'écran de partitionnage principal. Vous allez simplement
+définir les points de montages et systèmes de fichiers pour chacune des partitions que vous 
+venez juste de créer.
+Sous `LVM VG grubscrypt, LV trisquel`, sélectionnez la première partition: `#1`. Changez les
+valeurs dans cette section par les suivante puis choisissez `Finir avec la configuration de
+cette partition`:
 
-18. Under `LVM VG grubcrypt, LV swap`, select the first partition: `#1`. Change the value of `use as` to `swap area`. Choose `Done setting up partition`.
+    * utiliser en tant que: `ext4`
+    * point de montage: `/`
 
-19. Finally, when back at the main partitioning screen, choose `Finish partitioning and write changes to disk`. It will ask you to verify that you want to do this; choose `Yes`.
+18. Sous `LVM VG grubcrypt, LV swap`, sélectionner la première partition: `#1`. Changez la
+valeur d'`utiliser en tant que` par `swap`. Choisissez `Finir avec la configuration de
+cette partition`.
 
-## Installing the Base System
+19. Finalement, quand vous êtes de retour à l'écran de partitionnage principal, choisissez
+`Finir le partitionnage et écrire les changements sur le disque`. Ça vous demandera de
+vérifier si vous voulez vraiment le faire; choisissez `Oui`.
+
+## Installer le système de base
+
 The hardest part of the installation is done; the installer will now download and install the packages necessary for your system to boot/run. The rest of the process will be mostly automated, but there will be a few things that you have to do yourself.
 
 ### Choose a Kernel
