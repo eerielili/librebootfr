@@ -1,52 +1,67 @@
 ---
-title: Installing Parabola or Arch GNU+Linux-Libre, with Full-Disk Encryption (including /boot)
+title: Installer Parabola ou Arch GNU+Linux-Libre, avec le chiffrement du disque tout entier (incluant /boot)
 x-toc-enable: true
 ...
 
-Also see:
-[Installing Hyperbola GNU+Linux, with Full-Disk Encryption (including /boot)](https://wiki.hyperbola.info/en:guide:encrypted_installation)
+Consultez aussi:
+[Installer Parabola ou Arch GNU+Linux-Libre, avec le chiffrement du disque tout entier (incluant /boot)](https://wiki.hyperbola.info/en:guide:encrypted_installation)
 
-This guide covers how to install Parabola GNU+Linux-Libre, with full disk encryption,
-including **/boot** (the boot directory). On most systems, **/boot** has
-to be left unencrypted, while the other partition(s) are encrypted.
-This is so that GRUB (and therefore the kernel) can be loaded and executed,
-because most firmware can’t open a LUKS volume; however, with libreboot,
-GRUB is already included as a [payload](http://www.coreboot.org/Payloads#GRUB_2),
-so even **/boot** can be encrypted; this protects **/boot** from tampering
-by someone with physical access to the system.
+Ce guide couvre comment installer Parabola GNU+Linux-libre, avec le chiffrement
+du disque tout entier, incluant **/boot** (le répertoire de démarrage). Sur la
+majorité des systèmes, **/boot** doit être laissé non chiffré pendant que l'/les
+autre(s) partition(s) est/sont chiffrée(s).
+C'est ainsi que GRUB (et alors le kernel) peut être chargé et éxecuté,
+parce que la majorité des micrologiciels ne peuvent pas ouvrir un 
+volume LUKS; cependant, avec libreboot, GRUB est déjà inclus en tant que
+[charge utile](http://www.coreboot.org/Payloads#GRUB_2), donc même **/boot**
+peut être chiffré; ça protège **/boot** d'altérations par quelqu'un ayant
+un accés physique à la machine.
 
-**NOTE: This guide is *only* for the GRUB payload.
-If you use the depthcharge payload, ignore this section entirely.**
+**NOTE: Ce guide est *seulement* pour la charge utile GRUB.
+Si vous utilisez la charge utile depthcharge, ignorez entièrement
+cette section.**
 
-This guide borrows heavily from the Parabola wiki, and will constantly link to it.
-For those new to Parabola GNU+Linux-Libre, check their [Beginner section](https://wiki.parabola.nu/Beginners%27_guide#Beginners) for an overview.
+Ce guide s'inspire massivement du wiki de Parabola, et le référencera constamment.
+Pour les novices de Parabola GNU+Linux-Libre, jetez un coup d'oeil à leur
+[section Débutants](https://wiki.parabola.nu/Beginners%27_guide#Beginners) pour une
+vue d'ensemble.
 
-## Minumum Requirements
-You can find the minimum requirements to run Parabola GNU+Linux
-[on the Parabola wiki](https://wiki.parabola.nu/Beginners%27_guide#Minimum_system_requirements).
+## Configuration minimale requise
+Vous pouvez trouver la configuration minimale requise
+pour éxecuter et faire marcher Parabola GNU+Linux 
+[sur le wiki de Parabola](https://wiki.parabola.nu/Beginners%27_guide#Minimum_system_requirements).
 
-## Preparation
+## Préparation
 
-### Download the latest ISO
-For this guide, I used the *2016.11.03* ISO; the most current image is
-available on Parabola's
-[downloads page](https://wiki.parabola.nu/Get_Parabola#Main_live_ISO).
+### Télécharger la dernière ISO
+Pour ce guide j'ai utilisé l'ISO *2016.11.03*; l'image CD la plus
+récente est disponible sur la [page des téléchargements](https://wiki.parabola.nu/Get_Parabola#Main_live_ISO) de Para-
+-bola.
 
-If you are a complete beginner with GNU+Linux, choose the *Mate Desktop ISO*.
-it is easier to install Parabola with this version, because it allows you
-access to a web browser, so you can copy and paste commands right into the terminal,
-without worrying about typos.
+Si vous êtes un débutant complet avec GNU+Linux, choisissez le
+*Mate Desktop ISO*. C'est plus facile d'installer Parabola avec
+cette version parce qu'elle vous permet d'accéder un navigateur
+web, comme ça vous pouvez copier-coller les commandes directement
+dans le terminal, sans se soucier des fautes de frappe.
 
-**NOTE: You should never blindly copy-and-paste any commands. In this guide,
-copying and pasting is to ensure that no errors are made when entering the commands,
-so that you don't effectively "brick" your installation, and have to start over.
-It's important to understand what each command does before you use it,
-so be sure to read the Parabola/Archi Wiki documentation on the command,
-as well as its** `man` **page.**
+**NOTE: Vous ne devriez jamais copier-coller aveuglément n'importe
+quelles commandes. Dans ce guide, le copie-collage permet de s'assurer
+que vous ne faites pas d'erreurs quand vous entrez les commandes, et donc
+que vous ne 'briquer' pas votre installation, et devoir tout recommencer.
+C'est important de savoir ce que chaque commande fait avant que l'utilisiez,
+soyez donc sûr pour chacune d'entre elles de lire la documentation du wiki
+Parabola/Arc sur celles-ci, ainsi que sa page** `man` **.**
 
-If you are not a beginner, choose the *Main Live ISO*.
+Si vous n'êtes pas un débutant, choisissez le *Main Live ISO*
 
-Only choose the *TalkingParabola ISO*, if you are blind or visually impaired.
+Choisissez seulement le *TalkingParabola ISO*, si vous êtes aveugle
+ou malvoyant.
+
+### Choisir le périphérique d'installation
+Référez vous au wiki Parabolab pour trouver le bon périphérique d'installation,
+que vous utilisiez soit un [disque optique](https://wiki.parabola.nu/Beginners%27_guide#Optical_Disks)
+ou une [clef USB](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive).
+
 
 ### Choose the Installation Device
 Refer to the Parabola wiki, for finding and choosing the proper installation device,
@@ -140,7 +155,7 @@ using the `cryptsetup` command, like this:
     # cryptsetup -v --cipher serpent-xts-plain64 --key-size 512 --hash whirlpool \
     --iter-time 500 --use-random --verify-passphrase --type luks1 luksFormat /dev/sdXY
 
-These are just recommended defaults; if you want to use anything else,
+These are just recommended defaults; if you want to juse anything else,
 or to find out what options there are, run `man cryptsetup`.
 
 >**NOTE: the default iteration time is 2000ms (2 seconds),
