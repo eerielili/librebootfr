@@ -35,11 +35,13 @@ pour éxecuter et faire marcher Parabola GNU+Linux
 
 ### Télécharger la dernière ISO
 Pour ce guide j'ai utilisé l'ISO *2016.11.03*; l'image CD la plus
-récente est disponible sur la [page des téléchargements](https://wiki.parabola.nu/Get_Parabola#Main_live_ISO) de Para-
+récente est disponible sur la [page des téléchargements](https://wiki.parabola.nu/Get_Parabola#Main_live_ISO://wiki.parabola.nu/Get_Parabola#Release_images_for_x86_64_and_i686_architectures) de Para-
 -bola.
 
+NdT: j'ai mis à jour les liens car le wiki a changé depuis.
+
 Si vous êtes un débutant complet avec GNU+Linux, choisissez le
-*Mate Desktop ISO*. C'est plus facile d'installer Parabola avec
+*LXDE Desktop ISO*. C'est plus facile d'installer Parabola avec
 cette version parce qu'elle vous permet d'accéder un navigateur
 web, comme ça vous pouvez copier-coller les commandes directement
 dans le terminal, sans se soucier des fautes de frappe.
@@ -50,7 +52,7 @@ que vous ne faites pas d'erreurs quand vous entrez les commandes, et donc
 que vous ne 'briquer' pas votre installation, et devoir tout recommencer.
 C'est important de savoir ce que chaque commande fait avant que l'utilisiez,
 soyez donc sûr pour chacune d'entre elles de lire la documentation du wiki
-Parabola/Arc sur celles-ci, ainsi que sa page** `man` **.**
+Parabola/Arch sur celles-ci, ainsi que sa page** `man` **.**
 
 Si vous n'êtes pas un débutant, choisissez le *Main Live ISO*
 
@@ -62,34 +64,30 @@ Référez vous au wiki Parabolab pour trouver le bon périphérique d'installati
 que vous utilisiez soit un [disque optique](https://wiki.parabola.nu/Beginners%27_guide#Optical_Disks)
 ou une [clef USB](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive).
 
+## Démarrer l'environnement d'installation de Parabola
+Après avoir téléchargé l'ISO et créé une sorte de périphérique démarrable,
+vous aurez besoin de démarrer dans l'image Live. Si vous n'êtes pas sûr de savoir
+comment faire, voyez [Comment démarrer un installeur GNU+Linux](grub_boot_installer.md) 
+puis passez à l'étape suivante; sinon, passez juste à l'étape suivante.
 
-### Choose the Installation Device
-Refer to the Parabola wiki, for finding and choosing the proper installation device,
-whether you are using an [Optical Disk](https://wiki.parabola.nu/Beginners%27_guide#Optical_Disks),
-or a [USB drive](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive).
+Une fois que vous avez démarré dans l'environnement, ouvrez soit le **`Terminal LXDE`**
+(si vous utilisez l'ISO Bureau LXDE), ou juste rentrez simplement les commandes listées
+ci-dessous (si vous utilisez n'importe quel autre ISO).
 
-### Boot Parabola's Install Environment
-After downloading the ISO, and creating some kind of bootable media,
-you will need to boot into the Live image. If you are unsure of how to do so,
-see [How to boot a GNU+Linux installer](grub_boot_installer.md),
-and move on to the next step; otherwise, just go to the next step.
+## Configurer la disposition du clavier
+Pour bien commencer l'installation, vous devez d'abord choisir
+la bonne [disposition de votre clavier](https://wiki.parabola.nu/Beginners%27_guide#Changing_Keyboard).
 
-Once booted into the environment, either open the **`MATE Terminal`** application 
-(if using the MATE Desktop ISO), or simply just enter the commands listed below
-(if using any of the other ISO's).
+## Établir une connexion Internet
+Vous aurez aussi besoin [de configurer une connexion réseau](https://wiki.parabola.nu/Beginners%27_guide#Establish_an_internet_connection) 
+pour installer des paquets.
 
-## Setting Up Keyboard Layout
-To begin the installation, you must first select the proper [keyboard layout](https://wiki.parabola.nu/Beginners%27_guide#Changing_Keyboard).
+## Préparer le périphérique de stockage pour l'installation
 
-## Establish an Internet Connection
-You will also need to [set up a network connection](https://wiki.parabola.nu/Beginners%27_guide#Establish_an_internet_connection),
-to install packages.
-
-## Preparing the Storage Device for Installation
-
-You need to prepare the storage device that we will use to install the operating system.
-You can use same [device name](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive)
-that you used earlier, to determine the installation device for the ISO.
+Vous allez avoir besoin de préparer le périphérique de stockage que nous utiliserons
+pour installer le système d'exploitation.
+Vous pouvez utiliser la même méthode pour trouver le [nom du périphérique](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive)
+afin de déterminer le périphérique d'installation pour l'ISO.
 
 ### Wipe Storage Device
 You want to make sure that the device you're using doesn't contain any plaintext
