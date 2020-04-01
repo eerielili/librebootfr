@@ -87,9 +87,10 @@ pour installer des paquets.
 Vous allez avoir besoin de préparer le périphérique de stockage que nous utiliserons
 pour installer le système d'exploitation.
 Vous pouvez utiliser la même méthode pour trouver le [nom du périphérique](https://wiki.parabola.nu/Beginners%27_guide#USB_flash_drive)
-afin de déterminer le périphérique d'installation pour l'ISO.
+qu'on a exécutée plus tôt afin de déterminer le périphérique d'installation pour l'ISO.
 
-### Wipe Storage Device
+### Effacer le périphérique de stockage
+
 You want to make sure that the device you're using doesn't contain any plaintext
 copies of your personal data. If the drive is new, then you can skip the rest of this section;
 if it's not new, then there are two ways to handle it:
