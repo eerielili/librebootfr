@@ -15,7 +15,7 @@ Page d'accueil :
 
 [1] RYF est un sigle pour "Respect Your Freedom", c'est à dire "Respecte Votre Liberté". C'est une approbation venant de la Free Software Foundation (Fondation pour le logiciel libre) certifiant que le matériel/logiciel promu est libre (code source disponible, license libre, etc).
 
-Ministry of Freedom (Minifree)
+Ministry of Freedom / Ministère de la liberté (Minifree)
 -----------------------------
 
 Leah Rowe, fondatrice de Minifree, est aussi la fondatrice de Minifree et est un développeur actif de Libreboot. Minifree est la première entreprise à recevoir l'approbation RYF de la FSF pour un système d'ordinateur, et investit l'argent directement dans Libreboot.
