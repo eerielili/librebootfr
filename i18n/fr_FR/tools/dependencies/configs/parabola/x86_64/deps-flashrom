@@ -1,7 +1,0 @@
-libftdi
-libftdi-compat
-libusb
-make
-pciutils
-pkg-config
-zlib

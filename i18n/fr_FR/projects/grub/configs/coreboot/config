@@ -1,4 +1,0 @@
-set root=(cbfsdisk)
-set prefix=($root)/fallback
-
-source $prefix/grub.cfg

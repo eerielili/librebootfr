@@ -1,6 +1,0 @@
-lib/libftdigpio.so:libftdigpio.so
-lib/libftdii2c.so:libftdii2c.so
-lib/libftdiuart.so:libftdiuart.so
-servo:servo
-src/toad/toad:toad
-usbkm232:usbkm232

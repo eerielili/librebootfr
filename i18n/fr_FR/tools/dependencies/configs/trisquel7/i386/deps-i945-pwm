@@ -1,6 +1,0 @@
-gcc
-libpci3
-libpci-dev
-make
-zlib1g
-zlib1g-dev

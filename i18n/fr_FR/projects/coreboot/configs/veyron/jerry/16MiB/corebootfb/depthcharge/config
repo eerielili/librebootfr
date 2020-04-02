@@ -1,1 +1,0 @@
-CONFIG_PAYLOAD_FILE="$(obj)/../depthcharge-veyron-jerry/depthcharge.elf"
