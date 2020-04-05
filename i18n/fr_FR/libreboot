@@ -59,9 +59,9 @@ libreboot_usage() {
 	done
 
 	printf '\n%s\n' "Variables d'environnement"
-	printf '%s\n'   '  PROJECTS_FORCE - Projects to always perform actions for / Projets dont il faut toujours exécuter les actions pour'
-	printf '%s\n'   '  TOOLS_FORCE - Tools to always perform actions for / Outils dont il faut toujours exécuter les actions pour'
 	printf '%s\n'   '  RELEASE_KEY - Clé GPG à utiliser pour la version'
+	printf '%s\n'   '  PROJECTS_FORCE -  Projets dont il faut toujours exécuter les actions pour'
+	printf '%s\n'   '  TOOLS_FORCE - Outils dont il faut toujours exécuter les actions pour'
 	printf '%s\n'   '  VBOOT_KEYS_PATH - Chemin vers les clés vboot'
 	printf '%s\n'   '  LIBFAKETIME_PATH - Chemin vers libfaketime'
 	printf '%s\n'   '  TASKS - Nombre de tâches simultanées à exécuter'
