@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 
-#  download script: Download the programs used in libreboot, that
-#                   aren't distributed in the git repository.
+#  script download: télécharge les programmes utilisés 
+#                   dans libreboot qui ne sont pas fournis
+#                   par le répertoire git.
 #
 #	Copyright (C) 2014, 2015 Leah Rowe <info@minifree.org>
 #	Copyright (C) 2015 Klemens Nanni <contact@autoboot.org>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou
+#    le modifier sous les termes de la License Publique GNU Générale publiée
+#    comme telle par la Free Software Foundation, soit la version 3 de la License,
+#    ou (selon votre choix) n'importe quelle version plus récente.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    Ce programme est fournit dans l'espoir qu'il sera utile, mais SANS AUCUNE
+#    GARANTIE; sans même la garantie implicite de MARCHANBILITÉ ou de RÉPONSE 
+#    À UN BUT PARTICULIER. Voyez la License Publique GNU générale pour plus
+#    de détails.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Vous devriez avoir reçu une copie de la License Publique GNU générale
+#    avec ce programme. Si ce n'est pas le cas, visitez 
+#    <http://www.gnu.org/licenses/>.
 #
 
 [ "x${DEBUG+set}" = 'xset' ] && set -v
@@ -31,17 +33,17 @@ programs="$(for program in ${download}/*; do printf "%s\n" "${program##*/}"; don
 noconfirm="0"
 
 help () {
-	printf "%s\n\n" "./download program(s) # programs are space separated, if specifing multiple programs"
-	printf "possible values for 'programs':\nall:\n%s\n\n" "${programs}"
-	printf "Example (download everything): ./download all\n"
-	printf "Example (download flashrom): ./download flashrom\n"
-	printf "Example (download coreboot): ./download coreboot\n"
-	printf "Example (download coreboot and flashrom): ./download coreboot flashrom\n"
-	printf "Example (lists all available downloadable components): ./download list\n"
+	printf "%s\n\n" "./download program(s) #si vous spécifiez plusieurs programmes, il faut les séparer par des espaces."
+	printf "Valeurs possible pour 'programs':\nall:\n%s\n\n" "${programs}"
+	printf "Exemple (tout télécharger): ./download all\n"
+	printf "Exemple (télécharger flashrom): ./download flashrom\n"
+	printf "Exemple (télécharger coreboot): ./download coreboot\n"
+	printf "Exemple (télécharger coreboot et flashrom): ./download coreboot flashrom\n"
+	printf "Exemple (liste tout les composants disponibles téléchargeables): ./download list\n"
 }
 
 if [ $# -lt 1 ]; then
-	printf "ERROR: download script: no argument given.\n"
+	printf "ERREUR: download script: pas d'argument donné.\n"
 	help
 	exit 1
 fi
@@ -49,13 +51,14 @@ fi
 if [ "${1}" = "--noconfirm" ] || [ "${1}" = "-y" ]; then
 	noconfirm="1"
 	shift 1
-fi
+fii
+
 
 case "${1}" in
 	all)
 		;;
 	list)
-		printf "possible values for 'programs':\nall\n%s\n\n" "${programs}"
+		printf "Valeurs possibles pour 'programs':\nall\n%s\n\n" "${programs}"
 		exit 
 		;;
 	help)
@@ -64,7 +67,7 @@ case "${1}" in
 		;;
 	*)
 		for program in "${@}"; do
-			printf "%s" "${programs}\n" | grep -wq "${program}" || (printf "ERROR: Invalid program '%s'. See ./download help.\n" "${program}"; exit 1)
+			printf "%s" "${programs}\n" | grep -wq "${program}" || (printf "ERREUR: programme invalide'%s'. Jetez un coup d'oeil à ./download help.\n" "${program}"; exit 1)
 		done
 		programs="${*}"
 		;;
@@ -73,7 +76,7 @@ esac
 for program in ${programs}; do
 
 	if [ "${noconfirm}" = "0" ]; then
-		printf "Use \"./download --noconfirm\" or \"./download -y\" if you want to be rid of these confirmation dialogues.\n\n"
+		printf "Utilisez \"./download --noconfirm\" ou \"./download -y\" si vous voulez vous débarasser des dialogues de confirmation.\n\n"
 		if [ -d "${program}/" ]; then
             if [ "${program}" = "seabios" ]; then
                 # temporary hack. download grub also downloads seabios,
@@ -82,14 +85,14 @@ for program in ${programs}; do
                 # and grub download script and replace both with
                 # a download seagrub script
 
-			    rm -Rf "${program:?}" && printf "Old %s directory deleted.\n\n" "${program}"
+			    rm -Rf "${program:?}" && printf "Ancien dossier %s supprimé.\n\n" "${program}"
             else
-			    printf "A %s/ directory already exists, delete it? [yN]: " "${program}"
+			    printf "Le répertoire %s existe déjà, le supprimer ? [oN]: " "${program}"
 		    	read -r answer
-		    	if [ "${answer}" = "y" ]; then
-			    	rm -Rf "${program:?}" && printf "Old %s directory deleted.\n\n" "${program}"
+		    	if [ "${answer}" = "o" ]; then
+			    	rm -Rf "${program:?}" && printf "Ancien dossier %s supprimé.\n\n" "${program}"
     			else
-	    			printf "%s directory not deleted, and therefore not replaced.\n" "${program}"
+	    			printf "Le répertoire %s n'a pas été supprimé et de ce fait non remplacé.\n" "${program}"
 		    		continue
 		    	fi
             fi
