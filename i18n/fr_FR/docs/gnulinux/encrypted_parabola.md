@@ -91,87 +91,108 @@ qu'on a exécutée plus tôt afin de déterminer le périphérique d'installatio
 
 ### Effacer le périphérique de stockage
 
-You want to make sure that the device you're using doesn't contain any plaintext
-copies of your personal data. If the drive is new, then you can skip the rest of this section;
-if it's not new, then there are two ways to handle it:
+Vous voulez vous rendre sur que le périphérique de stockage que vous utilisiez ne 
+contient aucune copie de vos données personnelles non chiffrée. Si le disque est
+nouveau, alors vous pouvez ignorer le reste de cette section; sinon, il y a deux
+manières de s'en occuper:
 
-1. If the drive were not previously encrypted, securely wipe it with the `dd` command;
-you can either choose to fill it with zeroes or random data; I chose random data (e.g., `urandom`),
-because it's more secure. Depending on the size of the drive, this could take a while to complete:
-
+1. Si le périphérique n'était pas chiffré précédemment, effacez-le de façon sécurisée
+avec la commande 'dd'; vous pouvez choisir de le remplir de zéros ou de données aléatoire;
+je choisis les données aléatoires (p.e., `urandom`), parce que c'est plus sécurisé. Dépendant 
+de la taille du disque, ça pourrait prendre un moment à se finir:
+    
     ~~~
     # dd if=/dev/urandom of=/dev/sdX; sync
     ~~~
 
-2. If the drive were previously encrypted, all you need to do is wipe the LUKS header.
-The size of the header depends upon the specific model of the hard drive;
-you can find this information by doing some research online.
-Refer to this [article](https://www.lisenet.com/2013/luks-add-keys-backup-and-restore-volume-header/), for more information about LUKS headers.
-You can either fill the header with zeroes, or with random data; again, I chose random data, using `urandom`:
+2. Si le périphérique était chiffré précédemment, tout ce que vous avez besoin de faire
+est d'effacer l'en-tête LUKS.
+La taille de l'en-tête dépend du modèle spécifique du disque dur; vous pouvez trouver cette 
+information en faisant quelques recherches en ligne.
+Référez-vous à cet [article](https://www.lisenet.com/2013/luks-add-keys-backup-and-restore-volume-header/)
+pour plus d'informations sur les en-têtes LUKS.
+Vous pouvez soit remplir l'en-tête avec des zéros, ou soit avec des données aléatoires; encore une fois je
+choisis les données aléatoires, en utilisant `urandom`:
 
     ~~~
     # head -c 3145728 /dev/urandom > /dev/sdX; sync
     ~~~
 
-Also, if you're using an SSD, there are a two things you should keep in mind:
+Par ailleurs, si vous utilisez un SSD, il y a deux choses que vous devez garder en tête:
+-    Il y a des problèmes avec TRIM; ce n'est pas activé par défaut à travers LUKS, et
+il y a des problèmes de sécurité si vous l'activez. Voyez [cette page](https://wiki.archlinux.org/index.php/Dm-crypt#Specialties)
+pour plus d'infos.
+-    Soyez bien sûr de lire [cet article](https://wiki.archlinux.org/index.php/Solid_State_Drives), pour des informations sur
+la gestion des SSDs dans Arch Linux (les informations s'appliquent aussi à Parabola).
 
--    There are issues with TRIM; it's not enabled by default through LUKS,
-and there are security issues, if you do enable it. See [this page](https://wiki.archlinux.org/index.php/Dm-crypt#Specialties) for more info.
--    Make sure to read [this article](https://wiki.archlinux.org/index.php/Solid_State_Drives),
-for information on managing SSD's in Arch Linux (the information applies to Parabola, as well).
+### Formater le périphérique de stockage
+Maitenant que toutes vos données personnelles ont été supprimée du disque, il est temps de le formater.
+Nous commencerons en créant dessus une seule grande partition, et nous la chiffrerons en utilisant LUKS.
 
-### Formatting the Storage Device
-Now that all the personal data has been deleted from the disk, it's time to format it.
-We'll begin by creating a single, large partition on it, and then encrypting it using LUKS.
-
-#### Create the LUKS partition
-You will need the `device-mapper` kernel module during the installation;
-this will enable us to set up our encrypted disk. To load it, use the following command:
+### Créer la partition LUKS
+Vous allez avoir besoin du module de kernel `device-mapper` pendant l'installation;
+ça nous permettra de mettre en place notre disque chiffré. Pour le charger, utilisez
+la commande suivante:
 
     # modprobe dm_mod
 
-We then need to select the **device name** of the drive we're installing the operating system on;
-see the above method, if needed, for figuring out device names.
+Nous avons besoin ensuite de sélectionner le **nom de périphérique** du disque sur lequel nous
+allons installer le système d'exploitation; voyez la méthode ci-dessus, si besoin, pour trouver
+les noms de périphérique.
 
-Now that we have the name of the correct device, we need to create the partition on it.
-For this, we will use the `cfdisk` command:
+Maintenant que nous avons le nom correct du périphérique, nous avons besoin de créer la partition dessus.
+Pour celà, nous utiliserons la commande `cfdisk`:
 
     # cfdisk /dev/sdX
 
-1. Use the arrow keys to select your partition, and if there is already a partition
-on the drive, select **Delete**, and then **New**.
-2. For the partition size, leave it as the default, which will be the entire drive.
-3. You will see an option for **Primary** or **Logical**; choose **Primary**,
-and make sure that the partition type is **Linux (83)**.
-4. Select **Write**; it will ask you if you are sure that you want to overwrite the drive.
-5. Type **yes**, and press enter. A message at the bottom will appear, telling you that
-the partition table has been altered.
-6. Select **Quit**, to return you to the main terminal.
+1. Utilisez les flèches directionnelles pour sélectionner votre partition, et si il y
+a déjà une partition sur le disque, sélectionnez **Supprimer**, et ensuite **Nouvelle**.
+2. Pour la taille de la partition, laissez là par défaut : c'est le disque en entier.
+3. Vous verrez une option pour **Primaire** ou **Logique**; choisissez **Primaire**, et
+soyez sûr que le type de cette partition est **Linux (83)**.
+4. Sélectionnez **Écrire**; ça vous demandera si vous êtes sûr que vous voulez écraser
+le disque.
+5. Tapez **yes** et pressez Entrée. Un message apparaîtra en bas vous disant que la table
+de partition a été altérée.
+6. Sélectionnez **Quitter**, pour vous rendre sur le terminal principal.
 
-Now that you have created the partition, it's time to create the encrypted volume on it,
-using the `cryptsetup` command, like this:
+Maintenant que vous avez créé la partition, il est temps de créer le volume chiffré dessus
+en utilisant la commande `cryptsetup`comme il suit:
 
     # cryptsetup -v --cipher serpent-xts-plain64 --key-size 512 --hash whirlpool \
     --iter-time 500 --use-random --verify-passphrase --type luks1 luksFormat /dev/sdXY
 
+Ce sont juste les défauts recommandés; si vous voulez utiliser quoi que ce soit
+d'autre ou de trouver quelles sont les options, exécutez `man cryptsetup`.
+
 These are just recommended defaults; if you want to juse anything else,
 or to find out what options there are, run `man cryptsetup`.
 
->**NOTE: the default iteration time is 2000ms (2 seconds),
->if not specified when running the cryptsetup command. You should set a lower time than this;
->otherwise, there will be an approximately 20-second delay when booting your
->system. We recommend 500ms (0.5 seconds), and this is included in the
->prepared** `cryptsetup` **command above. Keep in mind that the iteration time
->is for security purposes (it mitigates brute force attacks), so anything lower
->than 0.5 seconds is probably not very secure.**
+**NOTE: le temps d'itération par défaut est de 2000ms (2 secondes)
+si celui-ci n'est pas spécifié lors de l'exécution de la commande
+cryptsetup. Vous devriez définir un temps plus bas que ça; sinon
+il y aura un délai d'approximativement 20 secondes quand vous allez
+démarrer votre système. Nous recommandons 500ms (0.5 secondes), et ceci
+est inclus dans la commande ** `cryptsetup` ** préparée au-dessus. Gardez
+à l'esprit que le temps d'itération est là dans des buts de sécurité (ça mitige
+les attaques de force brute), donc quoi que ce soit en dessous de 0.5 secondes
+n'est probablement pas très sécurisé.**
 
-You will now be prompted to enter a passphrase; be sure to make it *secure*.
-For passphrase security, length is more important than complexity
-(e.g., **correct-horse-battery-staple** is more secure than **bf20$3Jhy3**), 
-but it's helpful to include several different types of characters 
-(e.g., uppercase/lowercase letters, numbers, special characters).
-The password length should be as long as you are able to remember,
-without having to write it down, or store it anywhere.
+Vous serez maintenant invité à entrer une phrase de passe; soyez sûr qu'elle soit
+*sécurisée*. Pour la sécurité d'une phrase de passe, la longueur est plus importante
+que la complexité (p.e., **correct-horse-battery-staple** est plus sécurisé que
+**bf20$3Jhy3**), mais ça aide d'inclure quelques types de charactères différents
+(p.e., lettres maju/minuscules, nombres, charactères spéciaux).
+La longueur du mot de passe devrait être aussi longue que vous pouvez vous en 
+rappeler, sans avoir à l'écrire, où la stocker physiquement nulle part.
+
+L'utilisation de la méthode du [**lancer de dés**](http://world.std.com/~reinhold/diceware.html)
+est recommandée pour la génération de phrases de passe sécurisées (au lieu de mots de passe).
+
+#### Créer le groupe de Volume et les Volumes Logique
+L'étape suivante est de créer deux Volumes Logiques à l'intérieur de la
+partition LUKS chiffrée.
+
 
 Use of the [**diceware**](http://world.std.com/~reinhold/diceware.html) method
 is recommended, for generating secure passphrases (rather than passwords).
