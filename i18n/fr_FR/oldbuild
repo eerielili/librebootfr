@@ -1,23 +1,24 @@
 #!/bin/sh
 
-#  generic build script, for building components (all of them)
+#  script de compilation générique pour compiler les composants (tous)
 #
 #	Copyright (C) 2014, 2015 Leah Rowe <info@minifree.org>
 #	Copyright (C) 2015 Patrick "P. J." McDermott <pj@pehjota.net>
 #	Copyright (C) 2015, 2016 Klemens Nanni <contact@autoboot.org>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou
+#    le modifier sous les termes de la License Publique GNU Générale publiée
+#    comme telle par la Free Software Foundation, soit la version 3 de la License,
+#    ou (selon votre choix) n'importe quelle version plus récente.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    Ce programme est fournit dans l'espoir qu'il sera utile, mais SANS AUCUNE
+#    GARANTIE; sans même la garantie implicite de MARCHANBILITÉ ou de RÉPONSE 
+#    À UN BUT PARTICULIER. Voyez la License Publique GNU générale pour plus
+#    de détails.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Vous devriez avoir reçu une copie de la License Publique GNU générale
+#    avec ce programme. Si ce n'est pas le cas, visitez 
+#    <http://www.gnu.org/licenses/>.
 #
 
 [ "x${DEBUG+set}" = 'xset' ] && set -v
