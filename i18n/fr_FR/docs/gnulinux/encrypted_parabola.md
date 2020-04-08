@@ -191,146 +191,157 @@ est recommandée pour la génération de phrases de passe sécurisées (au lieu 
 
 #### Créer le groupe de Volume et les Volumes Logique
 L'étape suivante est de créer deux Volumes Logiques à l'intérieur de la
-partition LUKS chiffrée.
+partition LUKS chiffrée: une contiendra votre installation principale, et 
+l'autre contiendra votre espace swap.
 
+Nous créerons celà en utilisant le [Logical Volume Manager (LVM)](https://wiki.archlinux.org/index.php/LVM).
 
-Use of the [**diceware**](http://world.std.com/~reinhold/diceware.html) method
-is recommended, for generating secure passphrases (rather than passwords).
-
-#### Create the Volume Group and Logical Volumes
-The next step is to create two Logical Volumes within the LUKS-encrypted partition:
-one will contain your main installation, and the other will contain your swap space.
-
-We will create this using, the [Logical Volume Manager (LVM)](https://wiki.archlinux.org/index.php/LVM).
-
-First, we need to open the LUKS partition, at **/dev/mapper/lvm**:
+Premièrement, nous avons besoin d'ouvrir la partition LUKS, à **/dev/mapper/lvm**:
 
     # cryptsetup luksOpen /dev/sdXY lvm
 
-Then, we create LVM partition:
+Ensuite, nous créons une partition LVM:
 
     # pvcreate /dev/mapper/lvm
 
-Check to make sure tha the partition was created:
+Vérifiez pour être sûr que la partition a été créée:
 
     # pvdisplay
 
-Next, we create the volume group, inside of which the logical volumes will
-be created. In libreboot's case, we will call this group **matrix**.
-If you want to have it work via *Load Operating System (incl. fully
-encrypted disks)  [o]* it needs to be called **matrix** (as it is harcoded
-in libreboot's grub.cfg on the flash)
+Après, nous créons le groupe de volumes, à l'intérieur duquel
+les volumes logique seront créés. Dans le cas de libreboot, nous
+appelerons ce groupe **matrix**. Si vous voulez le faire marcher via
+*Charger un système d'exploitation (incluant les disques complètement
+chiffrés) [o]* il a besoin d'être appelé **matrix** ( comme c'est codé
+dans le dur du grub.cfg de libreboot lors du flash)
 
     # vgcreate matrix /dev/mapper/lvm
 
-Check to make sure that the group was created:
+Assurez-vous que le groupe a été créé:
 
     # vgdisplay
 
-Lastly, we need to create the logical volumes themselves, inside the volume group;
-one will be our swap, cleverly named **swapvol**, and the other will be our root partition,
-equally cleverly named as **rootvol**.
+Dernièrement, nous avons besoin de créer les volumes logique eux-mêmes à l'intérieur
+du groupe de volumes; un sera notre swap, intelligemment nommée **swapvol**, et l'autre
+sera notre partition root, également intelligemment nommée **rootvol**.
 
-1. We will create the **swapvol** first (again, choose your own name, if you like).
-Also, make sure to [choose an appropriate swap size](http://www.linux.com/news/software/applications/8208-all-about-linux-swap-space)
-(e.g., **2G** refers to two gigabytes; change this however you see fit):
-
+1. Nous créerons le **swapvol** en premier (rappelons-le, choisissez le nom qui vous 
+convient si vous le voulez).
+Aussi, soyez sûr de [choisir une taille de swap appropriée](http://www.linux.com/news/software/applications/8208-all-about-linux-swap-space)
+(dans cet example, **2G** fait référence à deux gigaoctets; changez celà comme il
+convient):
+    
     ~~~
     # lvcreate -L 2G matrix -n swapvol
     ~~~
 
-2. Now, we will create a single, large partition in the rest of the space, for **rootvol**:
+2. Maintenant, nous créerons une seule grande partition dans l'espace restant, pour **rootvol**:
 
     ~~~
     # lvcreate -l +100%FREE matrix -n rootvol
     ~~~
 
-You can also be flexible here, for example you can specify a **/boot**, a **/**,
-a **/home**, a **/var**, or a **/usr** volume. For example, if you will be running a
-web/mail server then you want **/var** (where logs are stored) in its own partition,
-so that if it fills up with logs, it won't crash your system.
-For a home/laptop system (typical use case), just a root and a swap will do.
+Vous pouvez aussi être flexible ici, par example vous pouvez spécifier un volume
+**/home**, **/var** or **/usr**. Par exemple, si vous allez faire marcher un serveur
+web/mail alors vous allez vouloir **/var** (ou les fichiers journaux sont stockés) dans
+sa propre partition, comme ça si ça se remplit de journaux, ça ne plantera pas votre
+système.
+Pour un système d'ordi portable / pc de bureau (cas typique), juste un root et un swap 
+fera l'affaire.
 
-Verify that the logical volumes were created correctly:
+Vérifiez que les volumes logique ont été correctement créés:
 
     # lvdisplay
 
-#### Make the rootvol and swapvol Partitions Ready for Installation
-The last steps of setting up the drive for installation are turning **swapvol**
-into an active swap partition, and formatting **rootvol**.
-
-To make **swapvol** into a swap partition, we run the `mkswap` (i.e., make swap) command:
+#### Rendre les partitions rootvol et swapvol prêtes pour l'installation
+Les dernières étapes de la préparation du disque pour l'installation sont
+de faire de **swapvol** une partition swap active, et formater **rootvol**.
 
     # mkswap /dev/mapper/matrix-swapvol
 
-Activate the **swapvol**, allowing it to now be used as swap,
-using `swapon` (i.e., turn swap on) command:
+Activez le **swapvol**, le permettant d'être maintenant utilisé
+en tant que swap, grâce à la commande `swapon` :
 
     # swapon /dev/matrix/swapvol
 
-Now I have to format **rootvol**, to make it ready for installation;
-I do this with the `mkfs` (i.e., make file system) command.
-I choose the **ext4** filesystem, but you could use a different one,
-depending on your use case:
+Maintenant nous avons besoin de formater **rootvol** pour préparer
+à l'installation; nous allons le faire avec la commande `mkfs` (make
+filesystem: construire un système de fichiers).
+Nous choisirons le système de fichiers **ext4**, mais vous pouvez utilisez
+un différent selon votre cas d'utilisation:
 
     # mkfs.ext4 /dev/mapper/matrix-rootvol
 
-Lastly, I need to mount **rootvol**. Fortunately, GNU+Linux has a directory
-for this very purpose: **/mnt**:
+Dernièrement, on a besoin de monter **rootvol**. Heuresement, GNU+Linux a
+un répertoire pour ce but précis, **/mnt**:
 
     # mount /dev/matrix/rootvol /mnt
 
-#### Separate boot and home logical volumes
-You could also create two separate logical volumes for **/boot** and **/home**,
-but such a setup would be for advanced users,
-and is thus not covered in this guide.
-If separate boot logical volume is used, it has to be named **boot**
-in order for libreboot to use it.
+#### Séparer les volumes logiques boot et home
+Vous pouvez aussi créer deux volumes logiques séparés pour **/boot** et **/home**,
+mais une telle configuration serait pour des utilisateurs avancés, et donc pas pris
+en charge dans ce guide.
+Si un volume logique de démarrage séparé est utilisé, il doit être nommé **boot**
+afin que libreboot l'utilise.
 
-The setup of the drive and partitions is now complete; it's time to actually install Parabola.
+La configuration du disque et des partitions est maintenant complète; il est temps de
+finalement installer Parabola.
 
-## Select a Mirror
-The first step of the actual installation is to choose the server from where
-we will need to download the packages; for this, we will again refer to the [Parabola Wiki](https://wiki.parabola.nu/Beginners%27_guide#Select_a_mirror).
-For beginners, I recommend that the edit the file using `nano` (a command-line text editor);
-you can learn more about it on [their website](https://www.nano-editor.org/); for non-beginners,
-simply edit it with your favorite text editor.
+## Sélectionner un mirroir
+La première étape de la véritable installation est de choisir le serveur d'où
+nous allons avoir besoin de télécharger les paquets; pour celà nous nous référerons 
+encore une fois au [Wiki de Parabola](https://wiki.parabola.nu/Beginners%27_guide#Select_a_mirror).
+Pour les débutants, nous recommandons d'éditer le fichier en utilisant `nano` (un éditeur de texte
+en ligne de commande); vous pouvez en savoir plus sur [leur site web](https://www.nano-editor.org/);
+pour les non débutants, éditez le simplement dans votre éditeur de texte préféré.
 
-## Install the Base System
-We need to install the essential applications needed for your Parabola installation to run;
-refer to [Install the Base System](https://wiki.parabola.nu/Beginners%27_guide#Install_the_base_system), on the Parabola wiki.
+## Installer le système de base
+Vous allez avoir besoin d'installer les applications essentielles nécessaire à l'éxecution de votre
+installation de Parabola; référez-vous à [Installer le système de base](https://wiki.parabola.nu/Beginners%27_guide#Install_the_base_system)
+sur le wiki de Parabola.
 
-## Generate an fstab
-The next step in the process is to generate a file known as an **fstab**;
-the purpose of this file is for the operating system to identify the storage device
-used by your installation. [On the Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Generate_an_fstab) are the instructions to generate that file.
+## Générer un fstab
+La prochaine étape du procédé est de générer un fichier connu sous le nom de **fstab**;
+le but de ce fichier est de permettre au système d'exploitation d'identifier le périphérique
+de stockage utilisé par votre installation.
+[Sur le guide du débutant dans Parabola](https://wiki.parabola.nu/Beginners%27_guide#Generate_an_fstab)
+figure les instructions pour créer ce fichier.
 
-## Chroot into and Configure the System
-Now, you need to `chroot` into your new installation, to complete the setup
-and installation process. **Chrooting** refers to changing the root directory
-of an operating system  to a different one; in this instance, it means changing your root
-directory to the one you created in the previous steps, so that you can modify files
-and install software onto it, as if it were the host operating system.
+## 'Chrooter' dans le système et le configurer
+Maintenant, vous avez besoin de `chroot` dans votre nouvelle installation
+pour finaliser le processus de préparation et d'installation. Le **Chrooting**
+réfère au changement du répertoire racine (root) d'un système d'exploitation
+vers un autre répertoire; dans ce cas là, celà signifie changer votre répertoire
+racine sur celui que vous avez créé dans les étapes précédentes, comme ça vous pouvez
+modifier des fichiers et installer des logiciels, comme ci vous étiez le système d'exploitation
+hôte.
 
-To `chroot` into your installation, follow the instructions [on the
-Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Chroot_and_configure_the_base_system).
+Pour `chroot` dans votre installation, suivez les instructions [dans le guide du débutant
+dans Parabola](https://wiki.parabola.nu/Beginners%27_guide#Chroot_and_configure_the_base_system).
 
-### Setting up the Locale
-Locale refers to the language that your operating system will use, as well as some
-other considerations related to the region in which you live. To set this up,
-follow the instructions [in the Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Locale).
+### Paramétrer la localisation
+La localisation réfère au language que votre système d'exploitation utilisera, ainsi que
+d'autres considérations en relation avec la région dans laquelle vous vivez.
+Pour mettre ça en place, suivez les instructions dans le [guide du débutant dans
+Parabola](https://wiki.parabola.nu/Beginners%27_guide#Locale).
 
-### Setting up the Consolefont and Keymap
-This will determine the keyboard layout of your new installation; follow the instructions [in the Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Console_font_and_keymap).
+### Paramétrer la police d'écriture de la console (Consolefont) et la disposition clavier
+Celà déterminera la disposition clavier de votre nouvelle installation; suivez
+les instructions [dans le guide du débutant dans Parabola](https://wiki.parabola.nu/Beginners%27_
+guide#Console_font_and_keymap).
 
-### Setting up the Time Zone
-You'll need to set your current time zone in the operating system; this will enable applications
-that require accurate time to work properly (e.g., the web browser).
-To do this, follow the instructions [in the Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Time_zone).
+### Paramétrer le fuseau horaire
+Vous allez avoir besoin de définir votre fuseau horaire actuel dans le système d'exploitation; ça
+permettra aux applications ayant besoin d'une heure précise pour fonctionner proprement (p.e., les
+navigateurs web).
+Pour faire ceci, suivez les instructions [dans le guide du débutant dans Parabola](https://wiki.parabola.nu/Be
+ginners%27_guide#Time_zone).
 
-### Setting up the Hardware Clock
-To make sure that your computer has the right time, you'll have to set the time in your computer's internal clock.
-Follow the instructions [in the Parabola beginner's guide](https://wiki.parabola.nu/Beginners%27_guide#Hardware_clock) to do that.
+### Paramétrer l'horloge matérielle
+Pour être sur que votre ordinateur est à la bonne heure, vous allez avoir à définir le temps
+de l'horloge interne de l'ordinateur.
+Suivez les instructions [dans le guide du débutant dans Parabola](https://wiki.parabola.nu/Beginner
+s%27_guide#Hardware_clock) pour le faire.
 
 ### Setting up the Kernel Modules
 Now we need to make sure that the kernel has all the modules that it needs
