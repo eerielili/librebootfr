@@ -64,68 +64,79 @@ votre connection au réseau en premier:
 [Mettre en place la connection au réseau dans Parabola](#network).
 
 ## Configurer pacman
+`pacman` (*pac*kage *man*ager) est le nom du système de gestion des paquets
+dans Arch, que Parabola (en tant qu'effort parallèle et déblobbé) utilise
+aussi.
+Comme avec `apt-get` sur Trisquel, Debian ou Devuan, il peut être utilisé
+pour ajouter, supprimer, et mettre à jour les logiciels sur votre
+ordinateur.
 
-## Configure pacman
-`pacman` (*pac*kage *man*ager) is the name of the package management system
-in Arch, which Parabola (as a deblobbed, parallel effort) also uses.
-Like with `apt-get` on Trisquel, Debian, or Devuan, this can be used to
-add, remove, and update the software on your computer.
+Pour plus d'information par rapport à `pacman`, lisez les articles suivant sur
+l'ArchWiki:
 
-For more information related to `pacman`, review the following articles on the Arch Wiki:
+*    [Configurer pacman](https://wiki.parabola.nu/Installation_Guide_%28Fran%C3%A7ais%29#Configurer_Pacman)
+*    [Utiliser pacman](https://wiki.archlinux.fr/Pacman)
+*    [Dépôts logiciels supplémentaires](https://wiki.parabola.nu/Repositories_%28Fran%C3%A7ais%29)
 
-*    [Configuring pacman](https://wiki.parabolagnulinux.org/Installation_Guide#Configure_pacman)
-*    [Using pacman](https://wiki.archlinux.org/index.php/Pacman)
-*    [Additional Repositories](https://wiki.parabolagnulinux.org/Official_Repositories)
-
-## Updating Parabola
-Parabola is kept up-to-date, using `pacman`. When you are updating Parabola,
-make sure to refresh the package list, *before* installing any new updates:
+## Mettre à jour Parabola
+Parabola est mis à jour en utilisant `pacman`. Quand vous mettez à jour
+Parabola, soyez sûr de rafraîchir la liste des paquets *avant* d'installer quelque mise à jour que ce soit:
 
     # pacman -Syy
 
-**NOTE: According to the Wiki,** `-Syy` **is better than** `-Sy` **, because it refreshes
-the package list (even if it appears to be up-to-date), which can be useful
-when switching to another mirror.**
+**NOTE: d'après le Wiki,** `-Syy` **est mieux que** `-Sy` **, parce qu'elle
+rafraîchit la liste des paquets même si celle-ci apparaît déjà à jour, ce qui
+peut être utile lors du basculement sur un autre dépôt mirroir.**
 
-Then, actually update the system:
+Ensuite, mettons véritablement à jour le système:
 
     # pacman -Syu
 
-**NOTE: Before installing packages with** `pacman -S`**, always update first,
-using the two commands above.**
+**NOTE: avant d'installer des paquets avec** `pacman -S`**, mettez toujours 
+premièrement votre système à jour, en utilisant les deux commandes du dessus.**
 
-Keep an eye out on the output, or read it in **/var/log/pacman.log**.
-Sometimes, `pacman` will show messages about maintenance steps that you
-will need to perform with certain files (typically configurations) after
-the update. Also, you should check both the [Parabola home page](https://www.parabola.nu/) and [Arch home page](https://www.archlinux.org/),
-to see if they mention any issues. If a new kernel is installed, you should also
-update to be able to use it (the currently running kernel will also be fine).
+Gardez un oeil sur la sortie ou lisez la dans le fichier **/var/log/pacman.log**.
+Parfois, `pacman` montrera des messages à propos d'étapes de maintenance
+que vous aurez besoin de faire avec certains fichiers (typiquement ceux de
+configurations) après la mise à jour.
+Aussi, vous devriez jetez un coup d'oeil à la fois la 
+[page d'accueil de Parabola](https://www.parabola.nu/) et [celle d'Arch](htt
+ps://www.archlinux.org/), pour voir s'il y a mention de quelconque problèmes.
+Si un nouveau kernel est installé, vous devriez aussi vous mettre à jour
+pour être capable de l'utiliser (le kernel qui est en cours d'exécution fera
+aussi bien l'affaire).
 
-It's generally good enough to update Parabola once every week, or maybe twice.
-As a rolling release distribution, it's a never a good idea to leave your installation
-too outdated. This is simply because of the way the project works;
-old packages are deleted from the repositories quickly, once they are updated.
-A system that hasn't been updated for quite a while will mean potentially more
-reading of previous posts through the website, and more maintenance work.
+C'est une bonne habitude de mettre à jour Parabola d'une à deux fois par semaine.
+En tant que distribution en publication continue, ce n'est jamais une bonne idée de
+trop laisser vieillir l'installation.
+C'est simplement dû à la façon de fonctionner du projet; les vieux paquets sont 
+supprimés rapidement des dépôts une fois qu'ils sont mis à jour.
+Un système qui n'a pas été mis à jour depuis pas mal de temps, signifiera potentiel-
+-lement plus de lecture à travers les précédents billets du site web, et plus de
+travaux de maintenance.
 
-The Arch forum can also be useful, if others have the same issue as you.
-The *Parabola* IRC channel ([**\#parabola**](https://webchat.freenode.net/) on freenode) can also help you.
+Le forum d'Arch peut être utile si d'autres personnes ont le même problème que
+vous.
+Le canal IRC Parabola ([**\#parabola**](https://webchat.freenode.net/) sur freenode) peut 
+aussi vous aider.
 
-Due to this, and the volatile nature of Parabola/Arch, you should only
-update when you have at least a couple hours of spare time, in case of
-issues that need to be resolved. You should never update, for example,
-if you need your system for an important event, like a presentation, or
-sending an email to an important person before an allocated deadline,
-and so on.
+Dû à ceci et la nature volatile de Parbola/Arch, vous devriez seulement
+mettre à jour quand vous avez au moins quelques heures de libre devant vous, au
+cas des problèmes émergent et demandent résolution. Vous ne devriez jamais
+mettre à jour, par exemple, si vous avez besoin de votre système pour un évenement
+important, comme une présentation, ou d'envoyer un email à une personne importante
+avant un date butoir décidée, et ainsi de suite.
 
-Relax! Packages are well-tested, when new updates are made to
-the repositories; separate 'testing' repositories exist for this exact
-reason. Despite what many people may tell you, Parabola is fairly
-stable and trouble-free, so long as you are aware of how to check for
-issues, and are willing to spend some time fixing issues, in the rare
-event that they do occur (this is why Arch/Parabola provide such extensive documenatation).
+Relax! Les paquets sont bien testés quand de nouvelles mises à jour les
+amènent dans les dépôts; des dépôts 'testing' existent pour cette exacte
+raison (les tester).
+Malgrés ce que beaucoup de gens pourrait vous dire, Parabola is plutôt 
+stable et sans problème, tant que vous êtes conscient de comment
+vérifier un problème, et que vous êtes partant pour prendre un peu de temps
+pour réparer ces problèmes, dans les rares cas où ils arrivent (c'est pour celà
+qu'Arch/Parabola fournissent une documentation fournie).
 
-## Maintaining Parabola
+## Maintenir Parabola
 Parabola is a very simple distro, in the sense that you are in full
 control, and everything is made transparent to you. One consequence is
 that you also need to know what you are doing, and what you have done
