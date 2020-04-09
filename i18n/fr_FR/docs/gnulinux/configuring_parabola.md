@@ -1,57 +1,69 @@
 ---
-title: Configuring Parabola (Post-Install)
+title: Configurer Parabola (Après-Installation)
 x-toc-enable: true
 ...
 
-This is the guide for setting up Parabola GNU+Linux-Libre, after completing
-the installation steps outlined in [Installing Parabola or Arch GNU+Linux-Libre with Full-Disk Encryption (including /boot)](encrypted_parabola.md).
-It will cover installing and configuring a graphical desktop environment,
-as well as some applications that make the system more user friendly.
+C'est le guide pour mettre en place Parabola GNU+Linux-Libre après avoir
+complété les étapes d'installation vues dans [Installer Parabola ou Arch 
+GNU+Linux-Libre, avec le chiffrement du disque tout entier 
+(incluant /boot)](encrypted_parabola.md).
+Il couvrira l'installation et la configuration d'un environnement de bureau
+graphique, ainsi que quelques applications qui rendent le système plus ergonomique.
 
-For this example, we chose the *MATE Desktop Environment* as our graphical interface.
+Dans cet exemple, nous choisissons *l'environnement de bureau MATE* comme notre interface
+graphique.
 
-*This guide was valid on 2017-06-02. If you see any changes that should
-to be made at the present date, please get in touch with the Libreboot
-project (or [make those changes yourself](https://libreboot.org/git.html#editing-the-website-and-documentation-wiki-style))!*
+*Ce guide était valide à la date 2017-06-02. Si vous voyez quelconque changement
+qui devrait être fait pour aujourd'hui, silvouplaît contacter le projet Libreboot
+(ou [faites ces changements vous-mêmes](https://libreboot.org/git.html#editing-the-website-and-documentation-wiki-style))!*
 
-While Parabola can seem daunting at first glance (especially for new GNU+Linux users),
-with a simple guide, it can provide all the same usability
-as any Debian-based GNU+Linux distribution (e.g., Trisquel, Debian, and Devuan),
-without hiding any details from the user.
+Alors que Parabola peut sembler décourageant au premier abord (surtout pour les
+nouveaux utilisateurs GNU+Linux), avec un simple guide, il peut fournir la même
+ergonomie que n'importe quelle distribution GNU+Linux basée Debian (p.e., Trisquel, 
+Debian, Devuan), sans cacher les détails à l'utilisateur.
 
-Paradoxically, as you get more advanced, Parabola can actually become
-*easier to use*, when you want to set up your system in a special way,
-compared to what most distributions provide. You will find over time
-that other distributions tend to *get in your way*.
+Paradoxalement, plus vous devenez expérimenté, plus Parabola devient 
+*facile à utiliser*, quand vous voulez mettre en place votre système d'une
+façon spéciale, comparé à ce que fournit la majorité des distributions.
+Avec le temps, vous allez vous rendre compte que les autres distributions
+ont tendance à *se mettre en travers de votre chemin*.
 
-A lot of the steps in this guide will refer to ArchWiki. Arch is
-the upstream distribution that Parabola uses. Most of this guide will
-also tell you to read wiki articles, other pages, manuals, and so on. In
-general, it tries to cherry-pick the most useful information, but
-nonetheless, you are encouraged to learn as much as possible.
+Beaucoup d'étapes dans ce guide se référeront à l'ArchWiki.
+Arch est la distribution en amont que Parabola utilise. 
+La majorité de ce guide vous dira aussi de lire des articles de wiki,
+d'autres pages, des manuels et ainsi de suite.
+En général, il essaye de trier sur le volet les informations les
+plus utiles, mais cependant, vous êtes encouragé à apprendre autant
+que possible.
 
-**NOTE: It might take you a few days to fully install your system how you like,
-depending on how much you need to read. Patience is key, especially for new users.**
+**NOTE: Ça peut vous prendre quelques jours pour complétement installer
+le système de la façon dont vous le voulez, dépendant de combien vous avez 
+besoin de lire. La patience est la clé, surtout pour les nouveaux utilisateurs.**
 
-The ArchWiki will sometimes use bad language, such as calling the whole
-system Linux, using the term **open-source**/**closed-source**,
-and it will sometimes recommend the use of proprietary software.
-You need to be careful about this when reading anything on ArchWiki.
+L'ArchWiki utilisera parfois un mauvais language, comme désigner le système par 'Linux',
+ utilisant le terme **open-source**/**closed-source**, et recommandera parfois
+ l'utilisation de logiciels propriétaires.
+ Vous avez besoin de faire attention à celà quand vous lisez quoi que ce soit
+ sur l'ArchWiki.
 
-Some of these steps require internet access. To get initial access
-for setting up the system (I'll go into networking later),
-just connect your system to a router, via an ethernet cable,
-and run the following command:
+ Quelques étapes nécessitent un accés à Internet. Pour avoir un accés de
+ base, initial, à Internet afin de mettre en place le système (on se penchera
+ sur le réseau plus tard), connectez juste votre système à un routeur/box via
+ un cable ethernet puis exécutez la commande suivante:
 
     # systemctl start dhcpcd.service
 
-You can stop it later (if needed), by using systemd's `stop` option:
+Vous pouvez l'arrêter plus tard si besoin, en utilisant l'option `stop`
+de systemd:
 
     # systemctl stop dhcpcd.service
 
-For most people, this should be enough, but if you don't have DHCP enabled
-on your network, then you should setup your network connection first:
-[Set Up Network Connection in Parabola](#network).
+Pour la majorité des personnes ça devrait être suffisant, mais si vous
+pas le DHCP activé sur votre réseau, alors vous devriez mettre en place
+votre connection au réseau en premier:
+[Mettre en place la connection au réseau dans Parabola](#network).
+
+## Configurer pacman
 
 ## Configure pacman
 `pacman` (*pac*kage *man*ager) is the name of the package management system
