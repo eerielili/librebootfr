@@ -137,23 +137,27 @@ pour réparer ces problèmes, dans les rares cas où ils arrivent (c'est pour ce
 qu'Arch/Parabola fournissent une documentation fournie).
 
 ## Maintenir Parabola
-Parabola is a very simple distro, in the sense that you are in full
-control, and everything is made transparent to you. One consequence is
-that you also need to know what you are doing, and what you have done
-before. In general, keeping notes (such as what I have done with this
-page) can be very useful as a reference in the future (e.g, if you wanted to
-re-install it, or install the distro on another computer).
+Parabola est une distribution très simple, dans le sens où vous avez
+les pleins pouvoirs, et tout est transparent pour vous.
+Une conséquence de ceci est que vous avez besoin de savoir ce que
+vous faites, et ce que vous avez fait avant.
+En général, garder des notes (comme je l'ai fait avec cette page) peut
+être très utile en tant que référence dans le future (p.e., si vous vous
+réinstaller, ou installer la distribution sur un autre ordinateur).
 
-You should also read the ArchWiki article on [System Maintenance](https://wiki.archlinux.org/index.php/System_maintenance),
-before continuing. Also, read their article on [enhancing system stability](https://wiki.archlinux.org/index.php/Enhance_system_stability).
-This is important, so make sure to read them both!*
+Vous devriez aussi lire l'article d'ArchWiki sur la [Maintenance Système](http
+s://wiki.archlinux.fr/Maintenance_Syst%C3%A8me) avant de continuer.
 
-Install `smartmontools`; it can be used to check smart data. HDDs use
-non-free firmware inside; it's transparent to you, but the smart
-data comes from it. Therefore, don't rely on it too much), and then read
-the ArchWiki [article](https://wiki.archlinux.org/index.php/S.M.A.R.T.) on it, to learn how to use it:
+Installez `smartmontools`; ça peut être utilisé pour jeter un coup d'oeil aux
+données S.M.A.R.T. Les disques durs utilisent des micrologiciels non libres
+à l'intéreur d'eux; c'est transparent pour vous, mais les données S.M.A.R.T
+ viennent de là, donc ne dépendez pas trop de ça, puis ensuite lisez 
+ [l'article](https://wiki.archlinux.org/index.php/S.M.A.R.T.) de l'ArchWiki sur celles-ci pour apprendre comment les
+ exploiter.
 
     # pacman -S smartmontools
+
+### Nettoyer le cache des paquets
 
 ### Cleaning the Package Cache
 *This section provides a brief overview of how to manage the directory that stores
