@@ -150,200 +150,224 @@ s://wiki.archlinux.fr/Maintenance_Syst%C3%A8me) avant de continuer.
 
 Installez `smartmontools`; ça peut être utilisé pour jeter un coup d'oeil aux
 données S.M.A.R.T. Les disques durs utilisent des micrologiciels non libres
-à l'intéreur d'eux; c'est transparent pour vous, mais les données S.M.A.R.T
+à l'intéreur d'eux; c'est transparent pour vous mais les données S.M.A.R.T
  viennent de là, donc ne dépendez pas trop de ça, puis ensuite lisez 
- [l'article](https://wiki.archlinux.org/index.php/S.M.A.R.T.) de l'ArchWiki sur celles-ci pour apprendre comment les
- exploiter.
+[l'article](https://wiki.archlinux.org/index.php/S.M.A.R.T.) de l'ArchWiki 
+sur celles-ci pour apprendre comment les exploiter.
 
     # pacman -S smartmontools
 
 ### Nettoyer le cache des paquets
+*Cette section fourni une brève vue d'ensemble de comment gérer le répertoire
+stockant le cache de tout les paquets téléchargés. Pour plus d'informations,
+jetez un coup d'oeil au guide de l'ArchWiki sur [Nettoyer le cache des paquets](https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache).*
 
-### Cleaning the Package Cache
-*This section provides a brief overview of how to manage the directory that stores
-a cache of all downloaded packages. For more information,
-check out the Arch Wiki guide for [Cleaning the Package Cache](https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache).*
-
-Here's how to use `pacman`, to clean out all old packages that are cached:
+Voici comment utiliser pacman pour nettoyer tous les vieux paquets qui sont en cache:
 
     # pacman -Sc
 
-The Wiki cautions that this should be used with care. For example, since
-older packages are deleted from the repository, if you encounter issues
-and want to revert back to an older package, then it's useful to have the
-caches available. Only do this ,if you are sure that you won't need it.
+Le Wiki avertit que ça devrait être utilisé avec prudence. Par exemple, puisque
+les paquets plus anciens sont supprimés du dépôt, si vous rencontrez des problèmes
+et voulez revenir à un paquet plus ancien, alors c'est utile d'avoir le cache
+disponible. Faites seulement ceci si vous êtes sûr que vous n'en auriez pas besoin.
 
-The Wiki also mentions this method for removing everything from the
-cache, including currently installed packages that are cached:
+Le Wiki mentionne aussi cette méthode pour tout enlever du cache, incluant
+les paquets à jour installés qui sont dans le cache:
 
     # pacman -Scc
 
-This is inadvisable, since it means re-downloading the package again, if
-you wanted to quickly re-install it. This should only be used when disk
-space is at a premium.
+Ce n'est pas conseillé, puisque ça veut dire qu'il faut retélécharger les paquets  
+si vous voulez les réinstaller rapidement. Ça devrait être uniquement utilisé quand
+l'espace disque est une priorité.
 
-### pacman Command Equivalents
-If you are coming from another GNU+Linux distribution, you probably want to know
-the command equivalents for the various `apt-get`-related commands that you often use.
-For that information, refer to [Pacman/Rosetta](https://wiki.archlinux.org/index.php/Pacman/Rosetta),
-so named, because it serves as a Rosetta Stone to the esoteric pacman language.
+### Équivalents avec la commande pacman
+Si vous venez d'une autre distribution GNU+Linux, vous voulez probablement savoir
+les commandes équivalents pour les nombreuses commandes `apt-get` que vous utilisez
+souvent. Pour celà, référez-vous à [Pacman/Rosetta](https://wiki.archlinux.org/index.ph
+p/Pacman/Rosetta), nommé ainsi car il sert de Pierre de Rosette pour l'ésotérique langage
+de pacman.
 
 ## your-freedom
-`your-freedom` is a package specific to Parabola, and it is installed by
-default. What it does is conflict with packages from Arch that are known
-to be non-free (proprietary) software. When migrating from Arch (there
-is a guide on the Parabola wiki for migrating (i.e,. converting) an existing
-Arch system to a Parabola system), installing it will also
-fail, if these packages are installed, citing them as conflicts; the
-recommended solution is then to delete the offending packages, and
-continue installing `your-freedom`.
+`your-freedom` est un paquet spécifique à Parabola et est installé par défaut.
+Ce qu'il fait est de se mettre en conflit avec les paquets d'Arch connus comme
+des logiciels non libres (propriétaires). Lors de la migration depuis Arch (il
+y a un guide sur le wiki Parabola pour migrer/convertir un système Arch existant
+en un système Parabola), l'installer échouera aussi, la solution recommandée dès
+alors est de supprimer les paquets conflictuels puis de continuer d'installer
+`your-freedom`*.
 
-## Add a User
-This is based on the Arch Wiki guide to [Users and Groups](https://wiki.archlinux.org/index.php/Users_and_Groups).
+*NdT:votre-liberté
 
-It is important (for security reasons) to create and use a non-root
-(non-admin) user account for everyday use. The default **root** account
-is intended only for critical administrative work, since it has complete
-access to the entire operating system.
+## Ajouter un utilisateur
+Ceci est basé sur le guide de l'ArchWiki sur les [Utilisateurs et Groupes](https://w
+iki.archlinux.org/index.php/Users_and_Groups).
 
-Read the entire document linked to above, and then continue.
+Il est important (pour des raisons de sécurité) de créer et utiliser un compte non-root
+(admin) pour l'utilisation de tout les jours. Le compte **root** par défaut est destiné
+seulement à des travaux d'administration critiques, puisqu'il a un accés complet au système
+d'exploitation.
 
-Add your user with the `useradd` command (self explanatory):
+Lisez en entier le document partagé en lien ci-dessus, puis continuez.
 
-    # useradd -m -G wheel -s /bin/bash *your_user_name*
+Ajoutez votre utilisateur avec la commande `useradd`:
 
-Set a password, using `passwd`:
+    # useradd -m -G wheel -s /bin/bash *votre_nom_dutilisateur*
 
-    # passwd *your_user_name*
+Définissez un mot de passe, en utilisant `passwd`:
 
-Like with the installation of Parabola, use of the [*diceware method*](http://world.std.com/~reinhold/diceware.html) is recommended,
-for generating secure passphrases.
+    # passwd *votre_nom_d'utilisateur*
 
-### Configure sudo
-Now that we have a normal user account, we'll want to configure `sudo`,
-so that user is able to run commands as **root** (e.g., installing software);
-this will be necessary to flash the ROM later on. Refer to ArchWiki's [sudo](https://wiki.archlinux.org/index.php/Sudo) documentation.
+Comme avec l'installation de Parabola, l'utilisation de la [*méthode du lancer de 
+dés*](http://world.std.com/~reinhold/diceware.html) est recommandée pour générer des
+phrases de passe sécurisée.
 
-The first step is to install the `sudo` package:
+### Configurer sudo
+Maintenant que nous avons un compte utilisateur normal, nous allons vouloir 
+configurer `sudo`, comme ça l'utilisateur peut lancer des commandes en tant
+que **root** (p.e., installer des logiciels); ça sera nécessaire de flasher
+la ROM plus tard. Référez vous à la documentation de [sudo](https://wiki.ar
+chlinux.org/index.php/Sudo) sur l'ArchiWiki.
+
+La première étape est d'installer le paquet `sudo`:
 
     # pacman -S sudo
 
-After installation, we must configure it. To do so, we must modify **/etc/sudoers**.
-This file must *always* be modified with the `visudo` command. `visudo` can be
-difficult for beginners to use, so we'll want to edit the file with `nano`,
-but the trick is that we just can't do this:
+Après installation, nous devons le configurer. Pour faire ça, nous devons m
+odifier **/etc/sudoers**. Ce fichier doit *toujours* être modifié avec la c
+ommande `visudo`. `visudo` peut être difficile à utiliser pour les débutant
+s, donc nous allons vouloir éditer le fichier avec `nano`, mais on ne peut
+pas faire juste comme ça:
 
     # nano /etc/sudoers
 
-Because, this will cause us to edit the file directly, which is not the way
-it was designed to be edited, and could lead to problems with the system.
-Instead, to temporarily allow us to use `nano` to edit the file,
-we need to type this into the terminal:
+Car, ça nous causera à éditer le fichier directement, ce qui n'est pas la f
+açon conçue pour l'éditeur, et pourrait amener à des problèmes avec le syst
+ème.
+À la place, pour nous permettre temporairement d'utiliser `nano` pour édite
+r le fichier, nous aurons besoin de taper celà dans le terminal:
 
     # EDITOR=nano visudo
 
-This will open the **/etc/sudoers** file in `nano`, and we can now safely make changes to it.
+Ça ouvrir le fichier **/etc/sudoers** dans `nano` et nous pouvons maintenan
+t y faire des changements sans souci.
 
-To give the user we created earlier to ability to use `sudo`, we need to navigate
-to the end of the file, and add this line on the end:
+Pour donner à l'utilisateur que nous avons créé plus tôt la possibilité d'u
+tiliser `sudo`, nous avons besoin de naviguer vers la fin du fichier, et d'
+y ajouter cette ligne:
 
-    your_username ALL=(ALL) ALL
-
-Obviously, type in the name of the user you created, instead of **your_username**.
-Save the file, and exit `nano`; your user now has the ability to use `sudo`.
+    votre_nom_dutilisateur ALL=(ALL) ALL
+Évidemment, tapez le nom de l'utilisateur que vous avez créé à la place de
+**votre_nom_dutilisateur**.
+Sauvegardez le fichier et quittez `nano`; votre utilisateur a maintenant l
+a possibilité d'utiliser `sudo`.
 
 ## systemd
-`systemd` is the name of the program for managing services in Parabola;
-It is a good idea to become familiar with it. Read the Arch Wiki article on [systemd](https://wiki.archlinux.org/index.php/systemd),
-as well as their [Basic systemctl usage](https://wiki.archlinux.org/index.php/systemd#Basic_systemctl_usage) article,
-to gain a full understanding. *This is very important! Make sure to read them.*
+`systemd` est le nom du programme pour gérer les services dans Parabola; c
+'est une bonne idée de le connaître un peu. Lisez l'article d'ArchWiki sur
+[systemd](https://wiki.archlinux.fr/systemd), ainsi que leur article [Usag
+e basique de systemctl](https://wiki.archlinux.org/index.php/systemd#Basic
+_systemctl_usage), pour bénéficier d'une compréhension complète.
+*C'est très important ! Assurez-vous de les lire.*
 
-An example of a **service** could be a VPN (allowing you to connect to an outside network),
-an applet in the system tray that tells you the weather for your city,
-a sound manager (to make sure you can hear sound through speakers or headphones),
-or DHCP (which allows you to get an IP address, to connect to the internet).
-These are just a few examples; there are countless others.
+Un example de service pourrait être un VPN (vous permettant de vous connec
+ter à un réseau extérieur, une application dans la barre des tâches indiqu
+ant la météo dans votre ville, un gérant de son (pour vous assurez que vou
+s pouvons entendre du son à travers des hauts-parleurs ou casque), ou DHCP
+ (qui vous permet de récupérer une adresse IP et de se connecter à l'inter
+net).
+Ce sont juste quelques exemples; ils sont innombrables.
 
-`systemd` is a controversial init system; A [forum post](https://bbs.archlinux.org/viewtopic.php?pid=1149530#p1149530)
-has an explanation behind the Arch development team's decision to use it.
+`systemd` est un système d'initialisation controversé; un [billet de foru
+m](https://bbs.archlinux.org/viewtopic.php?pid=1149530#p1149530) a une ex
+plication pour la décision de son utilisation par l'équipe de développeme
+nt d'Arch.
 
-The **manpage** should also help:
+La **manpage** devrait aussi aider:
 
     # man systemd
 
-The section on **unit types** is especially useful.
+La section sur les **types d'unités** (unit types) est très utile.
 
-According to the wiki, `systemd's` journal keeps logs of a size up to 10% of the
-total size that your root partition takes up. On a 60GB root, this would mean 6GB.
-That's not exactly practical, and can have performance implications later,
-when the log gets too big. Based on instructions from the wiki,
-I will reduce the total size of the journal to 50MiB (that's what the wiki recommends).
+D'après le wiki, le journal de `systemd` garde des journaux avec un taill
+e totale de 10% de la partition racine. Sur une racine de 60Go, ça voudra
+it dire 6Go. Ce n'est pas très pratique et peut avoir des impacts sur les
+perfomances plus tard quand le journal devient trop gros.
+En se basant sur les instructions du wiki, nous réduirons la taille total
+e du journal à 50Mo (c'est que le wiki recommande).
 
-Open **/etc/systemd/journald.conf**, and find this line:
+Ouvrez **/etc/systemd/journald.conf** et trouvez cette ligne:
 
     #SystemMaxUse=
 
-Change it to this:
+Changez la par:
 
     SystemMaxUse=50M
 
-Restart `journald`:
+Relancez `journald`
 
     # systemctl restart systemd-journald
 
-The wiki recommends that if the journal gets too large, you can also
-simply delete (`rm -Rf`) everything inside **/var/log/journald**, but
-recommends backing it up. This shouldn't be necessary, since you
-already set the size limit above, and `systemd` will automatically start
-to delete older records, when the journal size reaches it's limit (according to systemd developers).
+Le wiki recommande que si le journal devient trop large, vous pouvez auss
+i simplement tout supprimer (`rm -Rf`) à l'intérieur de **/var/log/journa
+ld**, mais recommande d'en faire une sauvegarde avant.
+Ça ne devrait pas être nécessaire puisque qu'on a déjà mis la limite de t
+aille juste au-dessus, et `systemd` commencera automatiquement à supprime
+r les engeristrements plus vieux, une fois que le journal à atteint la li
+mite (d'après les développeurs de systemd).
 
-Finally, the wiki mentions **temporary files**, and the utility for
-managing them.
+Finalement, le wiki mentionne les **fichiers temporaires**, et l'utilitai
+re pour les gérer.
 
     # man systemd-tmpfiles
 
-To delete the temporary files, you can use the `clean` option:
+Pour supprimer les fichiers temporaires, vous pouvez utiliser l'option `c
+lean`:
 
     # systemd-tmpfiles --clean
 
-According to the **manpage**, this *"cleans all files and directories with
-an age parameter"*. According to ArchWiki, this reads information
-in **/etc/tmpfiles.d** and **/usr/lib/tmpfiles.d**, to know what actions to perform.
-Therefore, it is a good idea to read what's stored in these locations, to get a better understanding.
+D'après la **manpage**, ceci *"nettoie tous les fichiers et répertoires a
+vec un paramètre d'âge"*. D'après l'ArchWiki, ça lit les informations dan
+s **/etc/tmpfiles.d** et **/usr/lib/tmpfiles.d**, pour savoir quelles act
+ions il faut opérer.
 
-I looked in **/etc/tmpfiles.d/** and found that it was empty on my system.
-However, **/usr/lib/tmpfiles.d** contained some files. The first one was
-**etc.conf**, containing information and a reference to this **manpage**:
+Dès alors, c'est une bonne idée de lire à propos de ce qui est stocké dan
+s ces lieux, afin d'avoir une meilleure compréhension.
+
+J'ai regardé dans **/etc/tmpfiles.d/** et trouvé que c'était vide dans mo
+n système. Cependant, **/usr/lib/tmpfiles.d** contenait quelques fichiers
+Le premier était **etc.conf**, avec des données et une référence à cette
+**manpage**:
 
     # man tmpfiles.d
 
-Read that **manpage**, and then continue studying all the files.
+Lisez cette **manpage** puis ensuite continuez à tout les fichiers.
 
-The `systemd` developers tell me that it isn't usually necessary
-to manually touch the `systemd-tmpfiles utility`, at all.
+Les développeurs de `systemd` m'ont dit qu'en pratique ce n'est pas néces
+saire du tout de toucher manuellement à `l'utilitaire systemd-tmpfiles`.
 
-## Interesting Repositories
-In their [kernels](https://wiki.parabolagnulinux.org/Repositories#kernels) article,
-the Parabola wiki mentions a repository called `\[kernels\]`, for custom kernels
-that aren't in the default **base**. It might be worth looking into what is available there,
-depending on your use case.
+## Dépôts intéressants
+Dans leur article sur les [kernels](https://wiki.parabolagnulinux.org/Rep
+ositories#kernels), le wiki Parabola mentionne un dépôt nommé `\[kernels\]`
+pour les kernels customisés qui ne sont pas dans le **base** installé par
+défaut. Ça pourrait peut-être valoir le coup de voir ce qui est disponibl
+e là-dedans, dépendant de votre cas d'utilisation.
 
-I enabled it on my system, to see what was in it. Edit **/etc/pacman.conf**,
-and below the **extra** section add:
+Je l'ai activé sur mon système pour voir ce qui il y avait dedans. Éditez
+**/etc/pacman.conf** et en-dessous la section **extra**, ajoutez:
 
     [kernels]
     Include = /etc/pacman.d/mirrorlist*
 
-Now, sync with the newly-added repository:
+Maintenant, synchronisez-vous avec le dépôt fraîchement ajouté:
 
     # pacman -Syy
 
-Lastly, list all available packages in this repository:
-
+Dernièrement, listez tous les paquets dans ce dépôt:
+    
     # pacman -Sl kernels
 
-In the end, I decided not to install anything from it,
-but I kept the repository enabled regardless.
+Au final, j'ai décidé de rien installer depuis celui-ci, mais néamoins je
+l'ai laissé activé.
 
 ## Setup a Network Connection in Parabola
 Read the ArchWiki guide to [Configuring the Network](https://wiki.archlinux.org/index.php/Configuring_Network).
