@@ -369,77 +369,95 @@ Dernièrement, listez tous les paquets dans ce dépôt:
 Au final, j'ai décidé de rien installer depuis celui-ci, mais néamoins je
 l'ai laissé activé.
 
-## Setup a Network Connection in Parabola
-Read the ArchWiki guide to [Configuring the Network](https://wiki.archlinux.org/index.php/Configuring_Network).
+## Mettre en place une connection réseau dans Parabola
+Lisez le guide d'ArchiWiki sur [Configurer le réseau](https://wiki.archli
+nux.org/index.php/Configuring_Network).
 
-### Set the Hostname
-This should be the same as the hostname that you set in **/etc/hostname**,
-when installing Parabola. You should also do it with `systemd`.
-If you chose the hostname *parabola*, do it this way:
+### Définir le nom d'hôte
+Ça devrait être le même que celui que vous avez défini dans **/etc/hostn
+ame** lors de l'installation de Parabola. Vous devriez aussi le faire av
+ec `system`. Si vous choisissez le nom *parabola*, faites-le de cette ma
+nière:
 
     # hostnamectl set-hostname parabola
 
-This writes the specified hostname to **/etc/hostname**.
-More information can be found in these **manpages**:
+Celà écrit le nom d'hôte spécifié dans **/etc/hostname**.
+Plus d'informations peuvent être trouvées dans ces **manp
+ages**:
 
     # man hostname
     # info hostname
     # man hostnamectl
 
-Check **/etc/hosts**, to make sure that the hostname that you put in there
-during installation is still on each line:
+Vérifiez **/etc/hosts**, afin de vous assurez que le nom 
+d'hôte inséré pendant l'installation est encore sur chac
+une des lignes:
 
     127.0.0.1 localhost.localdomain localhost parabola
     ::1       localhost.localdomain localhost parabola
 
-You'll note that I set both lines; the second line is for IPv6. Since more and
-more ISPs are providing this now, it's good to be have it enabled, just in case.
+Vous noterez que j'ai défini les deux mêmes lignes; la seconde est pour
+l'IPv6. Puisque de plus en plus de FAIs fournissent celà en ce moment,
+c'est bien de l'activer juste au cas où.
 
-The `hostname` utility is part of the `inetutils` package, and is in the **core** repository,
-installed by default (as part of the **base** package).
+L'utilitaire `hostname` fait parti du paquet `inetutils`, et est dans l
+e dépôt **core**, installé par défaut (en tant que partie du paquet **b
+ase**).
 
-### Network Status
-According to ArchWiki, [udev](https://wiki.archlinux.org/index.php/Udev) should already detect
-the ethernet chipset, and automatically load the driver for it at boot time.
-You can check this in the **Ethernet controller** section, when running the `lspci` command:
+### Status du réseau
+D'après l'ArchWiki, [udev](https://wiki.archlinux.fr/Udev) devrait dét
+ecter le chipset Ethernet et automatiquement charger le pilote dès le
+démarrage.
+Vous pouvez vérifier celà dans la section **Contrôleur Ethernet**, lor
+s de l'exécution de la commande `lspci`:
 
     # lspci -v
 
-Look at the remaining sections **Kernel driver in use** and **Kernel modules**.
-In my case, it was as follows:
+Regardez les sections restantes **Pilotes du kernel en cours d'utilis
+ation** et **Modules du kernel**.
+Dans mon cas, c'était comme il suit:
 
     Kernel driver in use: e1000e
     Kernel modules: e1000e
 
-Check that the driver was loaded, by issuing `dmesg | grep module_name`.
-In my case, I did:
+Vérifiez que le pilote a été chargé, en exécutant `dmesg | grep nom_m
+odule`.
+Dans mon cas, j'ai fait:
 
     # dmesg | grep e1000e
 
-### Network Device Names
-According to the ArchWiki guide on [Configuring Network Device Names](https://wiki.archlinux.org/index.php/Configuring_Network#Device_names),
-it is important to note that the old interface names that you might be used to
-(e.g., `eth0`, `wlan0`, `wwan0`, etc.), if you come from a distribution like Debian or Trisquel,
-are no longer applicable. Instead, `systemd` creates device names
-starting with `en` (for ethernet), `wl` (for wi-fi), and `ww` (for wwan),
-with a fixed identifier that it automatically generates.
-An example device name for your ethernet chipset would be `enp0s25`,
-and is never supposed to change.
+### Noms de périphériques réseaux
+D'après le guide d'ArchWiki sur [Configurer les noms de périphériques
+réseaux](https://wiki.archlinux.org/index.php/Configuring_Network#Dev
+ice_names), il est important de noter que les anciens noms d'interfac
+es dont vous avez l'habitude (p.e, `eth0`,`wlan0`,`wwan0`, etc.) si v
+ous venez d'une distribution comme Debian ou Trisquel, ne s'appliquen
+t plus.
+À la place, `systemd` créé des noms de périphériques commençant par
+`en` (pour l'Ethernet), `wl` (pour le Wi-Fi), et `ww` (pour le WWAN),
+avec un identificateur fixe qu'il génére automatiquement.
+Un exemple de nom de périphérique pour votre chipset Ethernet serait
+`enp0s25`, et n'est jamais supposé changer.
 
-If you want to enable the old names, ArchWiki recommends adding `net.ifnames=0`
-to your kernel parameters (in Libreboot context, this would be accomplished by following
-the instructions in [How to replace the default GRUB configuration file](grub_cbfs.md)).
+Si vous voulez rétablir les vieux noms, ArchWiki recommande d'ajouter
+`net.ifnames=0` à vos paramètres de kernel ( dans le contexte de Libr
+eboot, ça serait accompli en suivant les instructions dans [Comment r
+emplacer le fichier de configuration par défaut de GRUB](grub_cbfs)).
 
-For background information, read [Predictable Network Interface Names](http://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/).
+Pour des informations historiques, lisez [Noms d'interfaces réseaux p
+révisibles](http://www.freedesktop.org/wiki/Software/systemd/Predicta
+bleNetworkInterfaceNames/).
 
-To show what the device names are for your system, run the following command:
+Pour voir quels sont les noms de périphériques pour votre système, ex
+écutez la commande suivante:
 
     # ls /sys/class/net
 
-[Changing the device names](https://wiki.archlinux.org/index.php/Configuring_Network#Change_device_name) is possible,
-but for the purposes of this guide, there is no reason to do it.
+[Changer les noms de périphérique](https://wiki.archlinux.org/index.p
+hp/Configuring_Network#Change_device_name) est possible, mais dans l'
+intérêt de notre guide, il n'y a aucune raison de le faire.
 
-### Network Setup
+### Mise en place du réseau
 Aside from the steps mentioned above, I choose to ignore most of Networking section on the wiki;
 this is because I will be installing the *MATE Desktop Environment*, and thus will
 be using the `NetworkManger` client (with its accompanying applet) to manage the network.
