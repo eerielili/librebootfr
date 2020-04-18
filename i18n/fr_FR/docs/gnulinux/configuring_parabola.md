@@ -428,8 +428,8 @@ Dans mon cas, j'ai fait:
 
 ### Noms de périphériques réseaux
 D'après le guide d'ArchWiki sur [Configurer les noms de périphériques
-réseaux](https://wiki.archlinux.org/index.php/Configuring_Network#Dev
-ice_names), il est important de noter que les anciens noms d'interfac
+réseaux](https://wiki.archlinux.fr/Connexions_reseau#Interfaces), 
+il est important de noter que les anciens noms d'interfac
 es dont vous avez l'habitude (p.e, `eth0`,`wlan0`,`wwan0`, etc.) si v
 ous venez d'une distribution comme Debian ou Trisquel, ne s'appliquen
 t plus.
@@ -458,138 +458,187 @@ hp/Configuring_Network#Change_device_name) est possible, mais dans l'
 intérêt de notre guide, il n'y a aucune raison de le faire.
 
 ### Mise en place du réseau
-Aside from the steps mentioned above, I choose to ignore most of Networking section on the wiki;
-this is because I will be installing the *MATE Desktop Environment*, and thus will
-be using the `NetworkManger` client (with its accompanying applet) to manage the network.
+À part les autres étapes mentionnées ci-dessus, je choisis
+d'ignorer la majorité de la partie Réseau sur le Wiki; c'est
+parce que je vais installer *l'environnement de Bureau MATE*
+et donc j'utiliserais le client NetworkManager (avec [l'appli
+quette](https://fr.wiktionary.org/wiki/applet) qui l'accompag
+ne) pour gérer le réseau.
 
-If you wish to choose a different program, here are some other
-[network manager options](https://wiki.archlinux.org/index.php/List_of_applications/Internet#Network_managers)
-that you could use.
+Si vous souhaitez choisir un programme différent, voici quelq
+ues autres [options d'administrateurs de réseau](https://wik
+i.archlinux.org/index.php/List_of_applications/Internet#Netw
+ork_managers) que vous pourriez utiliser.
 
-## Configuring the Graphical Desktop Environment
-Since we are going with the *MATE Desktop Environment*, we will primarily be following
-the instructions on the [Arch Linux Package Repository](https://wiki.mate-desktop.org/archlinux_custom_repo) page,
-but will also refer to the [General Recommendations](https://wiki.archlinux.org/index.php/General_recommendations#Graphical_user_interface)
-on ArchWiki.
+## Configurer l'environnement graphique du Bureau
+Puisque nous allons partir avec *l'environnement de bureau 
+Mate*, on va principalement suivre les instructions sur la
+page à propos du [dépôt de paquet d'Arch Linux](https://wik
+i.mate-desktop.org/archlinux_custom_repo), mais allons auss
+i nous référer aux [recommandations générales](https://wik
+i.archlinux.org/index.php/General_recommendations#Graphica
+l_user_interface) sur l'ArchiWiki.
 
-### Installing Xorg
-The first step is to install [**Xorg**](https://wiki.archlinux.org/index.php/Xorg);
-this provides an implementation of the `X Window System`, which is used to provide
-a graphical intefrace in GNU+Linux:
+### Installer Xorg
+La première étape est d'installer [**Xorg**](https://wiki.a
+rchlinux.org/index.php/Xorg); celà fournit une implémentati
+on du `X Window System` (ou `Système de fenêtre X`), qui es
+t utilisé pour founir une interface graphique dans GNU+Linu
+x:
 
     # pacman -S xorg-server
 
-We also need to install the driver for our hardware. Since I am using a Thinkpad X200,
-I will use `xf86-video-intel`; it should be the same on the other Thinkpads,
-as well as the Macbook 1,1 and 2,1.
+Nous allons avoir aussi besoin d'installer les drivers pour
+notre matériel. Puisque j'utilise un ThinkPad X200, j'utili
+serais `xf86-video-intel`; ça devrait être la même chose su
+r les autres ThinkPads, ainsi que le Macbook 1,1 et 2,1.
 
     # pacman -S xf86-video-intel
 
-For other systems, you can try:
+Pour d'autres machines, vous pouvez essayer:
 
     # pacman -Ss xf86-video- | less
 
-When this is combined with looking at your `lspci` output, you can determine which
-driver is needed. By default, `Xorg` will revert to `xf86-video-vesa`,
-which is a generic driver, and doesn't provide true hardware acceleration.
+Quand ceci est combiné avec la sortie de la commande `lspci`
+vous pouvez déterminer quel driver est nécessaire. Par défau
+t, `Xorg` reviendra sur `xf86-video-vesa`, qui est un driver
+générique, et ne fournit pas une vrai accélération matériell
+e.
 
-Other drivers (not just video) can be found by looking at the `xorg-drivers` group:
+Les autres drivers (pas juste vidéos) peuvent être trouvés
+en regardant dans le groupe `xorg-drivers`:
 
     # pacman -Sg xorg-drivers
 
-### Xorg Keyboard Layout
-`xorg` uses a different configuration method for keyboard layouts than Parabola,
-so you will notice that the layout you set in **/etc/vconsole.conf** earlier might
-not actually be the same in `xorg`.
 
-Check ArchWiki's article on [Xorg's keyboard configuration](https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg), for more information.
+### Disposition de clavier Xorg
+`xorg` utilise une méthode de configuration différente pour
+les dispositions de claviers que Parabola, donc vous remarq
+uerez que la disposition que vous avez mise plus tôt dans 
+**/etc/vconsole.conf** ne sera peut-être pas la même que da
+ns `xorg`.
 
-To see what layout you currently use, try this on a terminal emulator in `xorg`:
+Pour plus d'informations, jetez un coup d'oeil à l'article
+de l'ArchWiki sur [la configuration clavier Xorg](http
+s://wiki.archlinux.org/index.ph
+p/Keyboard_configuration_in_Xorg).
+
+Pour voir la disposition que vous être en train d'utiliser,
+essayez ceci dans un terminal graphique dans `xorg` :
 
     # setxkbmap -print -verbose 10
 
-I'm simply using the default Qwerty (US) keyboard, so there isn't anything I need
-to change here; if you do need to make any changes, ArchWiki recommends two ways
-of doing it: manually updating [configuration files](https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg#Using_X_configuration_files) or using the [localectl](https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg#Using_localectl) command.
+J'utilise tout simplement le clavier Qwerty (US) par défaut
+donc je n'ai besoin de rien changer; si vous avez besoin de
+changer quelque chose, l'ArchWiki recommande deux façons de
+faire: mettre à jour manuellement [les fichiers de configur
+ations](https://wiki.archlinux.org/index.php/Keyboard_confi
+guration_in_Xorg#Using_X_configuration_files) ou utilisez 
+la commande [localectl](https://wiki.archlinux.org/index.ph
+p/Keyboard_configuration_in_Xorg#Using_localectl).
 
-### Installing MATE
-Now we have to install the desktop environment itself. According to the Arch Linux Package Repository,
-if we want all of the MATE Desktop, we need to install two packages:
+
+### Installer MATE
+Maintenant nous avons à installer l'environnement de bureau
+lui-même. D'après le dépôt de paquet d'Arch Linux, si nous
+voulons l'entiéreté du Bureau Mate, nous avons besoin d'ins
+taller deux paquets:
 
     # pacman -Syy mate mate-extra
 
-The last step is to install a Display Manager; for MATE, we will be using `lightdm`
-(it's the recommended Display Manager for the MATE Desktop); for this, we'll folow the instructions [on the MATE wiki](https://wiki.mate-desktop.org/archlinux_custom_repo#display_manager_recommended),
-with one small change: the `lightdm-gtk3-greeter` package doesn't exist in Parabola's repositories.
-So, instead we will install the `lightdm-gtk-greeter` package; it performs the same function.
+La dernière étape est d'installer un gérant d'affichage; po
+ur Mate, nous utiliserons `lightdm` (c'est le gérant d'affi
+chage recommandé pour le bureau MATE); pour ça, nous suivro
+ns les instructions [sur le wiki de MATE](https://wiki.mate
+-desktop.org/archlinux_custom_repo#display_manager_recommen
+ded), avec un petit changement: le paquet `lightdm-gtk3-gre
+eter` n'existe pas dans les dépôts de Parabola.
+Donc, au lieu de ça nous installerons le paquet `lightdm-gt
+k-greeter` qui exerce la même fonction.
 
-We'll also need the `accountsservice` package, which gives us the login window itself: 
+Nous aurons aussi besoin du paquet `accountsservice`, qui
+nous donne la fenêtre d'authentification elle-même:
 
     # pacman -Syy lightdm-gtk3-greeter accountsservice
 
-After installing all the required packages, we need to make it so that the MATE Desktop Environment
-will start automatically, whenever we boot our computer; to do this, we have to enable the display manager, `lightdm`,
-as well as the service that will prompt us with a login window, `accounts-daemon`:
+Après avoir installé tout les paquets requis, nous avons be
+soin de faire en sorte que l'environnement de bureau MATE
+s'exécute automatiquement lors du démarrage de notre
+ordinateur; pour faire ça, nous avons besoin d'activer le
+gérant d'affichage, `lightdm` ainsi que le service qui
+nous affiche une fenêtre d'authentification, `accounts-dae
+mon`:
 
     # systemctl enable lightdm
     # systemctl enable accounts-daemon
 
-Now you have installed the *MATE Desktop Environment*,If you wanted
-to install another desktop environment, check out some [other options](https://wiki.archlinux.org/index.php/Desktop_environment) on ArchWiki.
+Vous avez maintenant installé l'environnement de bureau MATE.
+Si vous aurez voulu installer un autre environnement de bureau
+jetez un coup d'oeil aux [quelques autres possibilités](http
+s://wiki.archlinux.org/index.php/Desktop_environment) sur l'Ar
+chWiki.
 
-### Configuring Network Manager in MATE
-Now that we have installed the Mate Desktop environment, and booted into it,
-we need to set up the network configuration in our graphical environment.
+### Configurer 'Network Manager' dans MATE
+Maintenant que nous avons installé l'environnement de bureau 
+MATE et démarré dedans, nous avons besoin de mettre en place
+la configuration réseau dans notre environnement graphique?
 
-The MATE Desktop wiki recommends that we use Network Manager; an
-article about Network Manager can be found
-[on ArchWiki](https://wiki.archlinux.org/index.php/NetworkManager).
+Le wiki de MATE recommande l'utilisation de 'Network Manager';
+un article à propos de 'Network Manager' peut être trouvé [sur
+l'ArchWiki](https://wiki.archlinux.org/index.php/NetworkManager).
 
-We need to install the NetworkManager package:
+Nous avons besoin d'installer le paquet NetworkManager:
 
     # pacman -S networkmanager
 
-We will also need the Network Manager applet, which will allow us to manage our 
-networks from the system tray:
+Nous aurons aussi besoin de l'appliquette du Network Manager, qui
+nous permettra de gérer nos connexions réseaux depuis la barre
+des tâches:
 
     # pacman -S network-manager-applet
 
-Finally, we need to start the service (if we want to use it now), or enable it,
-(so that it will activate automatically, at startup).
+Finalement, nous aurons besoin de démarrer le service (si vous
+voulons l'utiliser de suite), ou de l'activer (et donc il s'active
+ra automatiquement au démarrage).
 
     # systemctl enable NetworkManager.service
 
-If you need VPN support, you will also want to install the `networkmanager-openvpn` package.
+Si vous avez besoin de gérer aussi des VPNs, vous aurez aussi besoin
+d'installer le paquet `networkmanager-openvpn`.
 
-**NOTE: You do not want multiple networking services running at the same time;
-they will conflict, so, if using Network Manager, you want to stop/disable any
-others from running. Examples of other services that will probably intefere
-with Network Manager are** `dhcpcd` **and** `wifi-menu`**.**
+**NOTE: il n'est pas préférable d'avoir de multiples services réseaux
+en concurrence; il y aura des conflits, donc,si vous utilisez Network
+Manger, vous allez vouloir arrêter/désactiver tous les autres.
+Exemples d'autres services qui causeront problablement des interféren
+ces avec Network Manager : ** `dhcpcd` **et** `wifi-menu`**.**
 
-You can see all currently-running services with this command:
+Vous pouvez voir tous les services en cours d'exécution avec cette
+commande:
 
     #  systemctl --type=service
 
-And you can stop them using this command:
+Et vous pouvez les arrêter en utilisant cette commande:
 
-    # systemctl stop service_name.service
+    # systemctl stop nom_du_service.service
 
-If you want to disable those services, meaning that you no longer want them to start
-when the computer boots up, you will need to use `systemctl's` `disable` option,
-instead of `stop`.
+Si vous voulez désactiver ces services, voulant dire que vous ne voulez
+plus les démarrer en même temps que l'ordinateur, remplacez `stop` par
+`disable`.
 
-Now you have a fully-functional graphical environment for your Parabola installation,
-including networking. All you have to do is reboot, and you will be prompted to log in,
-with a familiar graphical login prompt. You can also now, more easily [modify the GRUB configuration](grub_cbfs.md),
-install new applications, and/or make whatever other changes you want to your system.
+Nous avons maintenant un environnement graphique complètement fonction
+nel pour notre installation Parabola, avec connexions réseaux.
+Tout ce que vous avez à faire est de redémarrer, et vous serez demandé
+à vous authentifier avec une fenêtre d'authentification familière.
+Vous pouvez maintenant [modifier plus facilement la configuration GRUB](grub_cbfs.md)
+installer de nouvelles applications, et/ou faire n'importe quels autres changements
+à votre système.
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>
 
 Copyright © 2017 Elijah Smith <esmith1412@posteo.net>
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
-
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
