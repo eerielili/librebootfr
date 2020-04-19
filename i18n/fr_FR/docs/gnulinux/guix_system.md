@@ -1,106 +1,122 @@
 ---
-title: Guix System with Full Disk Encryption on Libreboot
+title: Système Guix avec chiffrement du disque tout entier sur Libreboot
 ...
 
-Objective
+Objectif
 =========
+
+Fournir un guide étape par étape pour mettre en place
+un système Guix (seul), avec le chiffrement de tout 
+le disque (comprenant /boot), sur des machines tournant
+sous Libreboot.
+
 
 To provide step-by-step guide for setting up guix system (stand-alone guix)
 with full disk encryption (including /boot) on devices powered by libreboot.
 
-Scope
-=====
+Public ciblé
+=============
+N'importe quels utilisateurs, pour le
+urs cas d'utilisation
+généraux, n'ont pas besoin de différer de ce guide pour
+accomplir la mise en place du système.
 
-Any users, for their generalised use cases, need not stumble away from this
-guide to accomplish the setup.
+Les utilisateurs avancés, pour leurs cas d'utilisation 
+différents, devront explorer au-delà et en-dehors de 
+guide pour la customisation; néanmoins ce guide fournit
+des informations qui sont d'une grande utilité.
 
-Advanced users, for deviant use cases, will have to explore outside this
-guide for customisation; although this guide provides information that is
-of paramount use.
+Marche à suivre
+================
 
-Process
-=======
-
-Preparation
+Préparation
 -----------
 
-In your current GNU/Linux System, open terminal as root user.
+Dans votre système GNU/Linux actuel, ouvrez un terminal
+en tant que superutilisateur (root).
 
-Insert USB drive and get the USB device name /dev/sdX, where “X” is the
-variable to make a note of.
+Insérez le disque USB et récupérez le nom du 
+périphérique USB, généralement /dev/sdX, ou X est une
+variable qu'il faut noter :
 
-`lsblk`
+	`lsblk`
 
-Unmount the USB drive just in case if it’s auto-mounted.
+Démontez le disque dur USB dans le cas ou il s'est 
+auto-monté :
 
-`umount /dev/sdX`
+	`umount /dev/sdX`
 
-Download the latest (a.b.c) Guix System ISO Installer Package (sss) and
-it’s GPG Signature; where “a.b.c” is the variable for version number and
-“sss” is the variable for system architecture.
+Téléchargez le dernier (a.b.c) Paquet Installateur ISO 
+du système Guix (xxx) et sa signature GPG; où "a.b.c"
+est la variable pour le n° de vérsion et "sss" est la
+variable pour l'architecture système (x86_64, i386, etc):
+	
+	`̀``
+	wget https://ftp.gnu.org/gnu/guix/guix-system-install-a.b.c.sss-linux.iso.xz
+	wget https://ftp.gnu.org/gnu/guix/guix-system-install-a.b.c.sss-linux.iso.xz.sig
+	```
 
-`wget https://ftp.gnu.org/gnu/guix/guix-system-install-a.b.c.sss-linux.iso.xz`
+Importez la clé publique requise:
 
-`wget https://ftp.gnu.org/gnu/guix/guix-system-install-a.b.c.sss-linux.iso.xz.sig`
+	`gpg --keyserver pool.sks-keyservers.net --recv-keys 3CE464558A84FDC69DB40CFB090B11993D9AEBB5`
 
-Import required public key.
+Vérifiez la signature GPG du paquet téléchargé:
 
-`gpg --keyserver pool.sks-keyservers.net --recv-keys 3CE464558A84FDC69DB40CFB090B11993D9AEBB5`
+	`gpg --verify guix-system-install-a.b.c.sss-linux.iso.xz.sig`
 
-Verify the GPG Signature of the downloaded package.
+Extrayez l'image ISO du paquet téléchargé:
 
-`gpg --verify guix-system-install-a.b.c.sss-linux.iso.xz.sig`
+	`xz -d guix-system-install-a.b.c.sss-linux.iso.xz`
 
-Extract the ISO Image from the downloaded package.
+Écrivez l'image ISO extraite sur le disque dur USB:
 
-`xz -d guix-system-install-a.b.c.sss-linux.iso.xz`
+	`dd if=guix-system-install-a.b.c.sss-linux.iso of=/dev/sdX; sync`
 
-Write the extracted ISO Image to the USB drive.
+Redémarrez votre machine:
 
-`dd if=guix-system-install-a.b.c.sss-linux.iso of=/dev/sdX; sync`
+	`reboot`
 
-Reboot the device.
-
-`reboot`
-
-Pre-Installation
+Pré-installation
 ----------------
 
-On reboot, as soon as you see the Libreboot Graphic Art, press arrow keys
-to change the menu entry.
+Au redémarrage, dès que vous voyez le logo de Libreboot, pressez
+les touches directionnelles pour changer la sélection de menu.
 
-Choose “Search for GRUB2 configuration on external media [s]” and wait
-for the Guix System from USB drive to load.
+Choisissez "Chercher pour une configuration GRUB2 sur des médias
+externes [s]" et attendez que le système Guix sur la clé USB se
+charge.
 
-Set your keyboard layout lo, where “lo” is the two-letter keyboard layout
-code (example: us or uk).
+Changez votre disposition de clavier, où "lo" est le code à deux
+lettres de la disposition du clavier (exemple:fr ou us):
 
-`loadkeys lo`
+	`loadkeys us`
 
-Unblock network interfaces (if any).
+Débloquez les interfaces réseaux (si il y en a):
 
-`rfkill unblock all`
+	`rfkill unblock all`
 
-Get the names of your network interfaces.
+Récupérez les noms de celles-ci:
 
-`ifconfig -a`
+	`ifconfig -a`
 
-Bring your required network interface nwif (wired or wireless) up, where
-“nwif” is the variable for interface name. For wired connections,
-this should be enough.
+Activez votre interface réseau requise nwif (filaire ou sans fil),
+où "nwif" est la variable correspondant au nom de l'interface.
+Pour les connexions filaires, ça devrait suffire:
 
-`ifconfig nwif up`
+	`ifconfig nwif up`
 
-For wireless connection, create a configuration file using text editor,
-where “fname” is the variable for any desired filename.
+Pour les connexions sans fil, créez un fichier de configuration avec
+un éditeur de texte, où "fname" est la variable pour un nom de fichier
+quelconque (mettez des guillemets si celui-ci contient des espaces):
 
-`nano fname.conf`
+	`nano fname.conf`
 
-Choose, type and save ONE of the following snippets, where ‘nm’ is the
-name of the network you want to connect, ‘pw’ is the corresponding
-network’s password or passphrase and ‘un’ is user identity.
+Choisissez, écrivez et sauvegardez UN des extraits suivants, où 'nm'
+est le nom du réseau auquel vous voulez vous connecter, 'pw' est le
+mot/phrase de passe correspondant(e), et 'un' est l'identifiant.
 
-For most private networks:
+
+Pour la majorité des réseaux privés:
 ```
 network={
   ssid="nm"
@@ -109,9 +125,9 @@ network={
 }
 ```
 
-(or)
+ou
 
-For most public networks:
+Pour la majorité des réseaux publics:
 ```
 network={
   ssid="nm"
@@ -119,9 +135,9 @@ network={
 }
 ```
 
-(or)
+ou
 
-For most organisational networks:
+Pour la majorité des réseaux d'entreprises/organisations:
 ```
 network={
   ssid="nm"
@@ -135,85 +151,90 @@ network={
 }
 ```
 
-Connect to the configured network, where “fname” is the filename and
-“nwif” is the network interface name.
+Connectez-vous au réseau configuré, où  "fname" est le nom de fichier
+and "nwif" est le nom de l'interface réseau.
 
-`wpa_supplicant -c fname.conf -i nwif -B`
+	`wpa_supplicant -c fname.conf -i nwif -B`
 
-Assign an IP address to your network interface, where “nwif” is the
-network interface name.
+Assignez une adresse IP à votre interface réseau, où "nwif" est 
+le nom de l'interface réseau.
 
-`dhclient -v nwif`
+	`dhclient -v nwif`
 
-Obtain the device name /dev/sdX in which you would like to deploy and
-install Guix System, where “X” is the variable to make a note of.
+Obtenez le nom du périphérique /dev/sdX dans lequel vous voudriez
+déployer et installer le système Guix, où "X" est la variable dont
+il faut prendre note.
 
-`lsblk`
+	`lsblk`
 
-Wipe the respective device. Wait for the command operation to finish.
+Nettoyez le périphérique en question. **Attendez que la commande se
+finisse**:
 
-`dd if=/dev/urandom of=/dev/sdX; sync`
+	`dd if=/dev/urandom of=/dev/sdX; sync`
 
-Load device-mapper module in the current kernel.
+Chargez le module device-mapper dans le kernel en cours:
 
-`modprobe dm_mod`
+	`modprobe dm_mod`
 
-Partition the respective device. Just do, GPT --> New --> Write --> Quit;
-defaults will be set.
+Partitionnez le périphérique en question. Faites juste,
+GPT --> New --> Write --> Quit; les paramètres par défauts seront
+définis:
 
-`cfdisk /dev/sdX`
+	`cfdisk /dev/sdX`
 
-Encrypt the respective partition.
+Chiffrez la partition:
 
-`cryptsetup -v --cipher serpent-xts-plain64 --key-size 512 --hash whirlpool --iter-time 500 --use-random --verify-passphrase luksFormat /dev/sdX1`
+	`cryptsetup -v --cipher serpent-xts-plain64 --key-size 512 --hash whirlpool --iter-time 500 --use-random --verify-passphrase luksFormat /dev/sdX1`
 
-Obtain and note down the “LUKS UUID”.
+Obtenez et **notez bien** l' "UUID LUKS".
 
-`cryptsetup luksUUID /dev/sdX1`
+	`cryptsetup luksUUID /dev/sdX1`
 
-Open the respective encrypted partition, where “partname” is any
-desired partition name.
+Ouvrez la partition chiffrée en questioon, où "partname" est
+le nom de partition désiré:
 
-`cryptsetup luksOpen /dev/sdX1 partname`
+	`cryptsetup luksOpen /dev/sdX1 partname`
 
-Make filesystem on the respective partition, where “fsname” is any
-desired filesystem name.
+Construisez un système de fichier sur cette partition, où
+"fsname" est le nom du système de fichier voulu:
 
-`mkfs.btrfs -L fsname /dev/mapper/partname`
+	`mkfs.btrfs -L fsname /dev/mapper/partname`
 
-Mount the respective filesystem under the current system.
+Montez le système de fichier en question dans le système en
+cours:
 
-`mount LABEL=fsname /mnt`
+	`mount LABEL=fsname /mnt`
 
-Create a swap file and make it readable cum writable only by root.
+Créez un fichier swap (fichier d'échange) et rendez le écrivable/
+lisible seulement par le superutilisateur (root).
 
-`dd if=/dev/zero of=/mnt/swapfile bs=1MiB count=2048`
 
-`chmod 600 /mnt/swapfile`
-
-`mkswap /mnt/swapfile`
-
-`swapon /mnt/swapfile`
+	```
+	dd if=/dev/zero of=/mnt/swapfile bs=1MiB count=2048`
+	chmod 600 /mnt/swapfile
+	mkswap /mnt/swapfile
+	swapon /mnt/swapfile
+	```
 
 Installation
 ------------
 
-Make the installation packages to be written on the respective
-mounted filesystem.
+Faites en sorte que les paquets d'installation soient écris
+sur le système de fichiers monté en question:
 
-`herd start cow-store /mnt`
+	`herd start cow-store /mnt`
 
-Create the required directory.
+Créez le répertoire requis:
 
-`mkdir /mnt/etc`
+	`mkdir /mnt/etc`
 
-Create, edit and save the configuration file by typing the following
-code snippet. WATCH-OUT for variables in the code snippet and
-replace them with your relevant values.
+Créez, éditez et sauvegardez le fichier de configuration en tapant
+l'extrait de code suivant. **SOYEZ ATTENTIF** aux variables dans 
+l'extrait de code et remplacez les avec vos valeurs relevées.
 
-`nano /mnt/etc/config.scm`
+	`nano /mnt/etc/config.scm`
 
-Snippet:
+Extrait:
 
 ```
 (use-modules
@@ -284,100 +305,109 @@ Snippet:
 	(name-service-switch %mdns-host-lookup-nss))
 ```
     
-Initialise new Guix System.
+Initialisez le nouveau système Guix:
 
-`guix system init /mnt/etc/config.scm /mnt`
+	`guix system init /mnt/etc/config.scm /mnt`
 
-Reboot the device.
+Redémarrez votre machine:
 
-`reboot`
+	`reboot`
 
 Post-Installation
 ------------
 
-On reboot, as soon as you see the Libreboot Graphic Art, choose
-the option 'Load Operating System [o]'
+Au redémarrage, dès que vous voyez le logo de Libreboot, choisissez
+l'option 'Charger le système d'exploitation [o]'
 
-Enter LUKS Key, for libreboot's grub, as prompted.
+Entrez la clé LUKS pour le GRUB de libreboot, quand demandé.
 
-You may have to go through warning prompts by repeatedly
-pressing the "enter/return" key.
+Vous aurez peut-être à passer outre des avertissements en
+pressant de façon répétée la touche 'Entrée/Retour'.
 
-You will now see guix's grub menu from which you can go with the
-default option.
+Vous verrez maitenant le menu GRUB de guix depuis lequel vous
+pouvez choisir l'option par défaut.
 
-Enter LUKS Key again, for kernel, as prompted.
+Entrez de nouveau la clé LUKS, pour le kernel, quand demandé.
 
-Upon GNOME Login Screen, login as "root" with password field empty.
+Sur la page d'authentification GNOME, identifiez-vous en tant que
+"root" en laissant le mot de passe vide.
 
-Open terminal from the GNOME Dash.
+Ouvrez un terminal depuis GNOME Dash.
 
-Set passkey for "root" user. Follow the prompts.
+Définissez un mot de passe pour l'utilisateur "root". Suivez les
+demandes:
 
-`passwd root`
+	`passwd root`
 
-Set passkey for "username" user. Follow the prompts.
+Faîtes de même pour l'utilisateur "username". Suivez les
+demandes:
 
-`passwd username`
+	`passwd username`
 
-Update the guix distribution. Wait for the process to finish.
+Mettez à jour la distribution Guix. Attendez que le processus se
+finit:
 
-`guix pull`
+	`guix pull`
 
-Update the search paths.
+Mettez à jour les chemins de recherche:
 
-`export PATH="$HOME/.config/guix/current/bin:$PATH"`
+	```
+	export PATH="$HOME/.config/guix/current/bin:$PATH"
+	export INFOPATH="$HOME/.config/guix/current/share/info:$INFOPATH"
+	```
 
-`export INFOPATH="$HOME/.config/guix/current/share/info:$INFOPATH"`
+Mettez à jour le système guix. Attendez que le processus se finit:
 
-Update the guix system. Wait for the process to finish.
+	`guix system reconfigure /etc/config.scm`
 
-`guix system reconfigure /etc/config.scm`
+Redémarrez la machine:
 
-Reboot the device.
-
-`reboot`
+	`reboot`
 
 Conclusion
 ==========
 
-Everything should be stream-lined from now. You can follow your
-regular boot steps without requiring manual intervention. You can
-start logging in as regualar user with the respective "username".
+Maintenant, tout devrait être profilé. Vous pouvez continuer
+à démarrer normalement sans avoir intervention manuelle. Vous
+pouvez commencer à vous authentifier en tant qu'utilisateur
+normal avec l'"username" en question.
 
-You will have to periodically (at your convenient time) login as root
-and do the update/upgrade part of post-installation section, to keep your
-guix distribution and guix system updated.
+Vous auriez à périodiquement mettre votre système à jour
+(quand le temps vous le permet): authentifiez-vous en tant que
+supertutilisateur (root) et reproduisez la partie mise à jour
+de la section post-installation de ce guide, afin de garder
+la disttribution et le système guix à jour.
 
-That is it! You have now setup guix system with full-disk encryption
-on your device powered by libreboot. Enjoy!
+C'est tout! Vous avez maintenant mis en place un système Guix
+avec le chiffrement du disque tout entier, sur votre machine
+fonctionnant sous libreboot. Profitez !
 
-References
+Réferences
 ==========
 
-[1] Guix Manual (http://guix.gnu.org/manual/en/).
+[1] Manuel Guix (http://guix.gnu.org/manual/fr/).
 
-[2] Libreboot Documentation (https://libreboot.org/docs/).
+[2] Documentation Libreboot (https://libreboot.org/docs/).
 
 Acknowledgements
 ================
 
-[1] Thanks to Guix Developer, Clement Lassieur (clement@lassieur.org),
-for helping me with the Guile Scheme Code for the Bootloader Configuration.
+[1] Merci au développeur de Guix, Clement Lassieur (clement@lassieur.org),
+pour m'avoir aidé avec le code Guile Scheme pour la configuration du chargeur
+d'amorçage.
 
-[2] Thanks to Libreboot Founder and Developer,
-Leah Rowe (leah@libreboot.org), for helping me to understand the
-libreboot’s functionalities better.
+[2] Merci à la fondatrice et développeuse du projet Libreboot,
+Leah Rowe (leah@libreboot.org), pour m'avoir aidé à mieux comprendre les fonctionnalités
+de libreboot.
 
 License
 =======
 
 Copyright (C) 2019  RAGHAV "RG" GURURAJAN (raghavgururajan@disroot.org).
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.3
-or any later version published by the Free Software Foundation;
-with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-
-A copy of the license can be found at
-"https://www.gnu.org/licenses/fdl-1.3.en.html".
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md) et 
+[ici](https://www.gnu.org/licenses/fdl-1.3.en.html").
