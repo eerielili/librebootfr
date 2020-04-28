@@ -1,74 +1,70 @@
 ---
-title: Changing the MAC address
+title: Changer l'adresse MAC
 ...
 
 Introduction (GM45+e1000)
 =========================
 
-This section is applicable to all Libreboot-supported laptops with the
-mobile 4 series chipset (as shown in `$ lspci`)
-that use the e1000 ethernet controller (e.g. T400, X200).
-The R500 is an exception to this as it does not use the built-in e1000.
+Cette section est appliquable à tous les ordinateurs portables supportés par Libreboot avec le série de mobile 4 de jeu de puces (comme montré dans `$ lspci`)
+qui utilise le contrôleur ethernet e1000 (p.E. T400, X200).
+Le R500 est une exception à celà car il n'utilise pas le e1000
+intégré.
 
-On all these laptops, the
-[MAC address](https://en.wikipedia.org/wiki/MAC_address)
-for the built-in gigabit ethernet controller is stored inside the flash chip,
-along with Libreboot and other configuration data. Therefore, installing
-Libreboot will overwrite it.
+Sur ces ordinateurs portables, l'[adresse MAC](https://en.wikipedia.org/wiki/MAC_address) pour le contrôleur ethernet gigabit intégré est stockée à l'intérieur de la puce flash, au côté de Libreboot et d'autres données de configuration.
+Dès alors, installer Libreboot l'écrasera.
 
-Thus, for these laptops, prebuilt Libreboot already contains a generic
-MAC address in the configuration section. This address is `00:f5:f0:40:71:fe`
-in builds before 2018-01-16 and `00:4c:69:62:72:65` (see the ascii character
-set) afterwards.
-Unless you change it, your computer will boot and use it. This can lead
-to network problems if you have more than one Libreboot computer on
-the same layer2 network (e.g. on the same network switch). The switch
-(postman) will simply not know who to deliver to as the MAC (house) addresses
-will be the same.
+Donc, pour ces ordinateurs portables, Libreboot préconstruit contient dèjà une adresse MAC générique dans la section de configuration. Cette adresse est `00:f5:f0:40:71:fe` dans les builds datant d'avant le 01/16/2020 et `00:4c:69:62:72:65` dans ceux d'après.
+À moins que vous la changiez, votre ordinateur démarrera et l'utilisera. Ça peut mener à des problèmes réseaux s'il y plus d'un ordinateur sous Libreboot dans un même réseau de couche 2 (p.e. sur le même commutateur/switch).
+Le commutateur (postman) ne pourra simplement pas savoir à qui
+délivrer/router l'information puisque les adresses MACs seront les
+mêmes.
 
-To prevent these address clashes, you can either modify prebuilt Libreboot
-to use an address of your own choosing or you can change the address in your
-operating system's boot scripts.
+Pour prévenir ces collisions d'adresses, vous pouvez soit modifier
+le Libreboot précompilé pour utiliser une adresse de votre choix ou
+vous pouvez changer l'adresse via les scripts de démarrage de votre
+système d'exploitation.
 
-In either case, it is a good idea to write down the address that your
-computer originally had.
+Dans tout les cas, c'est une bonne idée de noter quelque part
+l'adresse d'origine qu'avait votre ordinateur.
 
-Obtaining the existing MAC address
+Obtenir l'adresse MAC existante
 ==================================
 
-The existing MAC address may be obtained by the following methods:
+L'adresse MAC existante peut être obtenue grâce aux méthodes
+suivantes:
 
-1.  Run `ip link` or `ifconfig` in a terminal/console/shell;
-    find your ethernet device (e.g., **enpXXX** or **ethXXX**),
-    and look for a set of 12 colon-delimited
-    [hexadecimal digits](https://en.wikipedia.org/wiki/Hexadecimal).
-    For example: `00:f3:f0:45:91:fe`.
+1.  Exécutez `ip link` ou `ifconfig` dans un terminal/console;
+    trouvez votre périphérique réseau (p.e. **enpXXX** ou **ethXXX),
+    et cherchez pour un ensemble de 12
+    [nombres hexadécimaux](https://fr.wikipedia.org/wiki/Hexadecimal)
+    délimités par des ":" .
+    Par exemple: `00:f3:f0:45:91:fe`.
 
     * `$ ip link`
 
          `... link/ether ??:??:??:??:??:?? brd ...`
 
-    * Alternatively:
+    * Alternativement:
 
         `$ ifconfig`
 
         `... ether ??:??:??:??:??:?? txqueuelen ...`
 
-
-2.  Otherwise you can read the white label that is often found on the
-    motherboard under the memory sticks:
+2.  Sinon vous pouvez lire l'étiquette blanche qui se trouve souvent
+    sur la carte mère, en dessous des barettes mémoires:
     ![](../install/images/t400/macaddress1.jpg)
 
-3.  The MAC address is usually listed on the laptop chassis as well. This one
-    will be incorrect if the motherboard was changed and the stickers were not
-    updated.
+3.  L'adresse MAC est habituellement écrite sur la coque/chassis de l'ordinateur
+    portable. Celle-ci sera incorrecte si la carte mère a été changée et que les
+    autocollants n'étaient pas mis à jour.
 
-Changing the MAC address in the operating system
+
+Changer l'adresse MAC dans le système d'exploitation
 ================================================
 
-There are three portable ways of doing so:
+Il y a 3 manières portable entre systèmes pour le faire:
 
-1.  Using the new iproute2 package:
+1. En utilisant le paquet iproute2:
 
     `# ip link set <interface> down`
 
@@ -77,22 +73,24 @@ There are three portable ways of doing so:
     `# ip link set <interface> up`
 
 
-2.  Using the old `ifconfig` command:
+2.  En utilisant l'ancienne commande ifconfig:
 
     `# ifconfig <interface> hw ether 00:4c:69:62:72:65`
 
+3.  En utilisant le paquet macchanger.
 
 3. Using the macchanger package.
 
-You can use use of these three methods in your operating system's
-init scripts or you can use your operating system's own networking
-configuration. Refer to your operating system's documentation for
-how to do this.
+Vous pouvez utiliser une de ces trois méthodes dans les scripts
+d'initialisation de votre système d'exploitation, ou vous pouvez
+choisir la propre configuration réseau du système d'exploitation.
+Référez-vous à la documentation de votre système d'exploitation sur
+comment faire ceci.
 
-Changing the MAC address in Libreboot
+Changer l'adresse MAC dans Libreboot
 =====================================
 
-See [here](../gnulinux/grub_cbfs.md#changeMAC).
+Voyez [ici](../gnulinux/grub_cbfs.md#changeMAC).
 
 
 
@@ -100,8 +98,8 @@ Copyright © 2017 Fedja Beader <fedja@protonmail.ch>
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
