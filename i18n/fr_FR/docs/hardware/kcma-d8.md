@@ -1,104 +1,119 @@
 ---
-title: ASUS KCMA-D8 desktop/workstation board 
+title: Carte mère de PC bureau/station de travail ASUS KCMA-D8 
 ...
 
-This is a desktop board using AMD hardware (Fam10h *and Fam15h* CPUs
-available). It can also be used for building a high-powered workstation.
-Powered by libreboot. The coreboot port was done by Timothy Pearson of
-Raptor Engineering Inc. and, working with them, merged into libreboot.
+C'est une carte mère de bureau support du matériel AMD (processeurs Fam10h *et
+Fam15h* disponibles). Elle peut être aussi utilisé pour construire une station
+de travail hautement performantes.
+Fonctionnant sous Libreboot.
+L'adaption de coreboot a été faite par Timothy Pearson de l'entreprise Raptor
+Engineering, et , nous travaillant avec eux, fusionné dans Libreboot.
 
-*Memory initialization is still problematic, for some modules. We
-recommend avoiding Kingston modules.*
+L'initialisation de la mémoire est encore problématique, pour quelques
+barettes. Nous recommandons d'éviter les modules Kingston.*
 
-Flashing instructions can be found at
-[../install/\#flashrom](../install/#flashrom) - note that external
-flashing is required (e.g. BBB), if the proprietary (ASUS) firmware is
-currently installed. If you already have libreboot, by default it is
-possible to re-flash using software running in GNU+Linux on the kcma-d8,
-without using external hardware.
+Les instructions de flashage peuvent être trouvée dans
+[../install/\#flashrom](../install/#flashrom) - notez que le flashage externe
+est requis (p.e. BBB), si le micrologiciel propriétaire d'ASUS est installé
+sur le moment. Si vous avez déjà libreboot, il est par défaut possible de
+re-flasher par voie logicielle depuis GNU+Linux sur kcma-d18, sans utiliser de
+matériel extérieurs.*
 
-CPU compatibility
+Compatilibilité des processeurs
 =================
+*Utilisez l'Opteron 4200 series (marchent sans mises à jour du microcode,
+incluant la virtualisation matérielle)*.
 
-*Use Opteron 4200 series (works without microcode updates, including hw
-virt).* 4300 series needs microcode updates, so avoid those CPUs. 4100
-series is too old, and mostly untested.
+Le 4300 series a besoin de mises à jour du microcode, donc éviter ces CPUs.
+Les 4100 séries sont trop vieux, et majoritairement non testés.
 
-Board status (compatibility) {#boardstatus}
+Status de la carte mère (niveau compatibilité) {#boardstatus}
 ============================
 
-See <https://raptorengineeringinc.com/coreboot/kcma-d8-status.php>.
+Voyez <https://raptorengineeringinc.com/coreboot/kcma-d8-status.php>.
 
-Form factor {#formfactor}
+Facteur de forme / format {#formfactor}
 ===========
 
-This board is ATX form factor. While the [ATX standard, version 2.2](https://web.archive.org/web/20120725150314/http://www.formfactors.org/developer/specs/atx2_2.pdf)
-specifies board dimensions 305mm x 244mm, this board measures 305mm x 253mm;
-ensure your case supports this extra ~centimeter in width.
+Cette carte mère utilise le format ATX. Bien que la [version 2.2 du standard
+ATX](https://web.archive.org/web/20120725150314/http://www.formfactors.org/developer/specs/atx2_2.pdf)
+spécifié des dimensions de carte mères de 305mm x 244mm, cette carte mesure
+305mm x 253mm; assurez-vous que votre boîtier supporte ces centimètre  de plus
+en largeur.
 
-IPMI iKVM module add-on {#ipmi}
+Extension IPMI iKVM {#ipmi}
 =======================
 
-Don't use it. It uses proprietary firmware and adds a backdoor (remote
-out-of-band management chip, similar to the [Intel Management
-Engine](../../faq.md#intelme). Fortunately, the firmware is
-unsigned (possibly to replace) and physically separate from the
-mainboard since it's on the add-on module, which you don't have to
-install.
+Ne l'utlilisez pas. Ça utilise du micrologiciel propriétaire et ajoute une
+porte dérobée (une puce d'administration hors bandes, similaire à l'[Intel
+Management Engine](../../faq.md#intelme).
+Heuresement, le micrologiciel est non signé (possiblement pour faciliter le
+remplaçage) et physiquement séparé, puisque c'est une extension que vous
+n'avez pas à installer.
 
-Flash chips {#flashchips}
+Puces de flashage {#flashchips}
 ===========
 
-2MiB flash chips are included by default, on these boards. It's on a
-P-DIP 8 slot (SPI chip). The flash chip can be upgraded to higher sizes:
-4MiB, 8MiB or 16MiB. With at least 8MiB, you could feasibly fit a
-compressed linux+initramfs image (BusyBox+Linux system) into CBFS and
-boot that, loading it into memory.
+Les puces de flashage de 2Mo sont inclues par défaut sur ces cartes mères.
+C'est sur un P-DIP à 8 emplacements (puce SPI).
+La puce flash peut être amélioré vers une plus grande taille :
+4Mo, 8Mo ou 16Mo.
+Avec au moins 8Mo, il est faisaible que vous faites rentrer une image
+compressé linux+initramfs (système Linux+BusyBox) dans CBFS et démarrer sur
+ça, se chargeant ensuite dans la mémoire.
 
-Libreboot has configs for 2, 4, 8 and 16 MiB flash chip sizes (default
-flash chip is 2MiB).
+Libreboot a des configurations pour des tailles de puces de 2, 4, 8 et 16Mo (
+la puce flash par défaut fait 2Mo).
 
-*DO NOT hot-swap the chip with your bare hands. Use a P-DIP 8 chip
-extractor. These can be found online. See
+*NE RETIREZ PAS la puce avec vos mains nues. Utilisez un extracteur de puce
+P-DIP 8. Ceux-ci s'achètent en ligne: Jetez un coup d'oeil à
 <http://www.coreboot.org/Developer_Manual/Tools#Chip_removal_tools>*
 
-Native graphics initialization {#graphics}
+Initialisation natives des graphiques {#graphics}
 ==============================
+
+Seulement le mode texte est connu pour marcher, mais le kernel(linux) peut
+initialiser le tampon d'affichage (si KMS est activé
 
 Only text-mode is known to work, but linux(kernel) can initialize the
 framebuffer display (if it has KMS - kernel mode setting).
 
-Current issues {#issues}
+Problèmes en ce moment {#issues}
 ==============
 
--   LRDIMM memory modules are currently incompatible
--   SAS (via PIKE 2008 module) requires non-free option ROM (and
-    SeaBIOS) to boot from it (theoretically possible to replace, but you
-    can put a kernel in CBFS or on SATA and use that to boot GNU, which
-    can be on a SAS drive. The linux kernel can use those SAS drives
-    (via PIKE module) without an option ROM).
+-   Les modules mémoires LRDIMM sont pour le moment incompatibles.
+-   Le SAS (SCSI, via le module PIKE 2008) nécessite une ROM (et SeaBIOS)
+    optionnelle et propriétaire pour démarrer dessus (théoriquement possible
+    de remplacer, mais vous pouvez mettre un kernel dans CBFS ou sur SATA et
+    utilisez ça pour démarrer sur GNU, qui peut marcher sur un disque SAS. Le
+    kernel linux peut utiliser ces disques SAS (via le module PIKE sans une
+    ROM optionnelle).
 
--   IPMI iKVM module (optional add-on card) uses proprietary firmware.
-    Since it's for remote out-of-band management, it's theoretically a
-    backdoor similar to the Intel Management Engine. Fortunately, unlike
-    the ME, this firmware is unsigned which means that a free
-    replacement is theoretically possible. For now, the libreboot
-    project recommends not installing the module. [This
-    project](https://github.com/facebook/openbmc) might be interesting
-    to derive from, for those who want to work on a free replacement. In
-    practise, out-of-band management isn't very useful anyway (or at
-    the very least, it's not a major inconvenience to not have it).
--   Graphics: only text-mode works. See [\#graphics](#graphics)
 
-Hardware specifications {#specifications}
+-   Le module IPMI iKVM (extension de carte optionnelle) utilise un
+    micrologiciel propriétaire. Puisque c'est pour une administration
+    hors-bande, c'est théoriquement une porte dérobée similaire similaire à
+    l'Intel Management Engine. Heuresement, contrairement à la ME, ce
+    micrologiciel n'est pas signé voulant dire qu'un remplacement par du libre
+    est théoriquement possible.
+    Pour l'instant, le project libreboot recommande de ne pas installer le
+    module. [Ce projet](https://github.com/facebook/openbmc) pourrait être
+    intéressant en tant que base sur laquelle dériver pour ceux voulant
+    travailler sur un remplacement libre.
+    En pratique, l'administration hors-bande n'est pas très utile de toute
+    façon (ce n'est pas un handicap de ne pas l'avoir).
+-   Graphiques: seulement le mode texte marche. Jetez un coup à la section
+    [\#graphique](#graphics)
+
+Caractéristiques techniques {#specifications}
 -----------------------
 
-Check the ASUS website.
+[Jetez un coup d'oeil sur le site web d'ASUS](https://www.asus.com/Commercial-Servers-Workstations/KCMAD8/specifications/).
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
