@@ -1,83 +1,92 @@
 ---
-title: Intel D945GCLF desktop board 
+title: Carte mère d'ordi de bureau Intel D945GCLF
 ...
 
-If you just want flashing instructions, go to
+Si vous voulez juste des instructions de flashage, jetez un coup d'oeil à
 [../install/d945gclf.md](../install/d945gclf.md)
 
-This board is a mini-itx desktop board for 2008. It uses an atom 230,
-which is a singe core CPU but it is hyperthreaded so it appears to have
-2 thread to the OS. The flash chip is very small, 512KiB, so grub2 does
-not fit, which is why libreboot has to use seabios on this target. Full
-disk encryption like on other supported targets will not be possible, so
-plan accordingly.
+Cette carte mère est une carte mère de bureau mini-itx faites en 2008.
+Elle utilise un processeur avec un seul coeur mais est 
+[hyperthreadée](https://fr.wiktionary.org/wiki/Hyper-Threading), donc
+pour le système d'exploitation il semble qu'il y a 2 threads.
+La puce de flash est vraiment petite, 512Ko, donc grub2 ne passe pas, c'est
+pourquoi libreboot doit utiliser seabios sur cette carte cible.
+Le chiffrement du disque en entier ne sera pas possible, donc préparez-vous
+en accordance.
 
-This board has a 945gc chipset which is the desktop equivalent of 945gm
-which can be found in the Lenovo x60/t60 or macbook2,1. This chipset
-features an ICH7 southbridge. It has 1 DIMM slot that can accommodate up
-to 2G of DDR2 RAM.
+Cette carte mère a un jeu de puces 945gc qui est l'équivalent de la 945gm
+qui peut être trouvée dans le Lenovo x60/t60 ou le macbook2,1. Ce jeu de puces
+inclut un contrôleur d'entrée/sortie IHC7.
+La carte mère a un emplacement DIMM qui peut être remplit jusqu'à 2Go de
+mémoire vive DDR2.
 
-Connectivity-wise it has 1 PCI slot, a 10/100 ethernet port, 4 usb slot
-and 4 usb ports, with one internal header and 2 SATA ports.
+Au niveau de la connectivité, elle a un emplacement PCI, un port Ethernet 
+10-100Mo/s, 4 emplacements et 4 ports USBs, avec un en-tête interne et 2
+ports SATA.
 
-The D945GCLF2 is an upgraded version of this board. The differences are:
-1 more USB header, 10/100/1000 ethernet and a dual core cpu (also
-hyperthreaded). Since the board is almost identical (and coreboot code
-seem to indicate that it works, since MAX\_CPU=4 is set), it is believed
-that it should also work but this is untested.
+La carte mère D945GCLF2 est une version améliorée de celle décrite ici.
+Les diifférences sont: 1 en-tête USB de plus, l'Ethernet 10-100-1000Mo/s
+et un processeur à deux coeurs (bénificiant aussi de l'hyperthreading).
+Puisque la carte mère est presque identique (et le code source de coreboot
+semble indiquer que ça marche, car la variable MAX\_CPU est définie sur 4), il
+est cru que ça devrait marcher, mais ce n'est pas encore testé.
 
-Remarks about vendor bios:
+Remarques à propos du BIOS manufactureur:
 --------------------------
 
--   Without coreboot/libreboot this board is utery useless, since the
-    vendor bios is very bad. It cannot boot from any HDD whether it is
-    connected to the SATA port or USB. With libreboot it works just
-    fine.
+-    Sans coreboot/libreboot cette carte mère est vraiment inutile, car
+    le bios manufactureur/d'usine est très mauvais. Il ne veut pas démarrer
+    sur n'importe quel disque dur connecté sur le port SATA ou USB.
+    Avec libreboot ça marche bien.
 
--   The vendor bios write protects the flash so it requires external
-    flashing to install libreboot on this device. Once libreboot is
-    flashed there is no problem to update the firmware internally
+-   Le bios du manufactureur protège en écriture le flashage donc ça
+    nécessite un flashage externe pour installer libreboot sur cet
+    appareil. Une fois que libreboot est flashé là-dedans il n'y a pas de
+    flasher le micrologiciel intérieurement
 
-Here is an image of the board:\
+Voici une image de la carte mère:
 ![](../images/d945gclf/d945gclf.jpg)\
-Here is an image of the D945GCLF2 board:\
+Voici une image de la carte mère D945GCLF2:
 ![](../images/d945gclf/20160923_141521.jpg){width="80%" height="80%"}\
-And SPI SOIC8 flash chip\
+Et de la puce de flash SPI SOIC8
 ![](../images/d945gclf/20160923_141550.jpg){width="50%" height="50%"}
 
-How to replace thermal paste and fan
+Comment remplacer la pâte thermique et le ventilateur
 ------------------------------------
 
-This board comes with very crappy disposable loud fan, that one has no
-bearings, which can not be repaired or oiled properly, do not waste your
-time trying to fix it, just buy one chinese same size fan\
+Cette carte mère est équipée d'un ventilateur très merdique et bruyant qui n'a
+pas de paliers, et donc ne peut pas être huilé et réparé correctement, ne
+perdez pas votre temps a essayer de corriger celà, juste achetez un
+ventilateur chinois de même taille\
 ![](../images/d945gclf/20160923_141620.jpg){width="50%" height="50%"}
 ![](../images/d945gclf/20160923_141614.jpg){width="50%" height="50%"}\
-Make sure that new one has same wiring\
+Soyez sûr que le nouveau a le même câblage\
 ![](../images/d945gclf/20160923_142618.jpg){width="50%" height="50%"}\
-This is a new one, with bearing and maintenable\
+Celui-ci est un nouveau, avec un palier et réparable\
 ![](../images/d945gclf/20160923_141738.jpg){width="50%" height="50%"}
 ![](../images/d945gclf/20160923_141814.jpg){width="50%" height="50%"}\
-Now remove the both coolers rotating them a bit, slowly, then clean both
-silicons and both coolers (removing cmos battery first is recommended)\
+Maintenant enlevez les deux dissipateurs en les tournant un peu, lentement,
+ensuite nettoyez à la fois les silicones et les dissipateurs (il est
+recommandé d'enlever tout d'abord la batterie du bios/cmos.\
 ![](../images/d945gclf/20160923_141601.jpg){width="50%" height="50%"}\
-Put a little bit of non conductive thermal paste on both silicons (only
-cpu silicon iis shown on that image)\
+Mettez un petit peu de pate thermique non conductrice sur les deux silicones
+(seulement le silicone du processeur est montré dans cette image)\
 ![](../images/d945gclf/20160923_142031.jpg){width="50%" height="50%"}\
 
-Before assembling new fan, some need new longer screws, make sure having
-these (on the left is original one, too short for new fan)\
+Avant de monter un nouveau ventilateur, certains ont besoin de nouveaux vis
+plus longs, soyez sûr de les avoir (sur la gauche est l'original, trop court
+pour le nouveau ventilateur)\
 ![](../images/d945gclf/20160923_141659.jpg){width="50%" height="50%"}\
-After that, assemble your new fan into CPU cooler\
+Après cela,, montez votre nouveau ventilateur sur le dissipateur du processeur\
 ![](../images/d945gclf/20160923_141635.jpg){width="50%" height="50%"}\
-Finally assemle both coolers on both chips, do not forget put in the CPU
-fan connector back, and you are done.
+Montez finalement les deux dissipateurs sur les deux puces, n'oubliez de
+rebrancher le connecteur du ventilateur, et vous avez fini.
 
 Copyright © 2016 Arthur Heymans <arthur@aheymans.xyz>\
 Copyright © 2016 Vitaly Castaño Solana <vita\_cell@hotmail.com>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
