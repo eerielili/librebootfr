@@ -1,26 +1,30 @@
 ---
-title: Gigabyte GA-G41M-ES2L desktop board 
+title: Carte mère d'ordi de bureau Gigabyte GA-G41M-ES2L 
 ...
 
-This is a desktop board using intel hardware (circa \~2009, ICH7
-southbridge, similar performance-wise to the Libreboot X200. It can make
-for quite a nifty desktop. Powered by libreboot.
+C'est une carte mère d'ordi de bureau utilisant du matériel Intel (datant
+d'environ 2009, contrôleur d'entrée/sorite ICH7, similaire au niveau des
+performances au X200 sous Libreboot.
+Ça peut donner un ordi de bureau vraiment pas mal, marchant sur libreboot.
 
-IDE on the board is untested, but it might be possible to use a SATA HDD
-using an IDE SATA adapter. The SATA ports do work.
+Les ports IDE sur la carte mère ne sont pas testés, mais il serait peut-être
+possible d'utiliser un disque dur SATA en utilisant un adaptateur IDE à SATA.
+Les ports SATA marchent.
 
-You need to set a custom MAC address in GNU+Linux for the NIC to work.
-In /etc/network/interfaces on debian-based systems like Debian or
-Devuan, this would be in the entry for your NIC:\
-hwaddress ether macaddressgoeshere
+Il sera nécessaire de définir une adresse MAC customisée depuis GNU+Linux afin
+que la carte réseau marche.
+Sur les systèmes basés Debian tel qu'Ubuntu, Devuan ou Debian, voici comment
+se présenterait la ligne à mettre dans le fichier /etc/network/interfaces pour
+votre carte réseau:\
+hwaddress ether addresse\_mac\_ici
 
-Flashing instructions can be found at
+Les instructions de flashage peuvent être trouvées dans
 [../install/\#flashrom](../install/#flashrom)
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
