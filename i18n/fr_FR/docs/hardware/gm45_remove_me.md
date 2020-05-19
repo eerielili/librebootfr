@@ -111,9 +111,9 @@ comment la flasher.
 Protéger en écriture la puce de flashage
 -------------------------------
 
-
-Look in *resources/utilities/ich9deblob/src/descriptor/descriptor.c* for
-the following lines in the *descriptorHostRegionsUnlocked* function:
+Cherchez les lignes suivantes dans la fonction *descriptorHostRegionsUnlocked*
+se trouvant dans le fichier
+*resources/utilities/ich9deblob/src/descriptor/descriptor.c* :
 
     descriptorStruct.masterAccessSection.flMstr1.fdRegionWriteAccess = 0x1;
     descriptorStruct.masterAccessSection.flMstr1.biosRegionWriteAccess = 0x1;
@@ -121,8 +121,8 @@ the following lines in the *descriptorHostRegionsUnlocked* function:
     descriptorStruct.masterAccessSection.flMstr1.gbeRegionWriteAccess = 0x1;
     descriptorStruct.masterAccessSection.flMstr1.pdRegionWriteAccess = 0x1;
 
-Also look in *resources/utilities/ich9deblob/src/ich9gen/mkdescriptor.c*
-for the following lines:
+Regardez aussi dans le fichier *resources/utilities/ich9deblob/src/ich9gen/mkdescriptor.c*
+pour les lignes suivantes:
 
     descriptorStruct.masterAccessSection.flMstr1.fdRegionWriteAccess = 0x1; /* see ../descriptor/descriptor.c */
     descriptorStruct.masterAccessSection.flMstr1.biosRegionWriteAccess = 0x1; /* see ../descriptor/descriptor.c */
@@ -130,134 +130,146 @@ for the following lines:
     descriptorStruct.masterAccessSection.flMstr1.gbeRegionWriteAccess = 0x1; /* see ../descriptor/descriptor.c */
     descriptorStruct.masterAccessSection.flMstr1.pdRegionWriteAccess = 0x1; /* see ../descriptor/descriptor.c */
 
-NOTE: When you write-protect the flash chip, re-flashing is no longer
-possible unless you use dedicated external equipment, which also means
-disassembling the laptop. The same equipment can also be used to remove
-the write-protection later on, if you choose to do so. \*Only\*
-write-protect the chip if you have the right equipment for external
-flashing later on; for example, see
-[../install/bbb\_setup.md](../install/bbb_setup.md).
+NOTEZ: Quand vous protégez en écriture la puce de flash, le reflashage n'est
+alors plus possible à moins que vous utilisiez de l'équipement externe
+dédicacé à cela, ce qui implique un désassemblage de l'ordinateur portable.
+Le même équipement peut être aussi utilisé pour enlever plus tard la
+protection en écriture, si vous le voulez.
+Protégez en écriture la puce \*seulement\* si vous avez le bon équipement qui
+va avec, afin de flasher extérieurement plus tard; par exemple, jetez un coup
+d'oeil à [../install/bbb\_setup.md](../install/bbb_setup.md).
 
-Change them all to 0x0, then re-compile ich9gen. After you have done
-that, follow the notes in [\#ich9gen](#ich9gen) to generate a new
-descriptor+gbe image and insert that into your ROM image, then flash it.
-The next time you boot, the flash chip will be read-only in software
-(hardware re-flashing will still work, which you will need for
-re-flashing the chip after write-protecting it, to clear the write
-protection or to flash yet another ROM image with write protection set
-in the descriptor).
+Modifiez les valeurs de variables à 0x0, puis recompilez ich9gen. Après que
+vous avez fait celà, suivez les notes dans [\#ich9gen](#ich9gen) pour générer
+une nouvelle image de descripteur+gbe puis insérez la dans votre image ROM, et
+ensuite flashez la.
+La prochaine fois que vous démarrez, la puce de flash sera en mode "lecture
+seulement" dans les logiciels (le reflashage matériel marchera encore, vous en
+aurez besoin pour reflasher la puce après l'avoir protégée en écriture,
+nettoyer la protection en écriture ou alors flasher une autre image ROM avec
+la protection en écriture définie dans le descripteur).
 
-Flashrom will tell you that you can still forcefully re-flash, using *-p
-internal:ich\_spi\_force=yes* but this won't actually work; it'll just
-brick your laptop.
+Flashrom vous dira qu'il peut forcer le reflashage, en utilisant  *-p
+internal:ich\_spi\_force=yes* mais en fait ça ne marchera pas; ça va juste
+bousiller votre ordinateur portable.
 
-For external flashing guides, refer to [../install/](../install/).
+Pour des guides sur le flashage externe, référez vous à
+[../install/](../install/).
 
-ICH9 deblob utility {#ich9deblob}
+L'utilitaire ICH9 deblob {#ich9deblob}
 ===================
 
-**This is no longer strictly necessary. Libreboot ROM images for GM45
-systems now contain the 12KiB descriptor+gbe generated from ich9gen, by
-default.**
+**Ce n'est plus strictement nécessaire. Les images ROM de Libreboot
+contiennent désormais par défaut le descripteur+gbe de 12Ko généré par
+ich9gen.**
 
-This was the tool originally used to disable the ME on X200 (later
-adapted for other systems that use the GM45 chipset).
-[ich9gen](#ich9gen) now supersedes it; ich9gen is better because it does
-not rely on dumping the factory.rom image (whereas, ich9deblob does).
+C'était l'outil originnellement utilisé pour désactivé la ME sur le X200 (et
+plus tard adapté pour les autres systèmes utilisant le jeu de puces GM45).
+[ich9gen](#ich9gen) le supplante; ich9gen est mieux parce qu'il ne dépend pas
+du cliché mémoire de l'image factory.rom (tandis que ich9deblob oui).
 
-This is what you will use to generate the deblobbed descriptor+gbe
-regions for your libreboot ROM image.
 
-If you are working with libreboot\_src (or git), you can find the source
-under resources/utilities/ich9deblob/ and will already be compiled if
-you ran **./oldbuild module all** or **./oldbuild module ich9deblob**
-from the main directory (./), otherwise you can build it like so:
+C'est que vous utiliserez pour générer les régions descripteur+gbe déblobbées
+pour votre image ROM de Libreboot.
+
+Si vous êtes en train de travaillez avec git ou libreboot\_src, vous pouvez
+trouver ses sources sous le répertoire
+[resources/utilities/ich9deblob/](../resources/utilities/ich9deblob/) et sera
+déjà compilé si vous avez exécuté **./oldbuild module all** ou **./oldbuild
+module ich9deblob** depuis le répertoire racine, sinon vous pouvez le compilez
+en faisant ceci:
 
     $ ./oldbuild module ich9deblob
 
-An executable file named **ich9deblob** will now appear under
-resources/utilities/ich9deblob/
+Un fichier exécutable nommé **ich9deblob** apparaîtra maintenant dans le
+répertoire resources/utilities/ich9deblob/
 
-If you are working with libreboot\_util release archive, you can find
-the utility included, statically compiled (for i686 and x86\_64 on
-GNU+Linux) under ./ich9deblob/.
+Si vous travaillez avec l'archive des versions de libreboot\_util, vous
+trouvez l'utilitaire sous ./ich9deblob/, compilé statiquement (pour i686 et
+x86\_64 sur GNU+Linux). 
 
-Place the factory.rom from your system (can be obtained using the
-external flashing guides for GM45 targets linked
-[../install/](../install/)) in the directory where you have your
-ich9deblob executable, then run the tool:
+
+Mettez le factory.rom de votre système (pouvant être obtenu en suivant les
+guides de flashage externe pour les cibles GM45, [../install/](../install/))
+dans le répertoire où se trouve l'exécutable de ich9deblob, puis exécutez
+l'utilitaire:
 
     $ ./ich9deblob
 
-A 12kiB file named **deblobbed\_descriptor.bin** will now appear. **Keep
-this and the factory.rom stored in a safe location!** The first 4KiB
-contains the descriptor data region for your system, and the next 8KiB
-contains the gbe region (config data for your gigabit NIC). These 2
-regions could actually be separate files, but they are joined into 1
-file in this case.
+Un fichier de 12Ko nommé **deblobbed\_descriptor.bin** apparaîtra maintenant.
+**Gardez-le ainsi que le factory.rom dans un endroit sûr!** Le premier bloc de
+4Ko contient la région de données du descripteur pour votre système, et le
+bloc suivant de 8Ko contient la région GBE (données de configuration pour
+votre carte réseau gigabit). Ces deux régions pourrait en fait être dans des
+fichiers séparés, mais ils sont joints en un seul fichier dans ce cas là.
 
-A 4KiB file named **deblobbed\_4kdescriptor.bin** will alternatively
-appear, if no GbE region was detected inside the ROM image. This is
-usually the case, when a discrete NIC is used (eg Broadcom) instead of
-Intel. Only the Intel NICs need a GbE region in the flash chip.
+Un fichier de 4Ko nommé **deblobbed\_4kdescriptor.bin** apparaîtra
+alternativement, si aucune région GBE n'a été détectée dans l'image ROM.
+C'est souvent le cas lorsque une carte réseau discrète est utilisé (p.e.
+Broadcom) au lieu d'Intel. Seulement les cartes réseaux Intel ont besoin d'une
+région GBE dans la puce flash.
 
-Assuming that your libreboot image is named **libreboot.rom**, copy the
-**deblobbed\_descriptor.bin** file to where **libreboot.rom** is located
-and then run:
+En assumant que votre image libreboot est nommée **libreboot.rom**, copier
+le fichier **deblobbed\_descriptor.bin** où **libreboot.rom** est située puis
+ensuite exécutez:
 
     # dd if=deblobbed_descriptor.bin of=libreboot.rom bs=12k count=1 conv=notrunc
 
-Alternatively, if you got a the **deblobbed\_4kdescriptor.bin** file (no
-GbE defined), do this:
+Alternativement, si vous avez le fichier **deblobbed\_4kdescriptor.bin** (pas
+de GBE défini), faites ceci:
 
     # dd if=deblobbed_4kdescriptor.bin of=libreboot.rom bs=4k count=1 conv=notrunc
 
-The utility will also generate 4 additional files:
+L'utilitaire va aussi générer 4 fichier supplémentaires:
 
 -   mkdescriptor.c
 -   mkdescriptor.h
 -   mkgbe.c
 -   mkgbe.h
 
-These are C source files that can re-generate the very same Gbe and
-Descriptor structs (from ich9deblob/ich9gen). To use these, place them
-in src/ich9gen/ in ich9deblob, then re-build. The newly built
-**ich9gen** executable will be able to re-create the very same 12KiB
-file from scratch, based on the C structs, this time **without** the
-need for a factory.rom dump!
+Ce sont des fichiers sources en C qui peuvent regénérer les mêmes structs Gbe
+et Descriptor (de ich9deblob/ich9gen). Pour les utiliser, placez les dans
+src/ich9gen/ dans ich9deblob, puis recompilez. L'exécutable **ich9gen**
+nouvellement compilé sera capable de recréer les fichiers de 12Ko à partir de
+rien, en se basant sur les structures en C, cette fois **sans** avoir besoin
+d'un cliché mémoire factory.rom !
 
-You should now have a **libreboot.rom** image containing the correct 4K
-descriptor and 8K gbe regions, which will then be safe to flash. Refer
-back to [../install/\#flashrom](../install/#flashrom) for how to flash
-it.
+Vous devriez maintenant avor une image **libreboot.rom** contenant le
+descripteur de 4K de correct et les régions GBE de 8Ko, qui seront ensuite
+flashable sûrement.
+Référez vous à [../install/\#flashrom](../install/#flashrom) sur comment la
+flasher.
 
-demefactory utility {#demefactory}
+Utilitaire demefactory {#demefactory}
 ===================
 
-This takes a factory.rom dump and disables the ME/TPM, but leaves the
-region intact. It also sets all regions read-write.
+Il prend un cliché mémoire factory.rom et désactive le ME/TPM, mais laisse la
+région intacte. Ça rend aussi toutes les régions accessibles en
+lecture/écriture.
 
-The ME interferes with flash read/write in flashrom, and the default
-descriptor locks some regions. The idea is that doing this will remove
-all of those restrictions.
+La ME intéfère avec la lecture/écriture du flash dans flashrom, et le
+descripteur par défaut verrouille quelques régions. L'idée est que cet outil
+enlevera toutes ces restrictions.
 
-Simply run (with factory.rom in the same directory):
+Exécutez simplement (avec factory.rom dans le même répertoire):
 
     $ ./demefactory
 
-It will generate a 4KiB descriptor file (only the descriptor, no GbE).
-Insert that into a factory.rom image (NOTE: do this on a copy of it.
-Keep the original factory.rom stored safely somewhere):
+Ça générera un fichier descripteur de 4Ko (seulement le descripteur, pas de
+GBE). Insérez ça dans une image factory.rom (NOTE: faites ceci sur une copie.
+Gardez le factory.rom original dans un endroit sûr):
 
     # dd if=demefactory_4kdescriptor.bin of=factory_nome.rom bs=4k count=1 conv=notrunc
 
-TODO: test this.\
-TODO: lenovobios (GM45 thinkpads) still write-protects parts of the
-flash. Modify the assembly code inside. Note: the factory.rom (BIOS
-region) from lenovobios is in a compressed format, which you have to
-extract. bios\_extract upstream won't work, but the following was said
-in \#coreboot on freenode IRC:
 
+AFAIRE: tester cela.\
+AFAIRE: lenovobios (GM45 thinkpads) protège encore en lecture/écriture des
+parties du flash. Modifier à l'intérieur le code assembleur. Note: le
+factory.rom ( region BIOS) du lenovobios est dans un format compressé que vous
+avez à extraire.
+bios\_extract en amont ne marchera pas, mais le suivant a été dit dans dans
+IRC sur freenode, canal \#coreboot:
+    
     <roxfan> vimuser: try bios_extract with ffv patch http://patchwork.coreboot.org/patch/3444/
     <roxfan> or https://github.com/coreboot/bios_extract/blob/master/phoenix_extract.py
     <roxfan> what are you looking for specifically, btw?
@@ -265,60 +277,63 @@ in \#coreboot on freenode IRC:
     0x74: 0x9fff03e0 PR0: Warning: 0x003e0000-0x01ffffff is read-only.
     0x84: 0x81ff81f8 PR4: Warning: 0x001f8000-0x001fffff is locked.
 
-Use-case: a factory.rom image modified in this way would theoretically
-have no flash protections whatsoever, making it easy to quickly switch
-between factory/libreboot in software, without ever having to
-disassemble and re-flash externally unless you brick the device.
+Cas d'utilisation: une image factory.rom modifiée d'une façon qu'il n'y a
+aucune protection de flash, rendant facile le changement usine/libreboot
+depuis le logiciel, sans n'avoir plus à faire de désassemblage et de
+reflashage externe à moins que vous bousillez l'appareil.
 
-demefactory is part of the ich9deblob src, found at
+demefactory fait partie de la source de ich9deblob, trouvée dans
 *resources/utilities/ich9deblob/*
 
-The sections below are adapted from (mostly) IRC logs related to early
-development getting the ME removed on GM45. They are useful for
-background information. This could not have been done without sgsit's
-help.
+Les sections ci-dessous sont adaptés (en majorités) de journaux de discussions
+IRC concernant le début du développement sur comment enlever la ME sur le
+GM45. Ils sont utiles en tant qu'historique. Ce n'aurait pas pu être possible
+sans l'aide de sgsit.
 
-Early notes {#early_notes}
+Notes du début {#early_notes}
 -----------
 
 -   <http://www.intel.co.uk/content/dam/doc/datasheet/io-controller-hub-10-family-datasheet.pdf>
-    page 230 mentions about descriptor and non-descriptor mode (which
-    wipes out gbe and ME/AMT).
--   ~~**See reference to HDA\_SDO (disable descriptor security)**~~
-    strap connected GPIO33 pin is it on ICH9-M (X200). HDA\_SDO applies
-    to later chipsets (series 6 or higher). Disabling descriptor
-    security also disables the ethernet according to sgsit. sgsit's
-    method involves use of 'soft straps' (see IRC logs below) instead
-    of disabling the descriptor.
--   **and the location of GPIO33 on the x200s: (was an external link.
-    Putting it here instead)**
+    la page 230 mentionne un mode descripteur et non-descripteur (qui enlève
+    le GBE et la ME/AMT).
+-   ~~**regarder la référence à HDA\_500 (désactiver la sécurité du
+    descripteur)**~~
+    est ce que le pin GPI033 attaché est sur le ICH9-M (X200). HDA\_SDO
+    s'applique à des jeux de puces plus tardif (séries 6 ou plus haut.
+    Désactiver la sécurité du descripteur désactive aussi l'ethernet d'après
+    sgsit. La méthode de sgsit implique l'utilisation "d'attaches douces"
+    (voyez les journaux IRC ci-dessous) au lieu de désactiver le descripteur.
+-   **et la place du GPIO33 sur les x200: (c'était un lien externe. On le met
+    plutôt ici à la place)**
     [images/x200/gpio33\_location.jpg](images/x200/gpio33_location.jpg) -
-    it's above the number 7 on TP37 (which is above the big intel chip
-    at the bottom)
--   The ME datasheet may not be for the mobile chipsets but it doesn't
-    vary that much. This one gives some detail and covers QM67 which is
-    what the X201 uses:
+    c'est au dessus du nombre 7 dans TP37 (qui est au-dessus de la grande puce
+    Intel en bas)
+-   La fiche de caractéristiques techniques de la ME n'est peut être pas pour
+    les appareils mobiles (NdT: on entend ordinateurs portables ici), mais ça
+    ne change pas grand chose. Celle ci couvre et donne quelques détails sur
+    le QM67 que le X201 utilise:
     <http://www.intel.co.uk/content/dam/www/public/us/en/documents/datasheets/6-chipset-c200-chipset-datasheet.pdf>
 
-Flash chips {#flashchips}
+Puces flash {#flashchips}
 -----------
--   X200 laptop (Mocha-1):
-    ICH9-M overrides ifd permissions with a strap connected to GPIO33 pin (see IRC notes below)
+-   Ordi portable X200 (Mocha-1):
+    ICH9-M supplante les permissions ifd grâce à une attache connecté au pin
+    GPIO33 (voyez les notes IRC ci-dessous)
+    
+    - Le X200 peut être trouvé avec n'importe quel des puces de flash
+      suivantes:
+        -   ATMEL AT26DF321-SU 72.26321.A01 - c'est une puce flash de 32Mbits
+            (4Mo).
+        -   MXIC (Macronix?) MX25L3205DM2I-12G 72.25325.A01 - idem
+        -   MXIC (Macronix?) MX25L6405DMI-12G 41R0820AA - c'est une puce de
+            64Mbits (8Mo)
+        -   Winbond W25X64VSFIG 41R0820BA - idem
 
-    - The X200 can be found with any of the following flash
-    chips:
-        -   ATMEL AT26DF321-SU 72.26321.A01 - this is a 32Mb (4MiB) chip
-        -   MXIC (Macronix?) MX25L3205DM2I-12G 72.25325.A01 - another 32Mb
-            (4MiB) chip
-        -   MXIC (Macronix?) MX25L6405DMI-12G 41R0820AA - this is a 64Mb
-            (8MiB) chip
-        -   Winbond W25X64VSFIG 41R0820BA - another 64Mb (8MiB) chip
+    sgsit dit que les X200 (Pecan-1) avec les puces flash de 64Mbits sont
+    problablement celles avec AMT (à côte de la ME), avec que les puces
+    32Mbits contiennent seulement la ME.
 
-    sgsit says that the X200s (Pecan-1) with the 64Mb flash chips are (probably)
-    the ones with AMT (alongside the ME), whereas the 32Mb chips contain
-    only the ME.
-
-Early development notes {#early_development_notes}
+Notes de développement précoces {#early_development_notes}
 -----------------------
 
     Start (hex) End (hex)   Length (hex)    Area Name
@@ -379,14 +394,16 @@ Early development notes {#early_development_notes}
     --------------
     Flash Erase Size = 0x1000
 
-It's a utility called 'Flash Image Tool' for ME 4.x that was used for
-this. You drag a complete image into in and the utility decomposes the
-various components, allowing you to set soft straps.
+Ces données ont été produites par un utilitaire nommé 'Flash Image Tool' pour
+la ME version 4.x. Vous y faites glisser dedans une image complète et
+l'utilitaire décompose les nombreux composants, vous permettant de mettre des
+attaches douces.
 
-This tool is proprietary, for Windows only, but was used to deblob the
-X200. End justified means, and the utility is no longer needed since the
-ich9deblob utility (documented on this page) can now be used to create
-deblobbed descriptors.
+Cet outil est propriétaire, pour Windows seulement, mais a été utilisé pour
+déblob le X200. La fin a justifié les moyens, et l'utilitaire n'est désormais
+plus nécessaires puisque l'utilitaire ich9deblob (documenté sur cette page)
+peut être maitenant utilisé pour créer des descripteurs déblobés.
+
 
 GBE (gigabit ethernet) region in SPI flash {#gbe_region}
 ------------------------------------------
