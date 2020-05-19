@@ -1,111 +1,116 @@
 ---
-title: "GM45 chipsets: remove the ME (manageability engine)"
+title: "Jeux de puces GM45: enlever la ME (manageability engine ou moteur d'administration)"
 ...
 
-This sections relates to disabling and removing the ME (Intel
-*M*anagement *E*ngine) on GM45. This was originally done on the
-ThinkPad X200, and later adapted for the ThinkPad R400/T400/T500. It can
-in principle be done on any GM45 or GS45 system.
+Ces sections concernent la désactivation et la suppression du ME (Intel
+*M*anagement *E*ngine) sur les GM45. Originellement, ça a été fait sur le
+ThinkPad X200, et plus tard adapté pour le ThinkPad R400/T400/T500.
+Par principe, ça peut être fait sur n'importe quel système GM45 ou GS45.
 
-The ME is a blob that typically must be left inside the flash chip (in
-the ME region, as outlined by the default descriptor). On GM45, it is
-possible to remove it without any ill effects. All other parts of
-coreboot on GM45 systems (provided GMA MHD4500 / Intel graphics) can be
-blob-free, so removing the ME was the last obstacle to make GM45 a
-feasible target in libreboot (the systems can also work without the
-microcode blobs).
+La ME est un blob qui doît être normalement laissé à l'intérieur de la puce de
+flash (dans la région ME, comme défini dans le descripteur par défaut).
+Sur les GM45, il est possible de la supprimer sans mauvais effets secondaires.
+Toutes les autres parts de coreboot sur les systèmes GM45 (comme le GMA
+MHD4500/ graphiques Intel) peuvent être libres de blob, donc supprimer la ME
+était le dernier obstacle pour faire de la GM45 une cible faisable dans
+libreboot (les systèmes peuvent aussi marcher sans les blobs de microcode).
 
-The ME is removed and disabled in libreboot by modifying the descriptor.
-More info about this can be found in the ich9deblob/ich9gen source code
-in resources/utilities/ich9deblob/ in libreboot, or more generally on
-this page.
+Dans Libreboot, La ME est supprimée et désactivée en modifiant le descripteur.
+Plus d'informations à propos de ceci peuvent être trouvées dans le code source
+d'ich9gen/ich9deblob dans le répertoire
+[resources/utilities/ich9deblob](resources/utilites/ich9deblob/src/) du
+projet libreboot, ou plus généralement sur cette page.
 
-More information about the ME can be found at
-<http://www.coreboot.org/Intel_Management_Engine> and
+Plus d'informations à propos de la ME peuvent être trouvées sur
+<http://www.coreboot.org/Intel_Management_Engine> et
 <http://me.bios.io/Main_Page>.
 
-Another project recently found: <http://io.netgarage.org/me/>
+Un autre projet récemment trouvé: <http://io.netgarage.org/me/>
 
-ICH9 gen utility {#ich9gen}
+Utilitaire ICH9 gen {#ich9gen}
 ================
 
-It is no longer necessary to use [ich9deblob](#ich9deblob) to generate a
-deblobbed descriptor+gbe image for GM45 targets. ich9gen is a small
-utility within ich9deblob that can generate them from scratch, without a
-factory.bin dump.
+Il n'est désormais plus nécessaire d'utiliser [ich9deblob](#ich9deblob) pour
+générer un descripteur déblobbé + une image GBE pour les cibles GM45. ich9gen
+est un petit utilitaire dans ich9deblob qui peut les générer à partir de rien,
+sans un cliché mémoire du factory.bin .
 
-ich9gen executables can be found under ./ich9deblob/ statically compiled
-in libreboot\_util. If you are using src or git, build ich9gen from
-source with:
+Les exécutables d'ich9gen peuvent être trouvés sous
+[./ich9deblob/](resources/utilities/ich9deblob/src/), compilés
+statiquement dans libreboot\_util. Si vous utilisez src ou git, compilez
+ich9gen depuis la source avec:
 
     $ ./oldbuild module ich9deblob
 
-The executable will appear under resources/utilities/ich9deblob/
+L'exécutable apparaîtra sous
+[resources/utilities/ich9deblob/](../../resources/utilities/ich9deblob/)
 
-Run:
+Exécutez:
 
     $ ./ich9gen
 
-Running ich9gen this way (without any arguments) generates a default
-descriptor+gbe image with a generic MAC address. You probably don't
-want to use the generic one; the ROM images in libreboot contain a
-descriptor+gbe image by default (already inserted) just to prevent or
-mitigate the risk of bricking your laptop, but with the generic MAC
-address (the libreboot project does not know what your real MAC address
-is).
+Exécuter ich9gen de cette façon (sans aucun arguments) genère un descripteur
+par défaut + une image GBE avec une adresse MAC générique.
+Vous ne voulez probablement pas utilisez celle de base; les images ROM dans
+libreboot contiennent un image descripteur+gbe par défaut (déjà insérée) juste
+pour prévénir ou mitiger le risque du bousillage de l'ordinateur portable 
+(NdT:*bricking*, rendre telle une brique), mais avec une adresse MAC générique
+(le projet libreboot ne sait en rien qu'elle est votre réelle adresse MAC).
 
-You can find out your MAC address from `ip addr` or `ifconfig` in
-GNU+Linux. Alternatively, if you are running libreboot already (with the
-correct MAC address in your ROM), dump it (flashrom -r) and read the
-first 6 bytes from position 0x1000 (or 0x2000) in a hex editor (or,
-rename it to factory.rom and run it in ich9deblob: in the newly created
-mkgbe.c will be the individual bytes of your MAC address). If you are
-currently running the stock firmware and haven't installed libreboot
-yet, you can also run that through ich9deblob to get the mac address.
+Dans GNU+Linux, vous pouvez trouver votre adresse MAC grâce à la sortie des
+commandes `ip addr` ou `ifconfig`.
+Alternativement, si vous marchez déjà sous libreboot (avec la bonne adresse
+MAC dans votre ROM), faîtes en un cliché (`flashrom -r`) et lisez les 6
+premiers octets depuis la position 0x1000 (ou 0x2000) dans un éditeur
+hexadécimal (ou, renommez-le factory.rom et exécutez le par ich9deblob: dans le
+mkgbe.c fraîchement créé il y aura les octets individuels de votre adresse
+MAC).
+Si vous êtes en train d'exécuter le micrologiciel de base et vous n'avez pas
+encore installé libreboot, vous pouvez aussi l'exécuter par ich9debkib pour
+récupérer l'adresse mac.
 
-An even simpler way to get the MAC address would be to read what's on
-the little sticker on the bottom/base of the laptop.
+Une façon encore plus simple d'avoir l'adresse MAC serait de lire
+la petite étiquette en bas/sur la base de l'ordinateur portable.
 
-On GM45 laptops that use flash descriptors, the MAC address or the
-onboard ethernet chipset is flashed (inside the ROM image). You should
-generate a descriptor+gbe image with your own MAC address inside (with
-the Gbe checksum updated to match). Run:
+Sur les ordinateur portables GM45 qui utilisent les descripteurs flash,
+l'adresse MAC ou le jeu de puces  (chipset) ethernet embarqué est flashé (dans
+l'image ROM). Vous devriez générer votre propre adresse MAC à l'intéreur (avec
+la somme de contrôle du GBE mise à jour afin qu'elle corresponde). Exécutez:
 
     $ ./ich9gen --macaddress XX:XX:XX:XX:XX:XX
 
-(replace the XX chars with the hexadecimal chars in the MAC address that
-you want)
+(remplaçez les charactères XX par les valeurs hexadécimales de l'adresse MAC
+que vous désirez).
 
-Two new files will be created:
+Trois nouveaux fichiers seront créés:
 
--   `ich9fdgbe_4m.bin`: this is for GM45 laptops with the 4MB flash
-    chip.
--   `ich9fdgbe_8m.bin`: this is for GM45 laptops with the 8MB flash
-    chip.
--   `ich9fdgbe_16m.bin`: this is for GM45 laptops with the 16MB flash
-    chip.
+-    `ich9fdgbe_4m.bin`: destiné aux ordinateurs portables GM45 avec la puce flash
+     de 4Mo.
+-    `ich9fdgbe_8m.bin`: idem, mais pour puce flash de 8Mo.
+-    `ich9fdgbe_16m.bin`: idem, mais pour puce flash de 16Mo.
 
-Assuming that your libreboot image is named **libreboot.rom**, copy the
-file to where **libreboot.rom** is located and then insert the
-descriptor+gbe file into the ROM image.\
-For 16MiB flash chips:
+En assumant que votre image libreboot est nommée **libreboot.rom**, copiez le
+fichier qui va bien dans le même répertoire que votre image et ensuite insérer
+le fichier descripteur+GBE dans l'image ROM.\
+Pour les puces flash de 16Mo:
 
     # dd if=ich9fdgbe_16m.bin of=libreboot.rom bs=12k count=1 conv=notrunc
 
-For 8MiB flash chips:
+Celles de 8Mo:
 
     # dd if=ich9fdgbe_8m.bin of=libreboot.rom bs=12k count=1 conv=notrunc
 
-For 4MiB flash chips:
+Et enfin, pour celles de 4Mo:
 
     # dd if=ich9fdgbe_4m.bin of=libreboot.rom bs=12k count=1 conv=notrunc
 
-Your libreboot.rom image is now ready to be flashed on the system. Refer
-back to [../install/\#flashrom](../install/#flashrom) for how to flash
-it.
+Votre image libreboot.rom est maintenant prête à être flashée sur le système.
+Référez vous à [../install/\#flashrom](../install/#flashrom) pour savoir
+comment la flasher.
 
-Write-protecting the flash chip
+Protéger en écriture la puce de flashage
 -------------------------------
+
 
 Look in *resources/utilities/ich9deblob/src/descriptor/descriptor.c* for
 the following lines in the *descriptorHostRegionsUnlocked* function:
