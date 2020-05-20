@@ -436,12 +436,6 @@ Dans libreboot (déblobé) le descripteur est configuré pour mettre le gbe
 diectement après le descripteur flash initial de 4Ko. Donc les 4 premiers Ko
 de la ROM correspondent au descripteurs et les 8Ko suivants à la région GBE.
 
-The GBe region starts at 0x20A000 bytes from the \*end\* of a factory
-image and is 0x2000 bytes long. In libreboot (deblobbed) the descriptor
-is set to put gbe directly after the initial 4K flash descriptor. So the
-first 4K of the ROM is the descriptor, and then the next 8K is the gbe
-region.
-
 ### Région GBE: changer l'adresse MAC {#gbe\_region\_changemacaddress}
 
 Selon la fiche technique, c'est supposé s'additionner jusqu'à 0xBABA mais ça
