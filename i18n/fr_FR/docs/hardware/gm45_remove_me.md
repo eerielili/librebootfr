@@ -491,7 +491,7 @@ Comment déblober:
 -   puis "découper" la région GBE puis l'insérer juste après la région BIOSa
 -   tout ceci peut être compris depuis les documents publics (fiche technique
     de l'ICH9)
--   la partie finale est d'inverser 2bits. Stopper la ME via 1 attache douce
+-   la partie finale est d'inverser 2bits. Stopper la ME via 1 attache logicielle
     MCH et une ICH.
 -   la partie du descripteur décrite là-dedans donne l'adresse de base et la
     longueur de chaque région (bits 12:24 de chaque adresse)
@@ -508,62 +508,53 @@ libreboot.
 
 Pour déblobber le GM45, vous découpez et enlevez les régions ME et plateforme
 puis corrigez les adresses dans flReg1-4.
-Ensuite vous définissez 
+Ensuite vous définissez meDisable sur 1 dans ICHSTRAP0 et MCHSTRAP0.
 
+Comment patcher le descripteur depuis le cliché mémoire factory.rom.
 
-There's an interesting parameter called 'ME Alternate disable', which
-allows the ME to only handle hardware errata in the southbridge, but
-disables any other functionality. This is similar to the 'ignition' in
-the 5 series and higher but using the standard firmware instead of a
-small 128K version. Useless for libreboot, though.
+-   "mappez" les premiers 4Ko dans la structure (sans la région GBe)
+-   définissez NR dans FLMAP0 à 2 (depuis 4)
+-   ajustez BASE et LIMIT dans flReg1,2,3,4 pour refléter la nouvelle place de
+    chaque région (ou enlevez les dans le cas où vous avez Platform et ME)
+-   définissez meDisable sur 1/true dans ICHSTRAP0 et MCHSTRAP0
+-   extrayez la région GBe de 8Ko et insérez ça à la fin du descripteur de 4Ko
+-   imprimez en sortie ce morceau concaténé de 12Ko
+-   ensuite ça peut être `dd` dans les 12 premiers Kilooctets d'une image
+    coreboot.
+-   la région GBe commence toujours à 0x20A000 octets depuis la fin de la ROM
 
-To deblob GM45, you chop out the platform and ME regions and correct the
-addresses in flReg1-4. Then you set meDisable to 1 in ICHSTRAP0 and
-MCHSTRAP0.
+Ça veut dire que la région descripteur de libreboot définira simplement les
+régions suivantes:
+-   descripteur (4Ko)
+-   gbe (8Ko)
+-   bios (le reste de la puce flash. CBFS est aussi défini pour occuper tout cet
+    espace).
 
-How to patch the descriptor from the factory.rom dump
+Les données dans la région descripteur sont petit boutiste, et elles
+représentent les bits 24:12 de l'adresse (bits 12-24, écris de cette façon
+puisque le bit 24 est plus près de la gauche que le bit 12 dans la
+représentation binaire).
 
--   map the first 4k into the struct (minus the gbe region)
--   set NR in FLMAP0 to 2 (from 4)
--   adjust BASE and LIMIT in flReg1,2,3,4 to reflect the new location of
-    each region (or remove them in the case of Platform and ME)
--   set meDisable to 1/true in ICHSTRAP0 and MCHSTRAP0
--   extract the 8k GBe region and append that to the end of the 4k
-    descriptor
--   output the 12k concatenated chunk
--   Then it can be dd'd into the first 12K part of a coreboot image.
--   the GBe region always starts 0x20A000 bytes from the end of the ROM
+Donc, *x << 12 = address*
 
-This means that libreboot's descriptor region will simply define the
-following regions:
+Si c'est en mode descripteur, alors les 4 premiers octects seront 5A A5 F0 0F.
 
--   descriptor (4K)
--   gbe (8K)
--   bios (rest of flash chip. CBFS also set to occupy this whole size)
-
-The data in the descriptor region is little endian, and it represents
-bits 24:12 of the address (bits 12-24, written this way since bit 24 is
-nearer to left than bit 12 in the binary representation).
-
-So, *x << 12 = address*
-
-If it's in descriptor mode, then the first 4 bytes will be 5A A5 F0 0F.
-
-platform data partition in boot flash (factory.rom / lenovo bios) {#platform_data_region}
+Partition de données de plateforme dans le flash de démarrage (factory.rom / lenovo bios) {#platform_data_region}
 -----------------------------------------------------------------
 
-Basically useless for libreboot, since it appears to be a blob. Removing
-it didn't cause any issues in libreboot.
+En gros, inutile pour libreboot car c'est un blob. L'enlever n'a causé aucun
+problème que ce soit dans libreboot.
 
-This is a 32K region from the factory image. It could be data
-(non-functional) that the original Lenovo BIOS used, but we don't know.
+C'est une région de 32Ko de l'image d'usine. Ça pourrait des données (non
+utiles pour le fonctionnement) que le BIOS Lenovo originel utilisait, mais on
+n'en sait rien.
 
-It has only a 448 byte fragment different from 0x00 or 0xFF.
+Il a seulement un fragment de 448 octets différent de 0x00 ou 0xFF.
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
