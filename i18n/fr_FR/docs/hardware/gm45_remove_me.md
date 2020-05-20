@@ -404,15 +404,14 @@ déblob le X200. La fin a justifié les moyens, et l'utilitaire n'est désormais
 plus nécessaires puisque l'utilitaire ich9deblob (documenté sur cette page)
 peut être maitenant utilisé pour créer des descripteurs déblobés.
 
-
-GBE (gigabit ethernet) region in SPI flash {#gbe_region}
+Région GBE (ethernet gigabit) dans la flash SPI {#gbe_region}
 ------------------------------------------
 
-Of the 8K, about 95% is 0xFF. The data is the gbe region is fully
-documented in this public datasheet:
+Sur le 8Ko, à peu près 95% est rempli avec 0xFF. Les données dans la région
+GBE sont complétement documentées dans cette fiche technique publique:
 <http://www.intel.co.uk/content/dam/doc/application-note/i-o-controller-hub-9m-82567lf-lm-v-nvm-map-appl-note.pdf>
 
-The only actual content found was:
+Le seul véritable contenu trouvé était:
 
     00  1F  1F  1F  1F  1F  00  08  FF  FF  83  10  FF  FF  FF  FF  
     08  10  FF  FF  C3  10  EE  20  AA  17  F5  10  86  80  00  00  
@@ -426,9 +425,16 @@ The only actual content found was:
     DD  CC  18  00  11  20  17  00  DD  DD  18  00  12  20  17  00  
     00  80  1D  00  00  00  1F  
 
-The first part is the MAC address set to all 0x1F. It's repeated haly
-way through the 8K area, and the rest is all 0xFF. This is all
-documented in the datasheet.
+
+La première partie est l'adresse MAC définie entièrement sur 0x1F.
+C'est répété au milieu de la zone de 8Ko, et le reste est 0xFF.
+Tout ceci est documenté dans la fiche technique.
+
+La région GBe commence à l'octet 0x20A000 depuis la \*fin\* d'une image
+d'usine et est longue de 0x2000 octets.
+Dans libreboot (déblobé) le descripteur est configuré pour mettre le gbe
+diectement après le descripteur flash initial de 4Ko. Donc les 4 premiers Ko
+de la ROM correspondent au descripteurs et les 8Ko suivants à la région GBE.
 
 The GBe region starts at 0x20A000 bytes from the \*end\* of a factory
 image and is 0x2000 bytes long. In libreboot (deblobbed) the descriptor
@@ -436,59 +442,74 @@ is set to put gbe directly after the initial 4K flash descriptor. So the
 first 4K of the ROM is the descriptor, and then the next 8K is the gbe
 region.
 
-### GBE region: change MAC address {#gbe_region_changemacaddress}
+### Région GBE: changer l'adresse MAC {#gbe\_region\_changemacaddress}
 
-According to the datasheet, it's supposed to add up to 0xBABA but can
-actually be others on the X200.
+Selon la fiche technique, c'est supposé s'additionner jusqu'à 0xBABA mais ça
+pourrait être en fait autre chose sur le X200.
 <https://web.archive.org/web/20150912070329/https://communities.intel.com/community/wired/blog/2010/10/14/how-to-basic-eeprom-checksums>
 
-*"One of those engineers loves classic rock music, so they selected
-0xBABA"*
+*""Un de ces ingénieurs adore le rock classique, donc ils ont choisi 0xBABA*
 
-In honour of the song *Baba O'Reilly* by *The Who* apparently. We're
-not making this stuff up...
+En l'honneur de la musique *Baba O'Reilly* des *The Who*, apparement.
+On n'invente pas des sornettes....
 
-0x3ABA, 0x34BA, 0x40BA and more have been observed in the main Gbe
-regions on the X200 factory.rom dumps. The checksums of the backup
-regions match BABA, however.
+0x3ABA, 0x34BA, 0x40BA et plus ont été observé dans la région GBE principale
+sur les clichés mémoires factory.rom des X200. Néanmoins, les sommes de contrôle des
+régions de sauvegardes correspondent à BABA.
 
-By default, the X200 (as shipped by Lenovo) actually has an invalid main
-gbe checksum. The backup gbe region is correct, and is what these
-systems default to. Basically, you should do what you need on the
-\*backup\* gbe region, and then correct the main one by copying from the
-backup.
+Par défaut, le X200 (fourni tel quel par Lenovo) a dans les faits, une somme
+de contrôle du GBE invalide. La région de sauvegarde du GBE est correcte, et
+c'est sur quoi les systèmes basent leurs défauts.
+Basiquement, vous devriez faire ce dont vous avez besoin sur la région \*de
+sauvergarde\* du gbe, puis ensuite corriger la principale en copiant depuis la
+sauvegarde.
 
-Look at resources/utilities/ich9deblob/ich9deblob.c.
+Regardez dans
+[resources/utilities/ich9deblob/ich9deblob.c](../resources/utilities/ich9deblob/ich9deblob.c)
 
--   Add the first 0x3F 16bit numbers (unsigned) of the GBe descriptor
-    together (this includes the checksum value) and that has to add up
-    to 0xBABA. In other words, the checksum is 0xBABA minus the total of
-    the first 0x3E 16bit numbers (unsigned), ignoring any overflow.
+-   Ajoutez ensemble les premiers nombres hexadécimaux 0x3F (non signés) du
+    descripteur GBe (en incluant la valeur de la somme de contrôle) et ça
+    devrait s'additionner jusqu'à 0xBABA. En d'autres termes, la somme de
+    contrôle est 0xBABA moins le total des premiers nombres hexadécimaux 0x3E
+    (non signés), en ignorant tout débordement.
 
-Flash descriptor region {#flash_descriptor_region}
+Région du descripteur flash {#flash_descriptor_region}
 -----------------------
 
 <http://www.intel.co.uk/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf>
-from page 850 onwards. This explains everything that is in the flash
-descriptor, which can be used to understand what libreboot is doing
-about modifying it.
+à partir de la 850. Ça explique tout ce qui ce trouve dans le descripteur
+flash, on peut s'en servir pour comprendre ce que Libreboot fait en le
+modifiant.
 
-How to deblob:
+Comment déblober:
 
--   patch the number of regions present in the descriptor from 5 - 3
--   originally descriptor + bios + me + gbe + platform
--   modified = descriptor + bios + gbe
--   the next stage is to patch the part of the descriptor which defines
-    the start and end point of each section
--   then cut out the gbe region and insert it just after the region
--   all this can be substantiated with public docs (ICH9 datasheet)
--   the final part is flipping 2 bits. Halting the ME via 1 MCH soft
-    strap and 1 ICH soft strap
--   the part of the descriptor described there gives the base address
-    and length of each region (bits 12:24 of each address)
--   to disable a region, you set the base address to 0xFFF and the
-    length to 0
--   and you change the number of regions from 4 (zero based) to 2
+-   patcher le nombre de régions présentes dans le descripteur de 5 à 3:
+        original = descripteur + bios + ME + GBE + plateforme
+        modifié  = descripteur + bios + GBE
+-   l'étape suivante est de patcher la partie du descripteur qui défini le
+    début et la fin de chaque section.
+-   puis "découper" la région GBE puis l'insérer juste après la région BIOSa
+-   tout ceci peut être compris depuis les documents publics (fiche technique
+    de l'ICH9)
+-   la partie finale est d'inverser 2bits. Stopper la ME via 1 attache douce
+    MCH et une ICH.
+-   la partie du descripteur décrite là-dedans donne l'adresse de base et la
+    longueur de chaque région (bits 12:24 de chaque adresse)
+-   pour désactiver une région, vous définissez l'adresse de base sur 0xFFF et
+    la longueur à 0.
+-   et vous changez le nombre de régions de 4 (basées zéro) à 2.
+
+Il y a un paramètre intéressant appelé 'ME Alternate disable', qui permet à la
+ME de seulement prendre en charge les erreurs? matérielles dans le contrôleur
+d'entrée/sortie, mais désactive tout autre fonctionnalité. C'est similaire à
+"l'ignition" dans les séries 5 et plus haut mais en utilisant le micrologiciel
+standard au lieu d'une petite version de 128Ko. Soit, c'est inutile pour
+libreboot.
+
+Pour déblobber le GM45, vous découpez et enlevez les régions ME et plateforme
+puis corrigez les adresses dans flReg1-4.
+Ensuite vous définissez 
+
 
 There's an interesting parameter called 'ME Alternate disable', which
 allows the ME to only handle hardware errata in the southbridge, but
