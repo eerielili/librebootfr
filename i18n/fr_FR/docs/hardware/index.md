@@ -1,39 +1,39 @@
 ---
-title: Hardware compatibility list 
+title: Liste de compatibilité matérielle 
 x-toc-enable: true
 ...
 
-This sections relates to known hardware compatibility in libreboot.
+Cette section concerne les compatibilités matérielles connues dans Libreboot.
 
-For installatation instructions, refer to [../install/](../install/).
+Pour des instructions d'installation, référez vous à [../install/](../install/).
 
-List of supported hardware
+Liste de matériels supportés
 --------------------------
 
-Libreboot supports the following systems in this release:
+Libreboot supporte les systèmes suivant dans la version actuelle:
 
-### Desktops (AMD, Intel, x86)
+### Ordinateurs de bureaux (AMD, Intel, x86)
 
--   [Gigabyte GA-G41M-ES2L motherboard](ga-g41m-es2l.md)
--   [Intel D510MO motherboard](d510mo.md)
--   [ASUS KCMA-D8 motherboard](kcma-d8.md)
+-   [carte mère Gigabyte GA-G41M-ES2L](ga-g41m-es2l.md)
+-   [carte mère Intel D510MO](d510mo.md)
+-   [carte mère ASUS KCMA-D8](kcma-d8.md)
 -   [Intel D945GCLF](d945gclf.md)
 -   [Apple iMac 5,2](imac52.md)
 
-### Servers/workstations (AMD, x86)
+### Serveurs/stations de travail(AMD, x86)
 
--   [ASUS KFSN4-DRE motherboard](kfsn4-dre.md)
--   [ASUS KGPE-D16 motherboard](kgpe-d16.md)
+-   [carte mère ASUS KFSN4-DRE](kfsn4-dre.md)
+-   [carte mère ASUS KGPE-D16](kgpe-d16.md)
 
-### Laptops (ARM)
+### Ordinateurs portables (ARM)
 
 -   [ASUS Chromebook C201](c201.md)
 
-### Laptops (Intel, x86)
+### Ordinateurs portables (Intel, x86)
 
 -   [Lenovo ThinkPad X60/X60s](#list-of-supported-thinkpad-x60s)
 -   [Lenovo ThinkPad X60 Tablet](#list-of-supported-thinkpad-x60-tablets)
--   [Lenovo ThinkPad T60](#supported-t60-list) (some exceptions)
+-   [Lenovo ThinkPad T60](#supported-t60-list) (quelques exceptions)
 -   [Lenovo ThinkPad X200](x200.md)
 -   [Lenovo ThinkPad R400](r400.md)
 -   [Lenovo ThinkPad T400](t400.md)
@@ -42,74 +42,76 @@ Libreboot supports the following systems in this release:
 -   [Apple MacBook1,1](#information-about-the-macbook11)
 -   [Apple MacBook2,1](#information-about-the-macbook21)
 
-'Supported' means that the build scripts know how to build ROM images
-for these systems, and that the systems have been tested (confirmed
-working). There may be exceptions; in other words, this is a list of
-'officially' supported systems.
+'Supporté' veut dire que les scripts de compilation savent comment construire
+des images ROM pour ces systèmes, et que les systèmes ont été testé (confirmé
+fonctionnels). Il y a peut-être des exceptions; en d'autres mots, c'est une
+liste de systèmes 'officiellement' supportés.
 
-It is also possible to build ROM images (from source) for other systems
-(and virtual systems, e.g. QEMU).
-
-EC update on i945 (X60, T60) and GM45 (X200, T400, T500, R400, W500)
+Mise à jour de l'EC\* sur les i945 (X60, T60) et GM45 (X200, T400, T500, R400, W500)
 ==============================================================
 
-It is recommended that you update to the latest EC firmware version. The
-[EC firmware](../../faq.md#ec-embedded-controller-firmware) is separate from
-libreboot, so we don't actually provide that, but if you still have
-Lenovo BIOS then you can just run the Lenovo BIOS update utility, which
-will update both the BIOS and EC version. See:
+\*EC: Embedded Controller, ou contrôleur embarqué
+
+Il est recommandée de mettre à jour le micrologiciel de l'EC à sa dernière
+version.
+Le [micrologiciel de l'EC](../../faq.md#ec-embedded-controller-firmware)
+est à part de libreboot, donc nous ne le fournissons pas, mais si vous avez
+encore le BIOS Lenovo alors vous pouvez juste exécuter l'utilitaire de mise à
+jour du BIOS Lenovo, qui mettra à jour à la fois la version du BIOS et de
+l'EC. Jetez un coup d'oeil à:
 
 -   [../install/#flashrom](../install/#flashrom)
 -   <http://www.thinkwiki.org/wiki/BIOS_update_without_optical_disk>
 
-NOTE: this can only be done when you are using Lenovo BIOS. How to
-update the EC firmware while running libreboot is unknown. Libreboot
-only replaces the BIOS firmware, not EC.
+NOTE: ça peut seulement être fait quand vous utilisez le BIOS Lenovo. Comment
+mettre à jour le micrologiciel de l'EC quand on exécute libreboot, est
+inconnu. Libreboot remplace seulement le micrologiciel du BIOS, pas celui de l'EC.
 
-Updated EC firmware has several advantages e.g. bettery battery
-handling.
+Le micrologiciel d'EC mis à jour à quelques avantage p.ex une meilleure
+gestion de la batterie.
 
-How to find what EC version you have (i945/GM45)
+Comment trouver la version de l'EC que vous avez (i945/GM45)
 ================================================
 
-In GNU+Linux, you can try this:
+Dans GNU+Linux, vous pouvez essayez ceci:
 
     $ grep 'at EC' /proc/asound/cards
 
-Sample output:
+Exemple de sortie:
 
     ThinkPad Console Audio Control at EC reg 0x30, fw 7WHT19WW-3.6
 
-7WHT19WW is the version in different notation, use search engine to find
-out regular version - in this case it's a 1.06 for x200 tablet
+7WHT19WW est la version dans une notation différente, utilisez un moteur de
+recherche pour trouver la version normale - dans le cas ici c'est 1.06 pour
+X200 Tablet.
 
-Recommended wifi chipsets
+Jeux de puces WiFi recommandés
 -------------------------
 
-The following are known to work well:
+Les suivants sont connus pour bien marcher:
 
--   mini PCI express cards using the Atheros AR9285 chipset (e.g.
+-   les cartes mini PCI express utilisant le jeu de puces Atheros AR9285 (p.ex
     Atheros AR5B95) - 802.11n
--   USB dongles using the AR9271 chipset (e.g. Unex DNuA 93-F) - 802.11n
--   Any of the chipsets listed at
+-   Les dongles USB utilsant le jeu de puce AR9271 (p.ex Unex DNuA 93-F) -
+    802.11n
+-   N'importe quels jeux de puces listés sur 
     <https://h-node.org/wifi/catalogue/en/1/1/undef/undef/yes?>
 
-The following was mentioned (on IRC), but it's unknown to the libreboot
-project if these work with linux-libre kernel (TODO: test):
+Ce qui suit a été mentionné sur IRC, mais c'est inconnu du projet libreboot si
+ceux là marche avec le kernel linux-libre (c'est à tester):
 
 -   ar5bhb116 ar9382 ABGN
--   \[0200\]: Qualcomm Atheros AR242x / AR542x Wireless Network Adapter
+-   \[0200\]: Qualcomm Atheros AR242x / AR542x Adapteur réseau sans fil 
     (PCI-Express) \[168c:001c\]
 
-List of supported ThinkPad X60s
+Liste des ThinkPad X60s supportés
 -------------------------------
 
-Native gpu initialization ('native graphics') which replaces the
-proprietary VGA Option ROM ('[Video
-BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS'), all
-known LCD panels are currently compatible:
+L'initialisation native de la carte graphique ('graphiques natifs') qui
+remplace la ROM propriétaire option VGA ('[BIOS vidéo](https://fr.wikipedia.org/wiki/BIOS_vid%C3%A9o)'
+ou 'VBIOS'), et voici tout les écrans LCDs compatibles:
 
-To find what LCD panel you have, see:
+Pour trouver quel panneau LCD vous avez, voyez:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
 -   TMD-Toshiba LTD121ECHB: \#
@@ -117,59 +119,62 @@ To find what LCD panel you have, see:
 -   Samsung LTN121XJ-L07: \#
 -   BOE-Hydis HT121X01-101: \#
 
-You can remove an X61/X61s motherboard from the chassis and install an
-X60/X60s motherboard in it's place (for flashing libreboot). The
-chassis is mostly identical and the motherboards are the same
-shape/size.
+Vous pouvez enlever la carte mère X61/X61s du chassis et installer une carte
+mère d'un X60/X60s à la place (pour flasher libreboot). Le chassis est
+identique dans sa majorité et les carte mères sont de même forme/taille.
 
-The X60 typically comes with an Intel wifi chipset which does not work
-at all without proprietary firmware, and while Lenovo BIOS is running
-the system will refuse to boot if you replace the card. Fortunately it
-is very easily replaced; just remove the card and install another one
-*after* libreboot is installed. See
-[\#recommended\_wifi](#recommended_wifi) for replacements.
+Le X60 vient de base avec un jeu de puce WiFi Intel qui ne marche pas du tout
+sans micrologiciel propriétaire, et pendant que le BIOS de Lenovo s'exécute le
+système refusera de démarrer si vous changer la carte WiFi. Heuresement, ça se
+remplace très facilement; enlevez juste la carte et installez une autre
+*après* que libreboot est installé. Voyez
+[\#recommended\_wifi](#recommended_wifi) pour des remplacements.
 
-List of supported ThinkPad X60 Tablets
+Liste de ThinkPad X60 Tablets supportés
 --------------------------------------
 
-Native gpu initialization ('native graphics') which replaces the
-proprietary VGA Option ROM ('[Video
-BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS').
+L'initialisation native de la carte graphique ('graphiques natifs') qui
+remplace la ROM propriétaire option VGA ('[BIOS vidéo](https://fr.wikipedia.org/wiki/BIOS_vid%C3%A9o)'
+ou 'VBIOS').
 
-To find what LCD panel you have, see:
+Pour trouver quel panneau LCD vous avez, voyez:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
-There are 6 known LCD panels for the X60 Tablet:
+Il y a 6 écrans LCD connus pour le X60 Tablet:
 
 -   *X60T XGA (1024x768):*
-    -   BOE-Hydis HV121X03-100 (works)
-    -   Toshiba Matsushita LTD121KC9B (works)
-    -   Samsung LTN121XP01 (does not work. blank screen)
-    -   BOE-Hydis HT12X21-351 (does not work. blank screen)
+    -   BOE-Hydis HV121X03-100 (marche)
+    -   Toshiba Matsushita LTD121KC9B (marche)
+    -   Samsung LTN121XP01 (ne marche pas. écran blanc)
+    -   BOE-Hydis HT12X21-351 (ne marche pas. écran blanc)
 -   *X60T SXGA+ (1400x1050):*
-    -   BOE-Hydis HV121P01-100 (works)
-    -   BOE-Hydis HV121P01-101 (works)
+    -   BOE-Hydis HV121P01-100 (marche)
+    -   BOE-Hydis HV121P01-101 (marche)
+
+La majorité des X60Ts ont seulement un stylet, mais certains ont le tactile
+ainsi que le stylet; le tactile/multitouches ne marche pas, seulement le
+stylet marche.
 
 Most X60Ts only have digitizer (pen), but some have finger (touch)
 aswell as pen; finger/multitouch doesn't work, only digitizer (pen)
 does.
 
-You can remove an X61/X61s motherboard from the chassis and install an
-X60/X60s motherboard in its place (for flashing libreboot). The chassis
-is mostly identical and the motherboards are the same shape/size. *It
-is unknown if the same applies between the X60 Tablet and the X61
-Tablet*.
+Vous pouvez enlever la carte mère X61/X61s du chassis et installer une carte
+mère d'un X60/X60s à la place (pour flasher libreboot). Le chassis est
+identique dans sa majorité et les carte mères sont de même forme/taille.
+*Il est connu si celà s'applique aussi entre le X60 Tablet et le X61 Tablet*
 
-The X60 Tablet typically comes with an Intel wifi chipset which does not
-work at all without proprietary firmware, and while Lenovo BIOS is
-running the system will refuse to boot if you replace the card.
-Fortunately it is very easily replaced; just remove the card and install
-another one *after* libreboot is installed. See
-[\#recommended\_wifi](#recommended_wifi) for replacements.
 
-A user with a X60T that has digitizer+finger support, reported that they
-could get finger input working. They used linuxwacom at git tag
-0.25.99.2 and had the following in their xorg.conf:
+Le X60 Tablet vient de base avec un jeu de puce WiFi Intel qui ne marche pas du tout
+sans micrologiciel propriétaire, et pendant que le BIOS de Lenovo s'exécute le
+système refusera de démarrer si vous changer la carte WiFi. Heuresement, ça se
+remplace très facilement; enlevez juste la carte et installez une autre
+*après* que libreboot est installé. Voyez
+[\#recommended\_wifi](#recommended_wifi) pour des remplacements.
+
+Un utilisateur avec un X60T qui a le stylet+tactile a rapporté qu'il a
+pu faire marcher le tactile. Ils ont utilisé linuxwacom au libellé git
+0.25.99.2 et avait le suivant dans leur xorg.conf:
 
     # Now, for some reason (probably a bug in linuxwacom),
     # the 'Touch=on' directive gets reset to 'off'.
@@ -214,126 +219,132 @@ could get finger input working. They used linuxwacom at git tag
       InputDevice   "WTouch" "SendCoreEvents"
     EndSection
 
-Supported T60 list
+Liste des T60 supportés 
 ------------------
 
-Native gpu initialization ('native graphics') which replaces the
-proprietary VGA Option ROM ('[Video
-BIOS](https://en.wikipedia.org/wiki/Video_BIOS)' or 'VBIOS').
+L'initialisation native de la carte graphique ('graphiques natifs') qui
+remplace la ROM propriétaire option VGA ('[BIOS vidéo](https://fr.wikipedia.org/wiki/BIOS_vid%C3%A9o)'
+ou 'VBIOS').
 
-To find what LCD panel you have, see:
+Pour trouver quel panneau LCD vous avez, voyez:
 [../misc/\#get\_edid\_panelname](../misc/#get_edid_panelname).
 
-*Some T60 variants have ATI GPUs, and all T60p laptops have ATI GPUs These are
-incompatible! See [\#thinkpad-t60-ati-gpu-and-thinkpad-t60-intel-gpu-differences](#thinkpad-t60-ati-gpu-and-thinkpad-t60-intel-gpu-differences) for how to remedy
-this.*
+*Quelques variantes du T60 ont des cartes graphiques ATI, et tout les
+ordinateurs portables T60p ont des cartes graphiques ATI. Celles-ci sont
+incompatibles ! Voyez [\#thinkpad-t60-ati-gpu-and-thinkpad-t60-intel-gpu-differences](#thinkpad-t60-ati-gpu-and-thinkpad-t60-intel-gpu-differences)
+pour savoir comment remédier à cela*
 
-Tested LCD panels: (working)
+Écrans LCD testés qui marchent:
 
 -   IDtech N141XC (14.1" 1024x768)
 -   TMD-Toshiba LTD141ECMB (14.1" 1024x768)
--   TMD-Toshiba LTD141EN9B (14.1" 1400x1050) (FRU P/N 41W1478 recommended for
-    the inverter board)
--   Samsung LTN141P4-L02 (14.1" 1400x1050) (FRU P/N 41W1478 recommended for the
-    inverter board)
+-   TMD-Toshiba LTD141EN9B (14.1" 1400x1050) (FRU P/N 41W1478 recommandé pour
+    la carte d'inverseur)
+-   Samsung LTN141P4-L02 (14.1" 1400x1050) (FRU P/N 41W1478 recommandé pour la
+    carte d'inverseur)
 -   LG-Philips LP150E05-A2K1 (15.1" 1400x1050) (P/N 42T0078 FRU 42T0079 or P/N
-    41W1338 recommended for the inverter board)
+    41W1338 recommandé pour la carte d'inverseur)
 -   Samsung LTN150P4-L01 (15.1" 1400x1050) (P/N 42T0078 FRU 42T0079 or P/N
-    41W1338 recommended for the inverter board) (not a T60 screen afaik, but it
-    works)
+    41W1338 recommandé pour la carte d'inverseur) (n'est pas un écran T60
+    officiel autant que j'en sais, mais ça marche) 
 -   BOE-Hydis HV150UX1-100 (15.1" 1600x1200) (P/N 42T0078 FRU 42T0079 or P/N
-    41W1338 recommended for the inverter board)
+    41W1338 recommandé pour la carte d'inverseur)
 -   Samsung LTN141XA-L01 (14.1" 1024x768)
 
-Tested LCD panels: *not working yet (incompatible; see
+Écrans LCDs testés: *ne marchent pas encore (incompatibles; voyez
 [../future/\#lcd\_i945\_incompatibility](../future/#lcd_i945_incompatibility))*
 
 -   LG-Philips LP150X09 (15.1" 1024x768)
 -   Samsung LTN150XG (15.1" 1024x768)
--   LG-Philips LP150E06-A5K4 (15.1" 1400x1050) (also, not an official
-    T60 screen)
+-   LG-Philips LP150E06-A5K4 (15.1" 1400x1050) (par ailleurs, n'est pas un
+    écran T60 officiel)
 -   Samsung LTN154X3-L0A (15.4" 1280x800)
--   IDtech IAQX10N (15.1" 2048x1536) (no display in GRUB, display in
-    GNU+Linux is temperamental) (P/N 42T0078 FRU 42T0079 or P/N 41W1338
-    recommended for the inverter board)
--   IDtech N150U3-L01 (15.1" 1600x1200) (no display in GRUB, display in
-    GNU+Linux works) (P/N 42T0078 FRU 42T0079 or P/N 41W1338 recommended
-    for the inverter board)
+-   IDtech IAQX10N (15.1" 2048x1536) (pas d'affichage de GRUB, l'affichage dans
+    GNU+Linux est chaud) (P/N 42T0078 FRU 42T0079 or P/N 41W1338
+    recommandé pour la carte d'inverseur)
+-   IDtech N150U3-L01 (15.1" 1600x1200) (pas d'affichage de GRUB, l'affichage dans
+    GNU+Linux marche) (P/N 42T0078 FRU 42T0079 or P/N 41W1338 recommandé
+    pour la carte d'inverseur)
 
-*The following LCD panels are untested. If you have one of these panels then
-please submit a report!*:
+*Les écrans LCD suivant ne sont pas testés. Si vous avez un de ces écrans
+alors envoyez un rapport!*
 
 -   BOE-Hydis HT14X14 (14.1" 1024x768)
--   Boe-Hydis HT14P12 (14.1" 1400x1050) (FRU P/N 41W1478 recommended
-    for the inverter board)
+-   Boe-Hydis HT14P12 (14.1" 1400x1050) (FRU P/N 41W1478 recommandé pour la
+    carte d'inverseur)
 -   CMO (IDtech?) 13N7068 (15.1" 1024x768)
 -   CMO (IDtech?) 13N7069 (15.1" 1024x768)
 -   BOE-Hydis HV150P01-100 (15.1" 1400x1050) (P/N 42T0078 FRU 42T0079
-    or P/N 41W1338 recommended for the inverter board)
+    or P/N 41W1338 recommandé pour la carte d'inverseur)
 -   BOE-Hydis HV150UX1-102 (15.1" 1600x1200) (P/N 42T0078 FRU 42T0079
-    or P/N 41W1338 recommended for the inverter board)
+    or P/N 41W1338 recommandé pour la carte d'inverseur)
 -   IDtech IAQX10S (15.1" 2048x1536) (P/N 42T0078 FRU 42T0079 or P/N
-    41W1338 recommended for the inverter board)
+    41W1338 recommandé pour la carte d'inverseur)
 -   Samsung LTN154P2-L05 (42X4641 42T0329) (15.4" 1680x1050)
 -   LG-Philips LP154W02-TL10 (13N7020 42T0423) (15.4" 1680x1050)
--   LG-Philips LP154WU1-TLB1 (42T0361) (15.4" 1920x1200) *(for T61p
-    but it might work in T60. Unknown!)*
--   Samsung LTN154U2-L05 (42T0408 42T0574) (15.4" 1920x1200) *(for
-    T61p but it might work in T60. Unknown!)*
+-   LG-Philips LP154WU1-TLB1 (42T0361) (15.4" 1920x1200) *(pour T61p
+    mais ça pourrait marcher dans le T60. On ne sait pas!)*
+-   Samsung LTN154U2-L05 (42T0408 42T0574) (15.4" 1920x1200) *(pour
+    T61p mais ça pourrait marcher dans le T60. On ne sait pas!)*
 
-It is unknown whether the 1680x1050 (15.4") and 1920x1200 (15.4")
-panels use a different inverter board than the 1280x800 panels.
+Il est inconnu si oui ou non les écrans 1680x1050 (15.4") et 1920x1200 (15.4")
+utilisent une carte d'inverseur différente que les écrans 1280x800.
 
-The T60 typically comes with an Intel wifi chipset which does not work
-at all without proprietary firmware, and while Lenovo BIOS is running
-the system will refuse to boot if you replace the card. Fortunately it
-is very easily replaced; just remove the card and install another one
-*after* libreboot is installed. See
-[\#recommended\_wifi](#recommended_wifi) for replacements.
+Le T60 vient de base avec un jeu de puce WiFi Intel qui ne marche pas du tout
+sans micrologiciel propriétaire, et pendant que le BIOS de Lenovo s'exécute le
+système refusera de démarrer si vous changer la carte WiFi. Heuresement, ça se
+remplace très facilement; enlevez juste la carte et installez une autre
+*après* que libreboot est installé. Voyez
+[\#recommended\_wifi](#recommended_wifi) pour des remplacements.
 
-ThinkPad T60 (ATI GPU) and ThinkPad T60 (Intel GPU) differences
+Différences d'un ThinkPad T60 avec carte graphique ATI ou Intel
 ----------------------------------------------------------------
 
-If your T60 is a 14.1" or 15.1" model with an ATI GPU, it won't work
-with libreboot by default but you can replace the motherboard with
-another T60 motherboard that has an Intel GPU, and then libreboot should
-work.
+Si votre T60 est un modèle 14.1 ou 15.1 pouces (") avec un GPU ATI, ça ne
+marchera pas par défaut avec libreboot mais vous pouvez remplacer la carte
+mère avec celle d'un autre T60 ayant un GPU d'Intel, et ensuite libreboot
+devrait marcher.
+
+Autant que j'en sache, les cartes mères du T60 14.1" (GPU Intel) et 15.1" (GPU
+Intel) sont les mêmes; des 'espaceurs' sont utilisés sur celle tu T60 15.1".
+Dans n'importe quel cas, il fait bon sens d'en trouver une qui est sûre de
+rentrer dans votre chassis.
 
 As far as I know, 14.1" (Intel GPU) and 15.1" (Intel GPU) T60
-motherboards are the same, where 'spacers' are used on the 15.1" T60.
+carte mères are the same, where 'spacers' are used on the 15.1" T60.
 In any case, it makes sense to find one that is guaranteed to fit in
 your chassis.
 
-There is also a 15.4" T60 with Intel GPU.
+Il y a aussi un T60 15.4" avec un GPU Intel.
 
-Note: the T60*p* laptops all have ATI graphics. The T60p laptops
-cannot be used with libreboot under any circumstances.
+Note: les ordinateurs portables T60*p* ont tous des graphiques ATI. Ils ne
+peuvent pas être utilisés avec libreboot dans n'importe quelles circonstances.
 
-The following T60 motherboard (see area highlighted in white) shows an
-empty space where the ATI GPU would be (this particular motherboard has
-an Intel GPU):\
-
+La carte mère T60 suivante (voyez la zone surligné en blanc) montre un espace
+vide là où devrait être un GPU ATI (cette carte mère particulière a un GPU
+Intel):\
 ![](../images/t60_dev/t60_unbrick.jpg)
 
-The reason that the ATI GPU on T60 is unsupported is due to the VBIOS
-(Video BIOS) which is non-free. The VBIOS for the Intel GPU on X60/T60
-has been reverse engineered, and replaced with Free Software and so will
-work in libreboot.
+La raison pour laquelle le GPU ATI sur le T60 n'est pas supporté est dû au
+VBIOS (BIOS Vidéo) qui est non libre. Le VBIOS pour le GPU Intel sur le
+X60/T60 a été déconstruit, et remplacé avec du logiciel libre et donc marchera
+dans libreboot.
 
-The 'Video BIOS' is what initializes graphics.
+Le 'BIOS Vidéo' est ce qui initialise les graphiques.
 
-See: <https://en.wikipedia.org/wiki/Video_BIOS>.\
-In fact, lack of free VBIOS in general is a big problem in coreboot, and
-is one reason (among others) why many ports for coreboot are unsuitable
-for libreboot's purpose.
 
-Theoretically, the ThinkPad T60 with ATI GPU can work with libreboot and
-have ROM images compiled for it, however in practise it would not be
-usable as a laptop because there would be no visual display at all. That
-being said, such a configuration is acceptable for use in a 'headless'
-server setup (with serial and/or ssh console as the display).
+Voyez: <https://fr.wikipedia.org/wiki/BIOS_vid%C3%A9o>.\
+Dans les faits, le manque de VBIOS libre en général est un gros problème dans
+coreboot, et est un raison (parmi d'autres) pourquoi beaucoup d'adaptions pour
+coreboot ne sont pas en accord avec le but de libreboot.
 
-Information about the macbook1,1
+Théoriquement, le ThinkPad T60 avec un GPU ATI peut marcher avec libreboot et
+avoir des images ROM compilé pour, néamoins en pratique ça ne pourra pas être
+utilisable en tant qu'ordinateur portable parce qu'il n'y aura pas d'affichage
+visuel du tout. Cela dit, une telle configuration est acceptable pour un
+serveur 'sans tête' (avec une console série/ssh en tant qu'affichage).
+
+Informations à propos du macbook1,1
 --------------------------------
 
 There is an Apple laptop called the macbook1,1 from 2006 which uses the
@@ -355,14 +366,14 @@ It is believed that all models are compatible, listed here:
 
 Specifically (Order No. / Model No. / CPU):
 
--   MA255LL/A / A1181 (EMC 2092) / Core Duo T2500 *(tested - working)*
--   MA254LL/A / A1181 (EMC 2092) / Core Duo T2400 *(tested - working)*
+-   MA255LL/A / A1181 (EMC 2092) / Core Duo T2500 *(testé - marche)*
+-   MA254LL/A / A1181 (EMC 2092) / Core Duo T2400 *(testé - marche)*
 -   MA472LL/A / A1181 (EMC 2092) / Core Duo T2500 (untested)
 
 Unbricking: [this page shows disassembly
 guides](https://www.ifixit.com/Device/MacBook_Core_2_Duo) and mono's
 page (see [\#information-about-the-macbook21](#information-about-the-macbook21))
-shows the location of the SPI flash chip on the motherboard. [How to remove the motherboard](https://www.ifixit.com/Guide/MacBook+Core+2+Duo+PRAM+Battery+Replacement/529).
+shows the location of the SPI flash chip on the carte mère. [How to remove the carte mère](https://www.ifixit.com/Guide/MacBook+Core+2+Duo+PRAM+Battery+Replacement/529).
 
 No method is yet known for flashing in GNU+Linux while the Apple
 firmware is running. You will need to disassemble the system and flash
@@ -372,125 +383,134 @@ refer to [../install/bbb\_setup.md](../install/bbb_setup.md).
 Information about the macbook2,1
 --------------------------------
 
-There is an Apple laptop called the macbook2,1 from late 2006 or early
-2007 that uses the same i945 chipset as the ThinkPad X60 and ThinkPad
-T60. A developer ported coreboot to their macbook2,1, and now libreboot
-can run on it.
+Il y a un ordinateur portable d'Apple nommé le macbook2,1, sorti vers la fin
+2006 ou début 2007 qui utilise le même jeu de puce que ThinkPad X60 et
+ThinkPad T60. Un développeur a adapté coreboot à son macbook2,1, et maitenant
+libreboot peut s'exécuter dessus.
 
-Mono Moosbart is the person who wrote the port for macbook2,1.
-Referenced below are copies (up to date at the time of writing,
-20140630) of the pages that this person wrote when porting coreboot to
-the macbook2,1. They are included here in case the main site goes down
-for whatever reason, since they include a lot of useful information.
+Mono Moosbart est la personne qui a écrit l'adaption pour le macbook2,1.
+Référencé ci-dessous sont des copies (mises à jour au temps de l'écriture,
+2014-06-30) des pages que cette personne a écrite lors de l'adaption de
+coreboot sur leur macbook2,1. Elles sont incluses ici au cas où le site
+principal s'arrête pour une raison quelconque, puisqu'il inclus un tas
+d'informations utiles.
 
-Backups created using wget:
+Sauvegardes faites utilisant `wget`:
 
     $ wget -m -p -E -k -K -np http://macbook.donderklumpen.de/
     $ wget -m -p -E -k -K -np http://macbook.donderklumpen.de/coreboot/
 
-Use `-e robots=off` if using this trick for other sites and the site restricts
-using robots.txt
+Utilisez `-e robots=off` si vous utilisez cette astuce pour d'autres sites et
+que le site restreint l'utilisation de robots.txt
 
-### Installing GNU+Linux distributions (on Apple EFI firmware)
+### Installer des distributions GNU+Linux (sur le micrologiciel EFI d'Apple)
 
-How to boot an ISO: burn it to a CD (like you would normally) and hold
-down the Alt/Control key while booting. The bootloader will detect the
-GNU+Linux CD as 'Windows' (because Apple doesn't think GNU+Linux
-exists). Install it like you normally would. When you boot up again,
-hold Alt/Control once more. The installation (on the HDD) will once
-again be seen as 'Windows'. (it's not actually Windows, but Apple
-likes to think that Apple and Microsoft are all that exist.) Now to
-install libreboot, follow
+Comment démarrer un ISO:  gravez le sur un CD (comme vous le feriez
+normallement) et maintenez la touche Alt/Ctrl appuyée pendant que vous
+démarrez.
+Le chargeur d'amorçage détectera le CD GNU+Linux en tant que 'Windows' (parce
+qu'Apple pense que GNU+Linux n'existe pas). Installez le comme d'habitude.
+Quand vous démarrez à nouveau, maintenez appuyé Alt/Ctrl encore une fois.
+L'installation (sur le disque dur) sera encore une vois vue comme 'Windows'
+(ce n'est pas actuellement Windows, mais Apple aime à penser qu'Apple et
+Microsoft est tout ce qui existe).
+Maintenant pour installer libreboot, suivez
 [../install/\#flashrom\_macbook21](../install/#flashrom_macbook21).
 
-### Coreboot wiki page
+### Page wiki Coreboot
 
 -   <https://www.coreboot.org/Board:apple/macbook21>
 
-### Compatible models
+### Modèles Compatibles
 
-It is believed that all models are compatible, listed here:
+Il est cru que tout les modèles listés ci-dessous sont compatibles:
 
 -   <http://www.everymac.com/ultimate-mac-lookup/?search_keywords=MacBook2,1>
 
-Specifically (Order No. / Model No. / CPU):
+Spécificiquement  (Order No. / Model No. / CPU):
 
--   MA699LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T5600 *(tested -
-    working)*
--   MA701LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T7200 *(tested -
-    working)*
--   MB061LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7200 (untested)
--   MA700LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T7200 *(tested -
-    working)*
--   MB063LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7400 (works)
--   MB062LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7400 *(tested -
-    working)*
+-   MA699LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T5600 *(testé -
+    marche)*
+-   MA701LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T7200 *(testé -
+    marche)*
+-   MB061LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7200 (non testé)
+-   MA700LL/A / A1181 (EMC 2121) / Intel Core 2 Duo T7200 *(testé -
+    marche)*
+-   MB063LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7400 (marche)
+-   MB062LL/A / A1181 (EMC 2139) / Intel Core 2 Duo T7400 *(testé -
+    marche)*
 
-Also of interest:
+Également digne d'intérêt:
 [../git/\#config\_macbook21](../git/#config_macbook21).
 
-Unbricking: [this page shows disassembly
-guides](https://www.ifixit.com/Device/MacBook_Core_2_Duo) and mono's
-page (see above) shows the location of the SPI flash chip on the
-motherboard. [How to remove the
-motherboard](https://www.ifixit.com/Guide/MacBook+Core+2+Duo+PRAM+Battery+Replacement/529).
+Débousillage:
+[cette page montre des guides de désassemblage](https://www.ifixit.com/Device/MacBook_Core_2_Duo)
+et la page de Mono (voir au dessus) montre la place de la puce flash SPI sur
+la carte mère.
+[Comment retirer la carte mère](https://www.ifixit.com/Guide/MacBook+Core+2+Duo+PRAM+Battery+Replacement/529).
 
-For external flashing, refer to
-[../install/bbb\_setup.md](../install/bbb_setup.md).
+Pour le flashage externe, référez-vous à [../install/bbb\_setup.md](../install/bbb_setup.md).
 
-You need to replace OS X with GNU+Linux before flashing libreboot. (OSX
-won't run at all in libreboot).
+Vous aurez besoin de remplacer OS X avec GNU+Linux avant de flasher Libreboot.
+(OSX ne s'exécutera pas du tout dans Libreboot).
 
-### Issues and solutions
+### Problèmes et solutions
 
-There is one mouse button only, however multiple finger tapping
-works. Battery life is poor compared to X60/T60. The Apple logo on the
-back is a hole, exposing the backlight, which means that it glows. You
-should [cover it up](http://cweiske.de/tagebuch/tuxbook.htm).
+Il y a un seul bouton souris, néamoins le tapotage multi-doigts marche.
+La durée de la batterie est pauvre comparé au X60/T60. Le logo Apple à
+l'arrière est un trou, ça veut dire qu'il brille. Vous devriez 
+[le couvrir](http://cweiske.de/tagebuch/tuxbook.htm)
+
+*Le MacBook2,1 est fourni avec une webcam qui ne marche pas avec du logiciel
+libre. Les webcams sont un risque de sécurité et de confidentialité;
+couvrez-là ! Ou enlevez-la.*
 
 *The MacBook2,1 comes with a webcam which does not work with free
 software. Webcams are a privacy and security risk; cover it up! Or
 remove it.*
 
-Further issues do have solutions:
+Des problèmes plus poussés ont des solutions:
 
-#### Enable AltGr
+#### Activer AltGr
 
-The keyboard has a keypad enter instead of an AltGr. The first key on
-the right side of the spacebar is the Apple "command" key. On its
-right is the keypad enter. We can make it act as an AltGr.
+Le clavier a une touche entrée de pavé numérique au lieu d'un AltGr. La
+première touche sur le côté droit de la barre espace est la touche Apple
+"command". Sur sa droite est la touche entrée de pavé numérique. Nous pouvons
+la faire agir en tant qu'AltGr.
 
-If your operating system is Trisquel or other dpkg-based distribution,
-there is an easy solution. Under root (or sudo) run
+Si votre système d'exploitation est Trisquel ou une autre distribution basée
+dpkg, il y a une solution facile. Sous root (ou sudo) exécutez
 
     # dpkg-reconfigure keyboard-configuration
 
-and select the option "apple laptop", leave other settings as their
-defaults until you are given the option "Use Keypad Enter as
-AltGr". Select this. The keypad enter key will then act as an AltGr
-everywhere.
+et sélectionnez l'option "apple laptop", laissez les autres paramètres avec
+leur défauts jusqu'à qu'on vous propose l'option "Use Keypad Enter as AltGr".
+Sélectionnez ceci. La touche entrée du pavé numérique agira alors partout
+comme un AltGr.
 
-
-For Parabola or other systemd-based distributions you can enable AltGr
-manually. Simply add the line
+Pour Parabola ou d'autres distributions basées sur systemd vous pouvez activer
+AltGr manuellement. Ajoutez simplement la ligne
 
     KEYMAP_TOGGLE=lv3:enter_switch
 
-to the file /etc/vconsole.conf and then restart the computer.
+au fichier /etc/vconsole.conf puis redémarrez l'ordinateur.
 
+#### Activez le touché à 3 doigts
 
-#### Enable 3-finger tap
+Un utilisateur a soumis un utilitaire pour activer le tapotage a 3 doigts sur
+cet ordinateur portable. C'est disponibles dans
+*resources/utilities/macbook21-three-finger-tap* dans le répertoire git de
+libreboot.
 
 A user submitted a utility to enable 3-finger tap on this laptop. It's
 available at *resources/utilities/macbook21-three-finger-tap* in the
 libreboot git repository.
 
+#### Rendre le pavé tactile moins mou
 
-#### Make touchpad more responsive
-
-Linux kernels of version 3.15 or lower might make the touchpad
-extremely sluggish. A user reported that they could get better
-response from the touchpad with the following in their xorg.conf:
+Les kernels Linux de version 3.15 ou ultérieurs peuvent rendre le pavé tactile
+extrêmement lent. Un utilisateur a rapporté qu'il pouvait avoir une meilleure
+réponse du pavé tactile avec le contenu suivant dans leur xorg.conf:
 
     Section "InputClass"
      Identifier "Synaptics Touchpad"
@@ -537,8 +557,8 @@ response from the touchpad with the following in their xorg.conf:
 Copyright © 2014, 2015, 2016 Leah Rowe <info@minifree.org>\
 Copyright © 2017 Eemeli Blåsten <https://drblasten.com>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
