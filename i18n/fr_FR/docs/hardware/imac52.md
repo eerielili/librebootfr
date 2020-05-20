@@ -3,7 +3,7 @@ title: Apple iMac 5,2
 ...
 
 Des informations seront bientôt écrites, cette carte mère a été fusionné
-dans/supporte libreboot.
+et est supporté par libreboot.
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
