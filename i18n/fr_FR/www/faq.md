@@ -40,7 +40,7 @@ Les plus importantes tâches sont maintenant les suivantes:
 - Travailler sur de nouvelles améliorations et aider avec les builds une fois que toutes les ROMs sont construites pour toutes les cartes mères, quand le système de build est stable.
 - En particulier, il y a quelques nouvelles cartes mères dans coreboot que nous pouvons ajouter à Libreboot, comme documenté dans le traqueur de bogues de Libreboot.
 Celles-ci devront être ajoutées, et complétement testées. Les instructions pour mettre en place les outils de flashing matériels peuvent être trouvés dans [les guides d'installation de Libreboot](docs/install/)
-- Bogues ! Reportez les bogues ! <https://notabug.org/libreboot/libreboot/issues> 
+- Bogues ! Signalez les bogues ! <https://notabug.org/libreboot/libreboot/issues> 
 - Quelques nouvelles adaptions de cartes mères serait bienvenue ;).
 - Si vous avez les compétences, cela serait très apprécié. Adaptez les à coreboot d'abord, où faites en sorte que les cibles existantes de coreboot marchent sans blobs binaires.
 
@@ -57,16 +57,18 @@ Quelle version de Libreboot ai-je ?
 
 Regardez la version [dans la documentation](../docs/#version)
 
-
-Flashrom complains about DEVMEM access
+Flashrom se plaint de l'accés à DEVMEM
 --------------------------------------
 
-If running `flashrom -p internal` for software based flashing, and
-you get an error related to /dev/mem access, you should reboot with
-`iomem=relaxed` kernel parameter before running flashrom, or use a kernel
-that has `CONFIG_STRICT_DEVMEM` and `CONFIG_IO_STRICT_DEVMEM` not enabled.
+Si exécuter `flashrom -p internal` pour le flashage basé logiciel vous
+sort une erreur se relatant à l'accés à /dev/mem, vous devriez redémarrer
+avec le paramètre de kernel `iomem=relaxed` avant d'exécuter flashrom ou
+d'utiliser un kernel dont les options `CONFIG_STRICT_DEVMEM` et
+`CONFIG_IO_STRICT_DEVMEM` ne sont pas activées.
 
-Example flashrom output with both `CONFIG_STRICT_DEVMEM` and `CONFIG_IO_STRICT_DEVMEM` enabled:
+
+Un exemple de la sortie de flashrom avec les options du kernel
+`CONFIG_STRICT_DEVMEM` et  `CONFIG_IO_STRICT_DEVMEM` activé:
 ```
 flashrom v0.9.9-r1955 on Linux 4.11.9-1-ARCH (x86_64)
 flashrom is free software, get the source code at https://flashrom.org
@@ -78,85 +80,86 @@ Failed getting access to coreboot high tables.
 Error accessing DMI Table, 0x1000 bytes at 0x000000007fb27000
 /dev/mem mmap failed: Operation not permitted
 ```
-
-The backlight is darker on the left side of the screen when lowering the brightness on my X200/T400/T500/R400 
+Le rétroéclairage est plus sombre sur le côté gauche de l'écran quand je baisse la luminosité sur mon X200/T400/T500/R400
 ---------------------------------------------------------------------------------------------------------------
 
-We don't know how to detect the correct PWM value to use in
-coreboot-libre, so we just use the default one in coreboot which has
-this issue on some CCFL panels, but not LED panels.
+Nous ne savons pas comment détecter les valeurs PWM correctes à utiliser dans
+coreboot-libre, donc nous utilisons celles par défaut dans coreboot qui a ces
+problèmes avec quelques écrans CCFL, mais pas les écrans LED.
 
-You can work around this in your distribution, by following the notes at
-[docs: backlight control](../docs/misc/#finetune-backlight-control-on-intel-gpus).
+Vous pouvez contourner celà dans votre distribution, en suivant les notes dans
+[docus: control du rétroéclairage](../docs/misc/#finetune-backlight-control-on-intel-gpus).
 
-The ethernet doesn't work on my X200/T400/X60/T60 when I plug in it 
+Mon ethernet ne marche pas sur le X200/T400/X60/T60 lorsque je branche le cable
 -------------------------------------------------------------------
 
-This was observed on some systems using network-manager. This happens
-both on the original BIOS and in libreboot. It's a quirk in the
-hardware. On debian systems, a workaround is to restart the networking
-service when you connect the ethernet cable:
+Ça a été observé sur quelque systèmes utilisant network-manager.
+Ça arrive à la fois sur le BIOS original et sur libreboot. C'est une
+particularité dans le matériel. Sur les systèmes debian, une solution de
+contournement est de redémarrer le service réseau quand vous connectez le
+câble ethernet:
 
     $ sudo service network-manager restart
 
-On Parabola, you can try:
+Sur Parabola, vous pouvez essayer:
 
     $ sudo systemctl restart network-manager
 
-(the service name might be different for you, depending on your
+(le nom du service peut être différent pour vous, dépendant de votre
 configuration)
 
-My KCMA-D8 or KGPE-D16 doesn't boot with the PIKE2008 module installed 
+Mon KCMA-D8 ou KGPE-D16 ne démarre pas avec le module PIKE2008 installé
 -----------------------------------------------------------------------
 
-Libreboot 20160818, 20160902 and 20160907 all have a bug: in SeaBIOS,
-PCI options ROMs are loaded when available, by default. This is not
-technically a problem, because an option ROM can be free or non-free. In
-practise, though, they are usually non-free.
+Libreboot version 20160818, 20160902 et 20160907 ont toutes un bug: dans
+SeaBIOS, les options ROMs PCI sont chargés et disponible, par défaut. Ce n'est
+techniquement pas un problème, car une ROM optionnelle peut être libre ou non.
+En pratique cependant, elles sont généralement non libres.
 
-Loading the option ROM from the PIKE2008 module on either ASUS KCMA-D8
-or KGPE-D16 causes the system to hang at boot. It's possible to use
-this in the payload (if you use a linux kernel payload, or petitboot),
-or to boot (with SeaGRUB and/or SeaBIOS) from regular SATA and then use
-it in GNU+Linux. The Linux kernel is capable of using the PIKE2008
-module without loading the option ROM.
+Charger la ROM optionnelle depuis le module PIKE2008 sur soit l'ASUS KCMA-D8
+ou KGPE-D16 cause un gel du système lors du démarrage. C'est possible
+d'utiliser le module dans la charge utile (si vous utilisez une charge utile
+pour le kernel linux, ou petitboot), ou pour démarrer (avec SeaGRUB et/ou
+SeaBIOS) à partir d'un port SATA normal puis ensuite utiliser GNU+Linux.
+Le kernel Linux est capable d'utiliser le module PIKE2008 sans chargé la ROM
+optionnelle.
 
-Libreboot-unstable (or git) now disables loading PCI option ROMs, but
-previous releases with SeaGRUB (20160818-20160907) do not. You can work
-around this by running the following command:
+Libreboot-instable (ou git) désactive dès maintenant le chargements des ROM
+option PCI, mais les versions précédentes avec SeaGRUB (20160818-20160907) ne
+le font pas. Vous pouvez contourner celà en exécutant la commande suivante:
 
     $ ./cbfstool yourrom.rom add-int -i 0 -n etc/pci-optionrom-exec
 
-You can find *cbfstool* in the \_util archive with the libreboot release
-that you are using.
+Vous pouvez trouver l'utilitaire *cbfstool* dans l'archive \_util avec la
+version de libreboot que vous utilisez.
 
-What are the ata/ahci errors I see in libreboot's GRUB?
+Quelles sont les erreurs ata/ahci que je vois dans le GRUB de libreboot ?
 -----------------------------------------------------------------------
 
-You can safely ignore those errors, they exist because we can't quiet down
-cryptomount command from `for` loop in libreboot's
+Vous pouvez ignorer sûrement ces erreurs, elles existent par ce qu'on ne peut
+pas faire taire la commande cryptomount de la boucle `for` dans le 
 [grub.cfg](https://notabug.org/libreboot/libreboot/src/r20160907/resources/grub/config/menuentries/common.cfg#L66).
-It could be fixed in upstream grub by contributing patch that would add
-quiet flag to it.
+de libreboot. Ça pourrait être corrigé en amont grâce à la contribution d'une
+rustine lui ajoutant un drapeau 'mode silencieux'.
 
-How to save kernel panic logs on thinkpad laptops?
+Comment sauvegarder les journaux de la panique du kernel sur les ordinateurs portables ThinkPad ?
 --------------------------------------------------
 
-The easiest method of doing so is by using the kernel's netconsole
-and reproducing the panic. Netconsole requires two machines, the one that is
-panicky (source) and the one that will receive crash logs (target). The
-source has to be connected with an ethernet cable and the target has to be
-reachable at the time of the panic. To set this system up, execute the
-following commands as root on the source (`source#`) and normal user on
-the target (`target$`):
+La façon la plus facile de faire est d'utiliser la netconsole du kernel et de
+reproduire la panique. La netconsole nécessite deux machines, celle qui est
+paniquée (source) et celle qui recevra les journaux d'échecs (target). La
+source doit être connecté via un câble ethernet et la cible doit être
+atteignable sur le réseau lors de la panique. Pour configurer ce système,
+exécutez les commandes suivantes en tant que root sur la source (`source#`) et
+un utilisateur normal sur la cible (`target$`):
 
-1.  Start a listener server on the target machine (netcat works well):
+1.  Démarrez un server d'écoute sur la machine cible (netcat marche bien):
 
     `target$ nc -u -l -p 6666`
 
-2.  Mount configfs (only once per boot, you can check if it is already mounted
-    with `mount | grep /sys/kernel/config`. This will return no output
-    if it is not).
+2.  Monter configfs (une fois seulement par démarrage, vous pouvez vérifier
+    qu'il est déjà monté avec  `mount | grep /sys/kernel/config`. Il n'y aura
+    pas de texte en sortie si il ne l'est pas).
 
     `source# modprobe configfs`
 
@@ -164,17 +167,16 @@ the target (`target$`):
 
     `source# mount none -t configfs /sys/kernel/config`
 
-3.  find source's ethernet interface name, it should be of the form `enp*` or
-    `eth*`, see `ip address` or `ifconfig` output.
+3.  cherchez le nom de l'interface ethernet de la source, ça devrait être de
+    la forme `enp*`ou `eth*`, voyez la sortie de `ip address` ou `ifconfig`.
 
-    `source# iface="enp0s29f8u1"` change this
+    `source# iface="enp0s29f8u1"` adaptez cela 
 
-    Fill the target machine's IPv4 address here:
+    remplissez l'IPV4 de la machine cible ici:
 
-    `source# tgtip="192.168.1.2"` change this
+    `source# tgtip="192.168.1.2"` adaptez cela
 
-
-3.  Create netconsole logging target on the source machine:
+4.  Créez la cible de journalisation netconsole sur la machine source:
 
     `source# modprobe netconsole`
 
@@ -194,151 +196,175 @@ the target (`target$`):
 
     `source# echo 1 > enabled`
 
-4.  Change console loglevel to debugging:
+5.  Changez le niveau de la journalisation sur déboguage:
 
     `source# dmesg -n debug`
 
-5.  Test if the logging works by e.g. inserting or removing an USB
-    device on the source. There should be a few lines appearing in the
-    terminal, in which you started netcat (nc), on the target host.
+6.  Testez si la journalisation marche p.ex en insérant ou enlevant un
+    appareil USB sur la source. Il devrait y avoir quelques lignes
+    apparaissant dans le terminal où vous avez démarré netcat (nc), sur l'hôte
+    cible.
 
-6.  Try to reproduce the kernel panic.
+7.  Tentez de reproduire la panique du kernel.
 
-Machine check exceptions on some Montevina (Penryn CPU) laptops
+Erreurs de la vérification de la machine sur quelque ordinateurs portables Montevina (CPU Penryn)
 ---------------------------------------------------------------
 
-Some GM45 laptops have been freezing or experiencing a kernel panic
-(blinking caps lock LED and totaly unresponsive machine, sometimes followed
-by an automatic reboot within 30 seconds).
-We do not know what the problem(s) is(are), but a CPU microcode
-update in some cases prevents this from happening again.
-See the following bug reports for more info:
-
+Quelques ordinateurs portables GM45 ont gelé (niveau logiciel) ou expérimenté
+une panique du kernel (la LED du Verr. Maj clignotante et une machine
+ne répondant totalement pas, défois suivi d'un redémarrage automatique dans
+les 30secondes).
+Nous ne savons pas ce qu'est (sont) le(s) problème(s), mais dans quelques cas
+une mise à jour du microcode processeur empêche ceci de se reproduire.
+Voyez les rapports de bogues suivant pour plus d'informations:
 - [T400 Machine check: Processor context corrupt](https://notabug.org/libreboot/libreboot/issues/493)
 - [X200 Machine check: Processor context corrupt](https://notabug.org/libreboot/libreboot/issues/289)
 
-- [Unrelated, RAM incompatibility and suspend-to-ram issues on X200](https://libreboot.org/docs/hardware/x200.html#ram_s3_microcode)
+- [Sans rapport, incompatibilité de la RAM et problèmes de suspension dans la RAM sur le
+  X200](https://libreboot.org/docs/hardware/x200.html#ram_s3_microcode)
 
 
-Hardware compatibility
+Compatibilité matérielle
 ======================
 
-What systems are compatible with libreboot?
+Quels systèmes sont compatibles avec libreboot?
 -----------------------------------------------------------------------------------
 
-See the [hardware compatibility list](docs/hardware/).
+Jetez un coup d'oeil à la [liste de compatibilité matérielle](docs/hardware/).
 
-Will the Purism laptops be supported?
+Est-ce que les ordinateurs portables Purism seront supportés?
 ----------------------------------------------------------------------
 
-Short answer: no.
+Réponse courte: non.
 
-There are severe privacy, security and freedom issues with these laptops, due
-to the Intel chipsets that they use. See:
+Il y a des problèmes sévères de sécurité, confidentialité et de liberté avec
+ces ordinateurs portables, dû aux jeux de puces Intel qu'ils utilisent. Voyez:
 
 - [Intel Management Engine](#intelme)
-- [More freedom issues on modern Intel hardware](#intel)
+- [Plus de problèmes de liberté sur le matériel Intel moderne](#intel)
 
-Most notably, these laptops also use the Intel FSP binary blob, for the entire
-hardware initialization. Coreboot does support a particular revision of one of
-their laptops, but most are either unsupported or rely on binary blobs for most
-of the hardware initialization.
+Plus en détail, ces ordinateurs portables utilise aussi le blob binaire Intel
+FSP pour l'entière initialisation matérielle. Coreboot supporte une révision
+particulière d'un de leurs ordinateurs portables, mais la majorité sont soit
+non supportés ou dépendent de blobs binaires pour la majorité de
+l'initialisation matérielle.
 
-In particular, the Intel Management Engine is a severe threat to privacy and
-security, not to mention freedom, since it is a remote backdoor that provides
-Intel remote access to a computer where it is present.
+En particulier, l'Intel Management Engine est une menace sévère à la
+confidentialité et la sécurité, sans mentionner la liberté, puisque c'est une
+porte dérobée à distance dans un ordinateur où elle est présente.
 
-Intel themselves even admitted it, publicly.
+Intel l'a même admis,
+[publiquement](https://www.intel.com/content/www/us/en/support/articles/000025619/software.html).
 
-The Libreboot project recommends avoiding all hardware sold by Purism.
-
-Why is the latest Intel hardware unsupported in libreboot? {#intel}
+Pourquoi le matériel récent d'Intel n'est pas supporté dans Libreboot? {#intel}
 -----------------------------------------------------------
 
-It is unlikely that any post-2008 Intel hardware will ever be supported in
-libreboot, due to severe security and freedom issues; so severe, that *the
-libreboot project recommends avoiding all modern Intel hardware. If you have an
-Intel based system affected by the problems described below, then you should
-get rid of it as soon as possible*. The main issues are as follows:
+Ce n'est pas certain que n'importe quel matériel Intel produit après 2008 sera
+supporté dans Libreboot, dû à de sévères problèmes de sécurité et de libertés;
+si sévère, que *le projet libreboot recommande d'éviter tout matériel Intel
+moderne. Si vous avez un système basé sur Intel affligé des problèmes
+ci-dessous, alors vous devriez vous en débarrasser le plus vite possible*. Les
+problèmes principaux sont les suivants:
 
 ### Intel Management Engine (ME) {#intelme}
 
-Introduced in June 2006 in Intel's 965 Express Chipset Family of
-(Graphics and) Memory Controller Hubs, or (G)MCHs, and the ICH8 I/O
-Controller Family, the Intel Management Engine (ME) is a separate
-computing environment physically located in the (G)MCH chip. In Q3 2009,
-the first generation of Intel Core i3/i5/i7 (Nehalem) CPUs and the 5
-Series Chipset family of Platform Controller Hubs, or PCHs, brought a
-more tightly integrated ME (now at version 6.0) inside the PCH chip,
-which itself replaced the ICH. Thus, the ME is ***present on all Intel
-desktop, mobile (laptop), and server systems since mid 2006***.
+Introduit en Juin 2006 dans la "Intel's 965 Express Chipset Family of
+(Graphics and) Memory Controller Hubs", ou (G)MCHs, et la famille des
+controlleurs entrée/sortie ICH8, l'Intel Management Engine (ME, ou en français
+*Moteur d'administration*) est un environnement informatique séparé
+physiquement situé dans la puce (G)MCH.
+Dans le dernier trimestre de 2009, la première génération des processeurs
+Intel Core i3/i5/i7 (Nehalem) et la série 5 de la famille des jeux de puces
+des "Platform Controller Hubs", ou PCHs, ont amenés une ME plus étroitement
+intégrée (maintenant à la version 6.0) à l'intérieur de la puce PCH, qui
+elle-même remplace l'ICH. Donc, la ME est **présente dans tout les ordinateur,
+ordinateurs portables et systèmes serveurs depuis mi-2006**.
 
-The ME consists of an ARC processor core (replaced with other processor
-cores in later generations of the ME), code and data caches, a timer,
-and a secure internal bus to which additional devices are connected,
-including a cryptography engine, internal ROM and RAM, memory
-controllers, and a ***direct memory access (DMA) engine*** to access the
-host operating system's memory as well as to reserve a region of
-protected external memory to supplement the ME's limited internal RAM.
-The ME also has ***network access*** with its own MAC address through an
-Intel Gigabit Ethernet Controller. Its boot program, stored on the
-internal ROM, loads a firmware "manifest" from the PC's SPI flash
-chip. This manifest is ***signed with a strong cryptographic key***,
-which differs between versions of the ME firmware. If the manifest
-isn't signed by a specific Intel key, the boot ROM won't load and
-execute the firmware and the ME processor core will be halted.
+La ME consiste en un coeur de processeur ARC (remplacés par d'autres coeurs de
+processeur dans les générations d'après), caches de codes et de données, une
+horloge, et un bus sécurisé internel auquel des appareils supplémentaires sont
+attachés, incluant un moteur cryptographique, ROM et RAM interne, contrôleurs
+de mémoire, et un **moteur d'accés mémoire direct (Direct Memory Access, ou
+DMA)** pour accéder à la mémoire du système d'exploitation hôte ainsi que
+réserver une région de la mémoire externe protégée pour s'additionner à la RAM
+interne limitée de la ME.
+La ME a aussi un **accés au réseau** avec sa propre adresse MAC à travers un
+Contrôleur Ethernet Gigabit Intel. Son programme de démarrage, stocké dans la
+ROM interne, charge un "manifeste" micrologiciel depuis la puce flash SPI du
+PC. Ce manifest est signé **avec une robuste clé cryptographique**, qui
+différe selon les versions du micrologiciel de la ME.
+Si le manifeste n'est pas signé par une clé Intel spécifique, la ROM de
+démarrage ne se chargera pas et n'exécutera pas le micrologicel, amenant à
+l'arrêt du coeur processeur de la ME.
 
-The ME firmware is compressed and consists of modules that are listed in
-the manifest along with secure cryptographic hashes of their contents.
-One module is the operating system kernel, which is based on a
-***proprietary real-time operating system (RTOS) kernel*** called
-"ThreadX". The developer, Express Logic, sells licenses and source
-code for ThreadX. Customers such as Intel are forbidden from disclosing
-or sublicensing the ThreadX source code. Another module is the Dynamic
-Application Loader (DAL), which consists of a ***Java virtual machine***
-and set of preinstalled Java classes for cryptography, secure storage,
-etc. The DAL module can load and execute additional ME modules from the
-PC's HDD or SSD. The ME firmware also includes a number of native
-application modules within its flash memory space, including Intel
-Active Management Technology (AMT), an implementation of a Trusted
-Platform Module (TPM), Intel Boot Guard, and audio and video DRM
-systems.
+Le micrologiciel de la ME est compressé et consiste en des modules qui sont
+listés dans le manifest à côté d'une empreinte numérique (hash) sécurisée de
+leur contenu. Un des modules est le kernel du système d'exploitation, qui est
+basé sur un ***kernel propriétaire de système d'exploitation en temps réel
+(RTOS, real-time operating system)*** appelé "ThreadX". Le développeur, Express Logic, vend des
+licenses et code source pour ThreadX. Les clients tel qu'Intel sont exclus de
+dévoiler ou sous-licencer le code source de ThreadX.
+Un autre module est le Chargeur Dynamique D'applications (DAL, Dynamic
+Application Loader), qui consiste en une **machine virtuelle Java** et un
+ensemble de classes Java préinstallées pour le chiffrement, stockage
+sécurisé, etc. Le module DAL peut charger et exécuter des modules ME
+supplémentaires depuis le HDD/SSD du PC. Le micrologiciel de la ME inclut
+aussi des modules d'applications natives à l'intérieur de la mémoire flash,
+comprenant "Intel Active Management Technology" (AMT), une implémentation d'un
+"Trusted Platform Module" (TPM), Intel Boot Guard, et des systèmes de DRM
+audios et vidéos.
 
-The Active Management Technology (AMT) application, part of the Intel
-"vPro" brand, is a Web server and application code that enables remote
-users to power on, power off, view information about, and otherwise
-manage the PC. It can be ***used remotely even while the PC is powered
-off*** (via Wake-on-Lan). Traffic is encrypted using SSL/TLS libraries,
-but recall that all of the major SSL/TLS implementations have had highly
-publicized vulnerabilities. The AMT application itself has ***[known
-vulnerabilities](https://en.wikipedia.org/wiki/Intel_Active_Management_Technology#Known_vulnerabilities_and_exploits)***,
-which have been exploited to develop rootkits and keyloggers and
-covertly gain encrypted access to the management features of a PC.
-Remember that the ME has full access to the PC's RAM. This means that
-an attacker exploiting any of these vulnerabilities may gain access to
-everything on the PC as it runs: all open files, all running
-applications, all keys pressed, and more.
+L'AMT (ou Technologie d'administration active), qui fait partie de la marque
+d'Intel "vPro", est un serveur web et code d'application qui permet à des
+utilisateurs distant de démarrer, éteindre, voir des informations à propos de,
+et autrement d'administrer le PC. Ça peut être ***utilisé à distance même
+quand le PC est éteint*** (via Wake-on-Lan, WoL). Le traffic est chiffré en
+utilisant des bibliothèques SSL/TLS, mais rappelez-vous que toutes les
+implémentations majeures et répandues de SSL/TLS ont eu des vulnérabilités
+largement publiées. L'application AMT elle-même a des ***[vulnérabilités
+connues](https://en.wikipedia.org/wiki/Intel_Active_Management_Technology#Known_vulnerabilities_and_exploits)***
+qui ont été exploitées pour développer des maliciels furtifs (rootkits) et
+enregistreurs de frappes et avoir discrétement accés aux fonctionnalitées
+d'administration d'un PC.
+Rappelez vous que la ME a un accés complet à la RAM d'un PC. Ça veut dire
+qu'un attaquant exploitant ces vulnérabilités pourrait avoir accés à tout sur
+le PC en état de marche; tous les fichiers ouverts, toutes les applications
+s'exécutant, toutes les touches pressées, et plus.
 
-[Intel Boot Guard](https://mjg59.dreamwidth.org/33981.md) is an ME
-application introduced in Q2 2013 with ME firmware version 9.0 on 4th
-Generation Intel Core i3/i5/i7 (Haswell) CPUs. It allows a PC OEM to
-generate an asymmetric cryptographic keypair, install the public key in
-the CPU, and prevent the CPU from executing boot firmware that isn't
-signed with their private key. This means that ***coreboot and libreboot
-are impossible to port*** to such PCs, without the OEM's private
-signing key. Note that systems assembled from separately purchased
-mainboard and CPU parts are unaffected, since the vendor of the
-mainboard (on which the boot firmware is stored) can't possibly affect
-the public key stored on the CPU.
+L'[Intel Boot Guard](https://mjg59.dreamwidth.org/33981.md)
+est une application de la ME introduite dans le troisième trimestre de 2013
+avec la version 9.0 du micrologiciel de la ME sur les processeurs Intel Core
+i3/i5/i7 de 4ième génération (Haswell).
+Ça permet à un manufactureur de PC de générer une paire de clés asymmétrique,
+installer la clé publique dans le processeur, et d'empêcher le processeur
+d'exécuter du micrologiciel de démarrage qui n'est pas signé avec leur clé
+privée. Ça veut dire que ***coreboot et libreboot sont impossibles à adapter***
+à de tels PCs, sans la clé privée de signature du manufactureur. Notez que les
+systèmes construit à partir de parties séparées de carte mères et de
+processeurs ne sont pas affectés, puisque le vendeur de la carte mère (sur
+laquelle le micrologiciel de démarrage est stocké) ne peut pas affecter la clé
+publique stockée sur le processeur.
 
-ME firmware versions 4.0 and later (Intel 4 Series and later chipsets)
-include an ME application for ***audio and video
-[DRM](https://defectivebydesign.org/what_is_drm_digital_restrictions_management)***
-called "Protected Audio Video Path" (PAVP). The ME receives from the
-host operating system an encrypted media stream and encrypted key,
-decrypts the key, and sends the encrypted media decrypted key to the
-GPU, which then decrypts the media. PAVP is also used by another ME
-application to draw an authentication PIN pad directly onto the screen.
+Les versions 4.0 et au-delà de la ME (Intel 4 Series et jeux de puces d'après)
+incluent une application de la ME pour ***la
+[DRM](https://defectivebydesign.org/what_is_drm_digital_restrictions_management) de l'audio et de la
+vidéo***, appelé "Protected Audio Video Path" (PAVP). La ME reçoit du système
+d'exploitation hôte un flux média chiffré et une clé chiffré, déchiffre la
+clé, et envoie la clé déchiffré à la carte graphique, qui ensuite déchiffre
+le média. PAVP est aussi utilisé par une autre application ME pour dessiner un
+pavé d'authentification PIN directement sur l'écran. Dans ce cas,
+l'application PAVP contrôle directement les graphiques apparaissant sur
+l'écran du PC d'une manière que le système d'exploitation du PC hôte ne
+peut pas détecter. La version 7.0 de la ME sur les PCHs avec processeurs 
+Intel Core seconde Génération (Sandy Bridge) i3/i5/i7 remplace PAVP avec une
+application de DRM similaire appelée "Intel Insider". Comme l'application AMT,
+ces applications DRM, qui en elles-mêmes sont défectueuses par conception,
+démontre les capacités d'omnipotences de la ME; ce matériel et son
+micrologiciel propriétaire peut accéder et contrôler tout ce qui est dans la
+RAM et même ***tout ce qui est montré sur l'écran***.
+
+
+
 In this usage, the PAVP application directly controls the graphics that
 appear on the PC's screen in a way that the host OS cannot detect. ME
 firmware version 7.0 on PCHs with 2nd Generation Intel Core i3/i5/i7
