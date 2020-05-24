@@ -346,8 +346,7 @@ laquelle le micrologiciel de démarrage est stocké) ne peut pas affecter la cl�
 publique stockée sur le processeur.
 
 Les versions 4.0 et au-delà de la ME (Intel 4 Series et jeux de puces d'après)
-incluent une application de la ME pour ***la
-[DRM](https://defectivebydesign.org/what_is_drm_digital_restrictions_management) de l'audio et de la
+incluent une application de la ME pour ***la [DRM](https://defectivebydesign.org/what_is_drm_digital_restrictions_management) de l'audio et de la
 vidéo***, appelé "Protected Audio Video Path" (PAVP). La ME reçoit du système
 d'exploitation hôte un flux média chiffré et une clé chiffré, déchiffre la
 clé, et envoie la clé déchiffré à la carte graphique, qui ensuite déchiffre
@@ -363,671 +362,726 @@ démontre les capacités d'omnipotences de la ME; ce matériel et son
 micrologiciel propriétaire peut accéder et contrôler tout ce qui est dans la
 RAM et même ***tout ce qui est montré sur l'écran***.
 
+L' "Intel Management Engine" avec son micrologiciel propriétaire a un accés et
+un contrôle complet sur le PC: il peut allumer ou éteindre le PC, lire toutes
+les fichiers ouverts, examiner toutes les applications en cours d'exéution,
+traquer toutes les touches pressées et mouvements de souris, et même faire des
+captures ou montrer des images sur l'écran.
+Et elle a une interface réseau qui est démontrée non sécurisée, qui peut
+permettre un attaquant sur le réseau d'injecter des maliciels furtifs qui
+peuvent complétement compromettre le PC et reporter toutes les activités ayant
+lieu sur le PC à l'attaquant. C'est une menace à la liberté, sécurité et la
+confidentialité qui ne peut pas être ignorée.
+
+Avant la version 6.0 (c'est à dire, sur les systèmes de 2008/2009 et plus
+tôt), la ME peut être désactivée en configurant quelques valeurs dans la
+mémoire flash SPI. Le micrologiciel de la ME peut être ensuite entiérement
+enlevé de l'espace mémoire de la puce. libreboot [le
+fait](../docs/hardware/gm45_remove_me.md) sur les systèmes avec Intel 4 Series
+qu'il supporte, tel que le [Libreboot X200](../docs/install/x200_external.md)
+et [Libreboot T400](../docs/install/t400_external.md). Le micrologiciel de la
+ME version 6.0 et après, qui est trouvé sur tout système avec un processeur
+Intel Core i3/i5/i7 et un PCH, inclut le micrologiciel "ME Ignition" qui
+enclenche quelques initialisations matérielle et la gestion de l'alimentation.
+Si la ROM de démarrage de la ME ne trouve pas dans la mémoire flash SPI un
+manifeste de micrologiciel de la ME avec une signature d'Intel valide, le pc
+tout entier s'éteindra après 30 minutes.
+
+Dû à la vérification de la signature, développer un micrologiciel de
+remplacement libre de la ME est basiquement impossible. La seule entité
+capabll e de remplacer le micrologiciel ME est Intel. Comme déclaré
+auparavant, le micrologiciel de la ME inclut du code licensé par des parties
+tierces, donc Intel ne pourrait même pas publier le code source si ils
+voulaient. Et même s'ils développaient un micrologiciel de la ME complètement
+nouveau, la ROM de démarrage de la ME rejecterait quelconque micrologiciel
+modifié n'étant pas signé par Intel.
+Donc, le micrologiciel de la ME est désespérement propriétaire et
+[tivoisé](https://fr.wiktionary.org/wiki/tivo%C3%AFsation#Nom_commun).
+
+**En résumé, l'IME et ses applications sont une porte dérobée avec un accés
+et un contrôle total sur le reste du PC. La ME est une menace à la liberté,
+sécurité, la confidentialité et le projet libreboot recommande fortement de
+l'éviter complètement. Puisque les versions récentes ne peuvent pas être
+enlevées, ça veut dire éviter toutes générations récentes du matériel Intel.**
+
+Plus d'informations à propos de la ME peuvent être trouvées sur de nombreux
+sites webs, incluant :
+    * [me.bios.io](http://me.bios.io/Main_Page)
+    * [unhuffme](http://io.netgarage.org/me/)
+    * [wiki de coreboot](http://www.coreboot.org/Intel_Management_Engine)
+    * [Wikipedia](https://en.wikipedia.org/wiki/Intel_Active_Management_Technology)
 
 
-In this usage, the PAVP application directly controls the graphics that
-appear on the PC's screen in a way that the host OS cannot detect. ME
-firmware version 7.0 on PCHs with 2nd Generation Intel Core i3/i5/i7
-(Sandy Bridge) CPUs replaces PAVP with a similar DRM application called
-"Intel Insider". Like the AMT application, these DRM applications,
-which in themselves are defective by design, demonstrate the omnipotent
-capabilities of the ME: this hardware and its proprietary firmware can
-access and control everything that is in RAM and even ***everything that
-is shown on the screen***.
+Le livre ***[Platform Embedded Security Technology Revealed](https://www.apress.com/9781430265719)***
+décrit en grand détail l'architecture matérielle de la ME et des modules
+applications du micrologiciel.
 
-The Intel Management Engine with its proprietary firmware has complete
-access to and control over the PC: it can power on or shut down the PC,
-read all open files, examine all running applications, track all keys
-pressed and mouse movements, and even capture or display images on the
-screen. And it has a network interface that is demonstrably insecure,
-which can allow an attacker on the network to inject rootkits that
-completely compromise the PC and can report to the attacker all
-activities performed on the PC. It is a threat to freedom, security, and
-privacy that can't be ignored.
-
-Before version 6.0 (that is, on systems from 2008/2009 and earlier), the
-ME can be disabled by setting a couple of values in the SPI flash
-memory. The ME firmware can then be removed entirely from the flash
-memory space. libreboot [does this](../docs/hardware/gm45_remove_me.md) on
-the Intel 4 Series systems that it supports, such as the [Libreboot
-X200](../docs/install/x200_external.md) and [Libreboot
-T400](../docs/install/t400_external.md). ME firmware versions 6.0 and
-later, which are found on all systems with an Intel Core i3/i5/i7 CPU
-and a PCH, include "ME Ignition" firmware that performs some hardware
-initialization and power management. If the ME's boot ROM does not find
-in the SPI flash memory an ME firmware manifest with a valid Intel
-signature, the whole PC will shut down after 30 minutes.
-
-Due to the signature verification, developing free replacement firmware
-for the ME is basically impossible. The only entity capable of replacing
-the ME firmware is Intel. As previously stated, the ME firmware includes
-proprietary code licensed from third parties, so Intel couldn't release
-the source code even if they wanted to. And even if they developed
-completely new ME firmware without third-party proprietary code and
-released its source code, the ME's boot ROM would reject any modified
-firmware that isn't signed by Intel. Thus, the ME firmware is both
-hopelessly proprietary and "tivoized".
-
-**In summary, the Intel Management Engine and its applications are a
-backdoor with total access to and control over the rest of the PC. The
-ME is a threat to freedom, security, and privacy, and the libreboot
-project strongly recommends avoiding it entirely. Since recent versions
-of it can't be removed, this means avoiding all recent generations of
-Intel hardware.**
-
-More information about the Management Engine can be found on various Web
-sites, including [me.bios.io](http://me.bios.io/Main_Page),
-[unhuffme](http://io.netgarage.org/me/), [coreboot
-wiki](http://www.coreboot.org/Intel_Management_Engine), and
-[Wikipedia](https://en.wikipedia.org/wiki/Intel_Active_Management_Technology).
-The book ***[Platform Embedded Security Technology
-Revealed](https://www.apress.com/9781430265719)*** describes in great
-detail the ME's hardware architecture and firmware application modules.
-
-If you're stuck with the ME (non-libreboot system), you might find this
-interesting:
+Si vous êtes bloqué avec la ME (système non-libreboot), vous pourrez peut-être
+trouver cela intéressant:
 <http://hardenedlinux.org/firmware/2016/11/17/neutralize_ME_firmware_on_sandybridge_and_ivybridge.html>
 
-Also see (effort to disable the ME):
+Voyez aussi (efforts pour désactiver la ME):
 <https://www.coreboot.org/pipermail/coreboot/2016-November/082331.html>
-- look at the whole thread
 
-### Firmware Support Package (FSP) {#fsp}
+### Paquetage de support micrologiciel (Firmware Support Package, FSP) {#fsp}
 
-On all recent Intel systems, coreboot support has revolved around
-integrating a blob (for each system) called the *FSP* (firmware support
-package), which handles all of the hardware initialization, including
-memory and CPU initialization. Reverse engineering and replacing this
-blob is almost impossible, due to how complex it is. Even for the most
-skilled developer, it would take years to replace. Intel distributes
-this blob to firmware developers, without source.
+Sur tout les systèmes Intel récents, le support de coreboot tourne autour de
+l'intégration d'un blob (pour chaque système) appelé le *FSP* (firmware
+support package), qui s'occupe de toute l'initialisation matérielle, incluant
+la mémoire et l'initialisation du processeur. Déconstruire et remplacer ce
+blob est presque impossible à la vue de sa complexité. Même pour le
+développeur le plus talentueux, ça prendrait des années à remplacer.
+Intel distribue ce blob aux développeurs de micrologiciels, sans le code
+source.
 
-Since the FSP is responsible for the early hardware initialization, that
-means it also handles SMM (System Management Mode). This is a special
-mode that operates below the operating system level. **It's possible
-that rootkits could be implemented there, which could perform a number
-of attacks on the user (the list is endless). Any Intel system that has
-the proprietary FSP blob cannot be trusted at all.** In fact, several
-SMM rootkits have been demonstrated in the wild (use a search engine to
-find them).
+Puisque le FSP est responsable de l'initialisation matérielle précoce, ça veut
+que ça gère aussi SMM (System Management Mode <=> Mode d'Administration
+Système). C'est un mode spécial qui opère à un niveau en dessous le système
+d'exploitation. **Il est possible que des rootkits soit implémentés ici, qui
+pourrait lancer des attaques sur l'utilisateur (et la liste est sans fin).
+Tout système Intel qui a le blob FSP propriétaire ne peut pas être digne de
+confiance**.
+D'ailleurs, quelques rootkits SMM se sont manifestés dans la jungle d'Internet
+(utilisez un moteur de recherche pour les trouver).
 
-### CPU microcode updates {#microcode}
+### Mises à jour du microcode du processeur {#microcode}
 
-All modern x86 CPUs (from Intel and AMD) use what is called *microcode*.
-CPUs are extremely complex, and difficult to get right, so the circuitry
-is designed in a very generic way, where only basic instructions are
-handled in hardware. Most of the instruction set is implemented using
-microcode, which is low-level software running inside the CPU that can
-specify how the circuitry is to be used, for each instruction. The
-built-in microcode is part of the hardware, and read-only. Both the
-circuitry and the microcode can have bugs, which could cause reliability
-issues.
+Tout les processeurs modernes (d'Intel et AMD) d'architecte x86 utilise ce
+qu'on appele le *microcode*. Les processeurs sont extremement complexe et
+difficule a bien concevoir, donc la circuiterie est conçue d'une manière très
+générique, où seulement les instructions basiques sont gérés dans le
+matériel. La majorité du jeu d'instructions est implémenté via le microcode,
+qui est du logiciel bas-niveau s'exéutant dans le processeur pouvant spécifier
+comment la circuiterie doit être utilisée, pour chaque instruction. Le
+microcode embarqué fait partie du matériel, et en mode lecture seulement. Le
+microcode et la circuiterie peuvent avoir des bogues, ce qui peut causer des
+problèmes de stabilité.
 
-Microcode *updates* are proprietary blobs, uploaded to the CPU at boot
-time, which patches the built-in microcode and disables buggy parts of
-the CPU to improve reliability. In the past, these updates were handled
-by the operating system kernel, but on all recent systems it is the boot
-firmware that must perform this task. Coreboot does distribute microcode
-updates for Intel and AMD CPUs, but libreboot cannot, because the whole
-point of libreboot is to be 100% [free
-software](https://www.gnu.org/philosophy/free-sw.html).
+Les *mises à jour* du microcode sont des blobs propriétaires, téléversé dans
+le processeur pendant le démarrage, qui rustinent le microcode embarqué et
+désactive les parties boguées du processeur pour améliorer la stabilité.
+Avant, ces mises à jour étaient gérées par le kernel du système
+d'exploitation, mais dans tout les systèmes récents c'est le micrologiciel de
+démarrage qui doit s'occuper de ça. Coreboot distribue des mises à jour du
+microcode pour les processeurs Intel et AMD, mais libreboot ne peut pas, parce
+que le but de libreboot est d'être 100% [logiciel
+libre](https://www.gnu.org/philosophy/free-sw.fr.html).
 
-On some older Intel CPUs, it is possible to exclude the microcode
-updates and not have any reliability issues in practise. All current
-libreboot systems work without microcode updates (otherwise, they
-wouldn't be supported in libreboot). However, all modern Intel CPUs
-require the microcode updates, otherwise the system will not boot at
-all, or it will be extremely unstable (memory corruption, for example).
+Sur certains processeurs Intel plus vieux, il est possible d'exclure les mises
+à jour du microcode et de n'avoir aucun problèmes de stabilité en pratique.
+Tout les systèmes libreboot actuels marche sans les mises à jour du microcode
+(sinon, ils ne seraient pas supportés dans libreboot). Cependant, tout
+processeur Intel moderne nécessite une mise à jour du microcode, sinon le
+système ne démarrera pas du tout, et sera extrêmement instable (corruption de
+la mémoire, par exemple).
 
-Intel CPU microcode updates are *signed*, which means that you could not
-even run a modified version, even if you had the source code. If you try
-to upload your own modified updates, the CPU will reject them.
+Les mises à jour du microcode des processeurs Intel sont *signés*, ce qui veut
+dire vous ne pourriez même pas exécuter une version modifiée, même si vous
+avez le code source. Si vous essayez de téléverser vos propres mise à jour
+modifiée, le processeur les rejétera.
 
-The microcode updates alter the way instructions behave on the CPU. That
-means they affect the way the CPU works, in a very fundamental way. That
-makes it software. The updates are proprietary, and are software, so we
-exclude them from libreboot. The microcode built into the CPU already is
-not so much of an issue, since we can't change it anyway (it's
-read-only).
+Les mises à jour du microcode altèrent la façon dont les instructions se
+comportent sur le processeurs. Ça veut dire qu'elles peuvent affecter la façon
+dont le processeur fonctionne de manière fondamentale. C'est ce en fait un
+logiciel. Les mises à jour sont propriétaires, et sont des logiciels, donc
+nous les excluons de libreboot. Le microcode compilé dans le processeur n'est
+pas tellement un problème, puisque on ne peut pas le changer de toute façon
+(il est en lecture seule).
 
-### Intel is uncooperative 
+### Intel n'est pas coopératif
 
-For years, coreboot has been struggling against Intel. Intel has been
-shown to be extremely uncooperative in general. Many coreboot
-developers, and companies, have tried to get Intel to cooperate; namely,
-releasing source code for the firmware components. Even Google, which
-sells millions of *chromebooks* (coreboot preinstalled) have been unable
-to persuade them.
+Depuis des années, coreboot a du mal contre Intel. Intel s'est montré
+extremement non coopératif en général. Beaucoup de développeurs de Coreboot,
+et d'entreprises, ont tenté d'amener Intel à coopérer; en particulier, de
+publier le code source de composants micrologiciel. Même Google, qui vend des
+millions de *chrombebook* (avec coreboot préinstallé) ont été incapables de
+les persuader.
 
-Even when Intel does cooperate, they still don't provide source code.
-They might provide limited information (datasheets) under strict
-corporate NDA (non-disclosure agreement), but even that is not
-guaranteed. Even ODMs and IBVs can't get source code from Intel, in
-most cases (they will just integrate the blobs that Intel provides).
+Même quand Intel coopére, ils ne fournissent toujours pas de codes sources.
+Ils peuvent fournir des informations limitées (fiches techniques) sous un
+accord de non-divulgation d'entreprise strict (appelé aussi NDA, "non
+disclosure agreement"), mais même cela n'est pas garanti.
+Même les [ODMs](https://fr.wikipedia.org/wiki/Original_Design_Manufacturer)
+et IBVs ne peuvent pas recevoir le code source de la part d'Intel, dans la
+majorité des cas (ils intégreront juste les blobs qu'Intel fournissent).
 
-Recent Intel graphics chipsets also [require firmware
-blobs](https://01.org/linuxgraphics/intel-linux-graphics-firmwares?langredirect=1).
+Par ailleurs, les jeux de puces graphiques d'Intel récents [nécessite des
+blobs
+micrologiciels](https://01.org/linuxgraphics/intel-linux-graphics-firmwares?langredirect=1)
 
-Intel is [only going to get
-worse](https://www.phoronix.com/scan.php?page=news_item&px=Intel-Gfx-GuC-SLPC)
-when it comes to user freedom. Libreboot has no support recent Intel
-platforms, precisely because of the problems described above. The only
-way to solve this is to get Intel to change their policies and to be
-more friendly to the [free
-software](https://www.gnu.org/philosophy/free-sw.html) community.
-Reverse engineering won't solve anything long-term, unfortunately, but
-we need to keep doing it anyway. Moving forward, Intel hardware is a
-non-option unless a radical change happens within Intel.
+Intel va [uniquement devenir pire](https://www.phoronix.com/scan.php?page=news_item&px=Intel-Gfx-GuC-SLPC)
+en ce qui concerne la liberté de l'utilisateur. Libreboot ne supporte pas les
+plateformes Intel récentes, précisément à cause des problèmes décris
+au-dessus. La seule façon de régler cela est de faire qu'Intel change ses
+politiques et soit plus amical à la communauté du [logiciel
+ libre](https://www.gnu.org/philosophy/free-sw.fr.html).
+L'ingénérie inversée ne réglera rien sur le long terme malheuresement, mais
+nous devons continuer de le faire de toute façon. En avançant, le matériel
+Intel n'est pas une option à moins qu'un changement radical se passe à
+l'intérieur d'Intel.
 
-**Basically, all Intel hardware from year 2010 and beyond will never be
-supported by libreboot. The libreboot project is actively ignoring all
-modern Intel hardware at this point, and focusing on alternative
-platforms.**
+**Basiquement, tout matériel de l'année 2010 et au-delà ne sera jamais
+supporté par libreboot. Le project libreboot ignore activement tout matériel
+Intel moderne à ce point, et se concentre sur des plateformes alternatives.**
 
-Why is the latest AMD hardware unsupported in libreboot? {#amd}
+Pourquoi le matériel d'AMD récent n'est pas supporté dans Libreboot? {#amd}
 ----------------------------------------------------------------------------
 
-It is extremely unlikely that any post-2013 AMD hardware will ever be
-supported in libreboot, due to severe security and freedom issues; so
-severe, that *the libreboot project recommends avoiding all modern AMD
-hardware. If you have an AMD based system affected by the problems
-described below, then you should get rid of it as soon as possible*. The
-main issues are as follows:
+Il est extrêmement improbable que n'importe quel matériel d'après 2013 sera
+supporté dans libreboot, à cause de problèmes de sécurité et de liberté
+sévères; si sévère, que *le projet libreboot recommande d'éviter tout matériel
+AMD moderne. Si vous avez un machine sous AMD affecté par les problèmes
+décris ci-dessous, alors vous devriez vous en débarasser dès que possible*.
+Les problèmes principaux sont comme il suit:
 
-[We call on AMD to release source code and specs for the new AMD Ryzen
-platforms! We call on the community to put pressure on AMD. Click here
-to read more](amd-libre.md)
+[Nous demandons à AMD de publier le code source et les spécifications pour les
+nouvelles plateformes AMD Ryzen! Nous appelons la communauté à faire pression
+sur AMD. Cliquez ici pour en savoir plus](amd-libre.md)
 
-### AMD Platform Security Processor (PSP) 
+### Processeur de Sécurité de la Plateforme AMD (PSP)
 
-This is basically AMD's own version of the [Intel Management
-Engine](#intelme). It has all of the same basic security and freedom
-issues, although the implementation is wildly different.
+C'est basiquement la version de l'[Intel Management Engine](#intelme) propre à
+AMD. Elle a tous les mêmes problèmes basiques de sécurité et de liberté, bien
+que l'implémentation est radicalement différente.
 
-The Platform Security Processor (PSP) is built in on all Family 16h +
-systems (basically anything post-2013), and controls the main x86 core
-startup. PSP firmware is cryptographically signed with a strong key
-similar to the Intel ME. If the PSP firmware is not present, or if the
-AMD signing key is not present, the x86 cores will not be released from
-reset, rendering the system inoperable.
+Le Processeur de Sécurité de la Plateforme (PSP ou "Platform Security
+Processor") est embarqué dans tout les systèmes Family 16h+ (basiquement tout
+ce que AMD a produit après 2013), et contrôle le démarrage de l'architecture
+x86.
+Le micrologiciel PSP est signé cryptographiquement avec une clé robuste
+similaire à l'IME. Si le micrologiciel de la PSP n'est pas présent, ou si la clé de
+signature d'AMD n'est pas présente, les coeurs d'architecture x86 ne seront
+pas libérés de la réinitialisation, rendant le système inopérant.
 
-The PSP is an ARM core with TrustZone technology, built onto the main
-CPU die. As such, it has the ability to hide its own program code,
-scratch RAM, and any data it may have taken and stored from the
-lesser-privileged x86 system RAM (kernel encryption keys, login data,
-browsing history, keystrokes, who knows!). To make matters worse, the
-PSP theoretically has access to the entire system memory space (AMD
-either will not or cannot deny this, and it would seem to be required to
-allow the DRM "features" to work as intended), which means that it has
-at minimum MMIO-based access to the network controllers and any other
-PCI/PCIe peripherals installed on the system.
+La PSP est un coeur ARM avec la technologie TrustZone, embarqué dans le *die*
+(circuit intégré) du processeur. Alors donc, il a la possibilité de cacher le
+code de son propre programme, gratter dans la RAM, et n'importe quelle données
+il aurait pu prendre et stocker depuis la RAM moins privilégié du système x86
+(clés de chiffrement du kernel, données d'authentification, historique de
+recherche, touches tapées, qui sait!).
+Histoire d'empirer les tracas, le PSP a théoriquement accés à l'entièreté de
+la mémoire système (AMD soit reniera ou ne pourra renier cela, et ça semble
+être nécessaire pour permettre aux "fonctionnalités" de la DRM de marcher
+comme prévues), ce qui veut dire qu'au minimum il a un accés basée MMIO aux
+contrôleurs réseaux et n'importe quels autres périphériques PCI/PCIe installés
+sur le système.
 
-In theory any malicious entity with access to the AMD signing key would
-be able to install persistent malware that could not be eradicated
-without an external flasher and a known good PSP image. Furthermore,
-multiple security vulnerabilities have been demonstrated in AMD firmware
-in the past, and there is every reason to assume one or more zero day
-vulnerabilities are lurking in the PSP firmware. Given the extreme
-privilege level (ring -2 or ring -3) of the PSP, said vulnerabilities
-would have the ability to remotely monitor and control any PSP enabled
-machine completely outside of the user's knowledge.
+En théorie n'importe quel entité malveillante avec un accés à la clé de
+signature d'AMD serait capable d'installer des maliciels persistants qui ne
+pourrait pas être éradiqués sans un flasheur externe et une image saine PSP.
+Plus encore, de multiples failles de sécurité ont été démontrée dans le
+micrologiciel d'AMD par le passé, et il y a toute les raisons d'assumer qu'une
+ou plusieurs failles 'jour zéro' traînent dans le micrologiciel du PSP. É
+tant donnée le privilège extrême (ring -2 ou -3) du PSP, lesdites
+vulnérabilitées auraient la capacité d'observer et de contrôler n'importe
+qu'elle machine avec PSP activé, sans que l'utilisateur s'en aperçoive.
 
-Much like with the Intel Boot Guard (an application of the Intel
-Management Engine), AMD's PSP can also act as a tyrant by checking
-signatures on any boot firmware that you flash, making replacement boot
-firmware (e.g. libreboot, coreboot) impossible on some boards. Early
-anecdotal reports indicate that AMD's boot guard counterpart will be
-used on most OEM hardware, disabled only on so-called "enthusiast"
-CPUs.
+Comme avec l'Intel Boot Guard (Gardien de Démarrage Intel, une application de
+l'Intel Management Engine), le PSP d'AMD peut aussi agir comme un tyrant en
+vérifiant la signature sur n'importe quel micrologiciel de démarrage que vous
+flashez, rendant le remplacement du micrologiciel de démarrage (p.ex par
+libreboot, coreboot) impossible sur certaines cartes mères.
+Des rapports anecdotiques précoces indiquent que la contrepartie du gardien de
+démarrage d'AMD sera utilisé dans la majorité des matériels manufactureur,
+désactivé seulement sur les processeurs pour 'enthousiaste'.
 
-### AMD IMC firmware 
+### Micrologiciel IMC d'AMD
 
-Read <https://www.coreboot.org/AMD_IMC>.
+Lisez <https://www.coreboot.org/AMD_IMC>.
 
-### AMD SMU firmware 
+### Micrologiciel SMU d'AMD
+
+Prend en charge la gestion de l'alimentation des périphériques PCIe (sans ça,
+votre ordinateur portable ne marchera pas correctement) et quelques autres
+fonctionnalités concernant la gestion de l'alimentation.
+
+Le micrologiciel est signé, bien que sur du matériel AMD plus vieux c'est une
+clé symmétrique, ce qui veut dire qu'avec l'accés à celle-ci (si elle a
+fuité) vous pourriez signer votre propre version modifiée du micrologiciel et
+l'exécuter.
 
 Handles some power management for PCIe devices (without this, your
 laptop will not work properly) and several other power management
-related features.
+related features. Rudolf Marel (un hacker de chez Coreboot) a trouvé comment
+extraire cette clé [dans cette vidéo de
+démonstration](https://media.ccc.de/v/31c3_-_6103_-_en_-_saal_2_-_201412272145_-_amd_x86_smu_firmware_analysis_-_rudolf_marek),
+et basé sur son travail, Damien Zammit (un autre hacker de chez Coreboot) [l'a
+partiellement remplacé](https://github.com/zamaudio/smutool/) avec du
+micrologiciel libre, mais sur le système concerné (ASUS F2A85-M) il y avait
+encore d'autres blobs présents (Video BIOS, et autres) empêchant le matériel
+d'être supporté dans libreboot.
 
-The firmware is signed, although on older AMD hardware it is a symmetric
-key, which means that with access to the key (if leaked) you could sign
-your own modified version and run it. Rudolf Marek (coreboot hacker)
-found out how to extract this key [in this video
-demonstration](https://media.ccc.de/v/31c3_-_6103_-_en_-_saal_2_-_201412272145_-_amd_x86_smu_firmware_analysis_-_rudolf_marek),
-and based on this work, Damien Zammit (another coreboot hacker)
-[partially replaced it](https://github.com/zamaudio/smutool/) with free
-firmware, but on the relevant system (ASUS F2A85-M) there were still
-other blobs present (Video BIOS, and others) preventing the hardware
-from being supported in libreboot.
+### Micrologiciel AGESA d'AMD
 
-### AMD AGESA firmware 
+Il est responsable pour virtuellement toute l'initialisation du coeur matériel
+sur les systèmes AMD modernes. En 2011, AMD a commencé à coopérer avec le
+projet coreboot, publiant son code source sous une licence libre. En 2014, ils
+sont arrêté de publier du code source et au lieu de ça ont commencé à publier AGESA en tant
+que blobs binaires. Désormais, cela rend l'AGESA équivalent au [FSP
+d'Intel](#fsp).
 
-This is responsible for virtually all core hardware initialization on
-modern AMD systems. In 2011, AMD started cooperating with the coreboot
-project, releasing this as source code under a free license. In 2014,
-they stopped releasing source code and started releasing AGESA as binary
-blobs instead. This makes AGESA now equivalent to [Intel FSP](#fsp).
+### Mises à jour du microcode des processeurs AMD
 
-### AMD CPU microcode updates 
+Lisez la section Intel.
+Pratiquement la même chose, bien que il a été découvert qu'avec du matériel
+plus récent d'AMD ont pouvait marcher sans mises à jour du microcode. Il est
+inconnu si oui ou non les mises à jours sont nécessaires sur toutes les cartes
+mères AMD (dépend du CPU).
 
-Read the Intel section 
-practically the same, though it was found with much later hardware in
-AMD that you could run without microcode updates. It's unknown whether
-the updates are needed on all AMD boards (depends on CPU).
+### AMD est incompétent (et pas coopératif)
 
-### AMD is incompetent (and uncooperative) 
+AMD semblait sur le bon chemin en 2011 lorsqu'ils ont commencé à coopérer,
+publiant le code source de quelques composants très importants au projet
+coreboot. Ce n'était pas
+fait pour durer. Pour des soi-disantes raisons économiques, ils ont décidé que
+ça ne vallait plus la peine d'investir dans le projet coreboot.
 
-AMD seemed like it was on the right track in 2011 when it started
-cooperating with and releasing source code for several critical
-components to the coreboot project. It was not to be. For so-called
-economic reasons, they decided that it was not worth the time to invest
-in the coreboot project anymore.
+Quelque chose ne va sérieusement pas avec AMD pour qu'en 3 ans, une entreprise
+évolue de si bonne à si mauvaise. Comme Intel, ils ne méritent pas votre
+argent.
 
-For a company to go from being so good, to so bad, in just 3 years,
-shows that something is seriously wrong with AMD. Like Intel, they do
-not deserve your money.
+Étant donné l'état actuel du matériel Intel avec la Management Engine, il est
+de notre avis que tout matériel performant d'architecture x86 plus récent que
+les processeurs AMD Family 15h ou quoi que ce soit après 2009 côté Intel est
+défectueux dès la conception, et ne peut pas être utilisé pour stocker,
+transmettre, où traiter des données sensibles. Les données sensibles est
+n'importe quelle donnée qui, lors d'une fuite de données, pourrait provoquer
+un dommage économique significatif à l'entité qui a créé ou était responsable
+du stockage desdites données, cela incluerait alors les banques, entreprises
+de cartes bleues, marchands (détails des comptes clients), en addition de
+l'ingénérie habituelle et firmes de développement logiciel.
+Ça touche aussi les lanceurs d'alertes, ou n'importe qui ayant besoin d'une
+veritable confidentialité et sécurité.
 
-Given the current state of Intel hardware with the Management Engine, it
-is our opinion that all performant x86 hardware newer than the AMD
-Family 15h CPUs (on AMD's side) or anything post-2009 on Intel's side
-is defective by design and cannot safely be used to store, transmit, or
-process sensitive data. Sensitive data is any data in which a data
-breach would cause significant economic harm to the entity which created
-or was responsible for storing said data, so this would include banks,
-credit card companies, or retailers (customer account records), in
-addition to the "usual" engineering and software development firms.
-This also affects whistleblowers, or anyone who needs actual privacy and
-security.
-
-What *can* I use, then? {#whatcaniuse}
+Qu'est ce que je *peux* utiliser, alors? {#whatcaniuse}
 -------------------------
 
-Libreboot has support for fam15h AMD hardware (~2012 gen) and some
-older Intel platforms like Napa, Montevina, Eagle Lake, Lakeport (2004-2006).
-We also have support for some
-ARM chipsets (rk3288). On the Intel side, we're also interested in some
-of the chipsets that use Atom CPUs (rebranded from older chipsets,
-mostly using ich7-based southbridges).
+Libreboot supporte le matériel AMD fam15h (génération ~2012) et d'autres
+plateformes Intel plus vieilles comme Napa, Montevina, Eagle Lake, Lakeport
+(2004-2006) et d'autres plateformes Intel plus vieilles comme Napa, Montevina,
+Eagle Lake, Lakeport (2004-2006).
 
-Will libreboot work on a ThinkPad T400 or T500 with an ATI GPU?
+Nous supportons aussi quelques jeux de puces ARM (rk3288). Côté Intel, nous
+sommes aussi interessé par certains jeux de puces qui utilisent des
+processeurs Atom (modifié à partir de jeux de puces plus vieux, en utilisant
+principalement des bus contrôleurs entrées/sorties basés ich7).
+
+Libreboot marchera t-il sur un ThinkPad T400 ou T500 avec une carte graphique ATI ?
 ---------------------------------------------------------------------------------------------------
 
-Short answer: yes. These laptops also have an Intel GPU inside, which
-libreboot uses. The ATI GPU is ignored by libreboot.
+Réponse courte: oui. Ces ordinateurs portables ont aussi une carte graphique Intel
+à l'intérieur, que libreboot utilise. La carte graphique ATI est ignorée par
+libreboot.
 
-These laptops use what is called *switchable graphics*, where it will
-have both an Intel and ATI GPU. Coreboot will allow you to set (using
-nvramtool) a parameter, specifying whether you would like to use Intel
-or ATI. The ATI GPU lacks free native graphics initialization in
-coreboot, unlike the Intel GPU.
+Ces ordinateurs portables utilisent ce qu'on appelle des *graphiques
+interchangeables*, où ils ont à la fois une carte graphique Intel et une ATI.
+Coreboot vous permettra (en utilisant nvramtool) de définir un paramètre
+indiquant si vous voulez utiliser une des deux, Intel ou ATI. Les cartes
+graphiques ATI n'ont pas d'initialisation graphique libre dans coreboot,
+contrairement aux cartes graphiques Intel.
 
-Libreboot modifies coreboot, in such a way where this nvramtool setting
-is ignored. Libreboot will just assume that you want to use the Intel
-GPU. Therefore, the ATI GPU is completely disabled on these laptops.
-Intel is used instead, with the free native graphics initialization
-(VBIOS replacement) that exists in coreboot.
+Libreboot modifie coreboot d'une telle façon que la configuration nvramtool
+est ignoré. Libreboot assumera juste que vous voulez utiliser la carte
+graphique Intel. Donc, la carte graphique ATI est complétement désactivée sur
+ces ordinateurs portables. Intel est utilisé à la place, avec l'initialisation
+native libre des graphiques (remplacement du VBIOS) qui existe dans coreboot.
 
-Will desktop/server hardware be supported?
+Est-ce que matériel bureau/serveur sera supporté?
 ------------------------------------------------------------------------
 
-Libreboot now supports desktop hardware:
-[(see list)](../docs/hardware/#supported_desktops_x86/intel)
-(with full native video initialization).
+Libreboot supporte maitenant du matériel d'ordinateur de bureau:
+[(voyez la liste)](../docs/hardware/#supported_desktops_x86/intel)
+(avec l'initialisation complètement native de la vidéo).
 
-A common issue with desktop hardware is the Video BIOS, when no onboard
-video is present, since every video card has a different Video BIOS.
-Onboard GPUs also require one, so those still have to be replaced with
-free software (non-trivial task). Libreboot has to initialize the
-graphics chipset, but most graphics cards lack a free Video BIOS for
-this purpose. Some desktop motherboards supported in coreboot do have
-onboard graphics chipsets, but these also require a proprietary Video
-BIOS, in most cases.
+Un problème commun avec le matériel de bureau est le BIOS Vidéo, quand pas de
+vidéo embarquée n'est présente, puisque chaque carte vidéo a un BIOS Vidéo
+différent.
+Les cartes graphiques embarquées en nécessite un aussi, donc cela ont encore a
+être remplacés par du logiciel libre (tâche non triviale). Libreboot doit
+initiliaser le jeu de puces graphique, mais la majorité des cartes graphiques
+n'ont pas de BIOS Vidéo libre pour cela. Quelques cartes mères d'ordinateurs
+de bureau supportés dans coreboot ont des jeux de puces graphiques intégrés,
+mais ceux-ci nécessite aussi un BIOS Vidéo propriétaire, dans la majorité des
+cas.
 
-Hi, I have &lt;insert random system here&gt;, is it supported?
+Bonjour, j'ai &lt;insérer système/carte mère/&gt;, est ce que c'est supporté?
 --------------------------------------------------------------------------------------------------------
 
-Most likely not. First, you must consult coreboot's own hardware
-compatibility list at <http://www.coreboot.org/Supported_Motherboards>
-and, if it is supported, check whether it can run without any
-proprietary blobs in the ROM image. If it can: wonderful! Libreboot can
-support it, and you can add support for it. If not, then you will need
-to figure out how to reverse engineer and replace (or remove) those
-blobs that do still exist, in such a way where the system is still
-usable in some defined way.
+Problablement pas. En premier, vous devez consulter la propre liste de
+compatibilité matérielle de coreboot sur
+<http://www.coreboot.org/Supported_Motherboards>, et si il est supporté,
+vérifiez si oui ou non il peut marcher sans blobs propriétaires dans
+l'imageROM. Si ça le peut: merveilleux! Libreboot peut le supporter, et vous
+pouvez le rajouter à la liste. Sinon, alors vous aurez besoin de savoir
+comment destructurer logiciellement et remplacer (ou enlever) ces blobs
+existant encore, d'une telle façon que le système est encore utilisable.
 
-For those systems where no coreboot support exists, you must first port
-it to coreboot and, if it can then run without any blobs in the ROM
-image, it can be added to libreboot. See: [Motherboard Porting
-Guide](http://www.coreboot.org/Motherboard_Porting_Guide) (this is just
-the tip of the iceberg!)
+Pour ces systèmes où pas de support de coreboot existe, vous devez d'abord les
+adapter pour coreboot et, si ça peut alors marcher sans aucun blobs dans
+l'image ROM, il peut être ajouté à libreboot. Voyez [le guide d'adaption des
+cartes mères](http://www.coreboot.org/Motherboard_Porting_Guide) (c'est juste
+le bout de l'iceberg!)
 
-Please note that board development should be done upstream (in coreboot)
-and merged downstream (into libreboot). This is the correct way to do
-it, and it is how the libreboot project is coordinated so as to avoid
-too much forking of the coreboot source code.
+Notez silvouplaît que le développement des cartes mères devrait être fait en
+amont (dans coreboot) et fusionné en aval (à l'intérieur de libreboot). C'est
+la bonne façon de le faire, et c'est comment le projet libreboot est coordonné
+pour éviter trop de branchage (fork) du code source de coreboot.
 
-What about ARM?
+Et à propos de l'ARM?
 -----------------------------------
 
-Libreboot has support for some ARM based laptops, using the *Rockchip
-RK3288* SoC. Check the libreboot [hardware compatibility
-list](../docs/hardware/#supported_list), for more information.
+Libreboot supporte pour quelques ordinateurs portables basés ARM, utilisant le
+SoC *Rockchip RK3288*. Vérifiez la [liste de compatibilité
+matérielle](../docs/hardware/#supported_list) de
+libreboot, pour plus d'informations.
 
-General questions
+Questions générales
 =================
 
-How do I install libreboot?
+Comment j'installe libreboot?
 -------------------------------------------------------
 
-See [installation guide](docs/install/)
+Voyez [le guide d'installation](docs/install/)
 
-How do I program an SPI flash chip?
+Comment je programme une puce flash SPI?
 ---------------------------------------------------------------------------------
 
-SPI flash chips can be programmed with the [BeagleBone
-Black](../docs/install/bbb_setup.md) or the [Raspberry
+Les puces flash SPI peuvent être programmées avec le [BeagleBone
+Black](../docs/install/bbb_setup.md) ou la [Raspberry
 Pi](../docs/install/rpi_setup.md).
 
-It's possible to use a 16-pin SOIC test clip on an 8-pin SOIC chip, if you
-align the pins properly. The connection is generally more sturdy.
+Il est possible d'utiliser une puce de test SOIC à 16-pin sur une puce SOIC à
+8-pin, si vous alignez les pins proprement. La connection est généralement
+plus robuste.
 
-How do I set a boot password?
+Comment définir un mot de passe de démarrage?
 -------------------------------------------------------------------
 
-If you are using the GRUB payload, you can add a username and password
-(salted, hashed) to your GRUB configuration that resides inside the
-flash chip. The following guides (which also cover full disk encryption,
-including the /boot/ directory) show how to set a boot password in GRUB:
-[(Installing Debian or Devuan with FDE)](../docs/gnulinux/encrypted_debian.md)
-and
-[(Installing Parabola or Arch GNU+Linux-Libre, with FDE)](../docs/gnulinux/encrypted_parabola.md)
+Si vous utilisez la charge utile GRUB, vous pouvez ajouter un utilisateur et
+un mot de passe (hashé et 'salé') dans votre configuration GRUB qui réside à
+l'intérieur de la puce flash. Les guides suivants (qui couvrent aussi le
+chiffrement du disque en entier, incluant le répertoire /boot/) montrent
+comment définir un mot de passe de démarrage dans GRUB:
+[(Installer Debian ou Devuan avec FDE)](../docs/gnulinux/encrypted_debian.md)
+et
+[(Installer Parabola ou Arch GNU+Linux-libre, avec FDE)](../docs/gnulinux/encrypted_parabola.md)
 
-How do I write-protect the flash chip?
+NdT: FDE est un acronyme pour "Full Disk Encryption", c'est à dire le
+chiffrement du disque tout entier.
+
+Comment est-ce que je protège en écriture la puce flash?
 ----------------------------------------------------------------------------
 
-By default, there is no write-protection on a libreboot system. This is
-for usability reasons, because most people do not have easy access to an
-external programmer for re-flashing their firmware, or they find it
-inconvenient to use an external programmer.
+Par défaut, il n'y a pas de protection en écriture sur un système libreboot.
+C'est pour des raisons d'ergonomie, parce que la majorité des gens n'ont pas
+accés à un programmeur externe pour le reflashage de leur micrologiciel, ou
+ils trouvent que c'est inconvénient d'utiliser un programmeur externe.
 
-On some systems, it is possible to write-protect the firmware, such that
-it is rendered read-only at the OS level (external flashing is still
-possible, using dedicated hardware). For example, on current GM45
-laptops (e.g. ThinkPad X200, T400), you can write-protect (see
-[ICH9 gen utility](../docs/hardware/gm45_remove_me.html#ich9gen)).
+Sur certains systèmes, il est possible de protéger en écriture le
+micrologiciel, de tel sorte qu'il est en lecture seule au niveau du système
+d'exploitation (le flashage externe est encorfe possible, en utilisant du
+matériel dédicacé). Par exemple, sur les ordinateurs portables GM45 d'en
+ce moment (p.ex ThinkPad X200, T400), vous pouvez protéger en écriture (voyez
+l'[utilitaire ICH9 gen](../docs/hardware/gm45_remove_me.html#ich9gen)).
 
-It's possible to write-protect on all libreboot systems, but the instructions
-need to be written. The documentation is in the main git repository, so you are
-welcome to submit patches adding these instructions.
+Il est possible de protéger en écriture sur tout les systèmes libreboot, mais
+les instructions/guides ont besoin d'être écris. La documentation est dans le
+répertoire git principal, donc vous êtes bienvenus pour soumettre des patches
+(rustines) ajoutant ces instructions.
 
-How do I change the BIOS settings?
+Comment je change les paramètres du BIOS?
 ------------------------------------------------------------------------
 
-Libreboot actually uses the [GRUB
-payload](http://www.coreboot.org/GRUB2). More information about payloads
-can be found at
-[coreboot.org/Payloads](http://www.coreboot.org/Payloads).
+Libreboot utilise en fait la [charge utile
+GRUB](http://www.coreboot.org/GRUB2). Plus d'informations sur les charges
+utiles peuvent être trouvées à
+[coreboot.org/Payloads](http://www.coreboot.org/Payloads)
 
-Libreboot inherits the modular payload concept from coreboot, which
-means that pre-OS bare-metal *BIOS setup* programs are not very
-practical. Coreboot (and libreboot) does include a utility called
-*nvramtool*, which can be used to change some settings. You can find
-nvramtool under *coreboot/util/nvramtool/*, in the libreboot source
-archives.
+Libreboot inhérite du concept modulaire des charges utiles de coreboot, ce qui
+veut dire que les programmes de *configuration du BIOS* pré-système
+d'exploitation sur machines "nues" ne sont pas très pratiques.
+Coreboot (et libreboot) incluent un utilitaire appelé *nvramtool*, qui peut
+être utilisé pour changer quelques paramtères. Vous pouvez trouver nvramtool
+sous *coreboot/util/nvramtool*, dans les archives du code source de libreboot.
 
-The *-a* option in nvramtool will list the available options, and *-w*
-can be used to change them. Consult the nvramtool documentation on the
-coreboot wiki for more information.
+L'option *-a* de nvramtool listera les options disponibles, et *-w* peut être
+utilisé pour les changer. Consultez la documentation de nvramtool sur le wiki
+coreboot pour plus d'informations.
 
-In practise, you don't need to change any of those settings, in most
-cases.
+En pratique, vous n'avez pas besoin de changer aucun de ces paramètres, dans
+la majorité des cas.
 
-Libreboot locks the CMOS table, to ensure consistent functionality for
-all users. You can use:
+Libreboot verouille la table CMOS, pour assurer une fonctionnalité consistante
+pour tout les utilisateurs. Vous pouvez utiliser:
 
     $ nvramtool -C yourrom.rom -w somesetting=somevalue
+
+Cela changera un paramètre par défaut à l'intérieur de cette image ROM
+(yourrom.rom), et ensuite vous pouvez la reflasher.
 
 This will change the default inside that ROM image, and then you can
 re-flash it.
 
-Do I need to install a bootloader when installing a distribution?
+Ai-je besoin d'installer un chargeur d'amorçage quand j'installe une distribution?
 ---------------------------------------------------------------------------------------------------
 
-Libreboot integrates the GRUB bootloader already, as a
-*[payload](http://www.coreboot.org/Payloads)*. This means that the GRUB
-bootloader is actually *flashed*, as part of the boot firmware
-(libreboot). This means that you do not have to install a boot loader on
-the HDD or SSD, when installing a new distribution. You'll be able to
-boot just fine, using the bootloader (GRUB) that is in the flash chip.
+Libreboot intègre déjà le chargeur d'amorçage GRUB, en tant que *[charge
+utile](http://www.coreboot.org/Payloads)*. Ça veut dire que le chargeur
+d'amorçage GRUB est en fait *flashé* comme une partie du micrologiciel de
+démarrage (libreboot). Ça signifie que vous n'avez pas besoin d'installer un
+chargeur d'amorçage sur le DD/SSD quand vous installez une nouvelle
+distribution. Vous serez capable de démarrer juste comme il faut, en utilisant
+le chargeur d'amorçage (GRUB) qui est à l'intérieur de la puce flash.
 
-This also means that even if you remove the HDD or SSD, you'll still
-have a functioning bootloader installed which could be used to boot a
-live distribution installer from a USB flash drive. See
-[How to install GNU+Linux on a libreboot system](../docs/gnulinux/grub_boot_installer.md)
+Ça veut aussi dire que même si vous enlevez le DD ou SSD, vous aurez encore un
+chargeur d'amorçage fonctionnel installé qui pourrait être utilisé pour
+démarrer un distribution *live* d'une clé USB flash.
+Voyez [Comment installer GNU+Linux sur un système
+libreboot](../docs/gnulinux/grub_boot_installer.md).
 
-Do I need to re-flash when I re-install a distribution?
+Ai-je besoin de re-flasher quand je ré-installe une distribution?
 -------------------------------------------------------------------------------------------
 
-Not anymore. Recent versions of libreboot (using the GRUB payload) will
-automatically switch to a GRUB configuration on the HDD or SSD, if it
-exists. You can also load a different GRUB configuration, from any kind
-of device that is supported in GRUB (such as a USB flash drive). For
-more information, see
-[Modifying the GRUB Configuration in Libreboot Systems](../docs/gnulinux/grub_cbfs.md)
+Plus maintenant. Les versions récentes de Libreboot (utilisant la charge utile
+GRUB) basculeront automatiquement sur une configuration GRUB stocké sur  le
+DD ou SSD, si elle existe. Vous pouvez aussi chargeur une configuration GRUB
+différente, pour n'importe quel type d'appareil qui est supporté dans GRUB
+(tel qu'une clef USB flash). Pour plus d'informations, voyez [Modifier la
+configuration GRUB dans les systèmes Libreboot](../docs/gnulinux/grub_cbfs.md)
 
-What does a flash chip look like?
+À quoi ressemble une puce flash?
 -----------------------------------------------------------------
 
-SOIC-8 SPI flash chip:
+Puce flash SPI SOIC-8:
 
 ![SOIT-8 SPI flash chip](images/soic8.jpg)
 
-SOIC-16 SPI flash chip:
+Puce flash SPI SOIC-16:
 
 ![SOIT-8 SPI flash chip](images/soic16.jpg)
 
-Who did the logo?
+Qui a fait le logo?
 ----------------------------------------------------------------
 
-See the [license information](logo/license.md).
+Voyez [l'information de licence](logo/license.md).
 
-The Libreboot logo is available as a [bitmap](logo/logo.png), a
-[vector](logo/logo.svg), or a [greyscale vector](logo/logo_grey.svg).
+Le logo de libreboot est disponible en tant que [bitmap](logo/logo.png), un 
+[vector](logo/logo.svg), ou un [vector avec niveaux de
+gris](logo/logo_grey.svg).
 
-Libreboot Inside stickers are available as a
-[PDF](logo/stickers/libreboot-inside-simple-bold-1.60cmx2.00cm-diecut-3.pdf) or
-a
-[vector](logo/stickers/libreboot-inside-simple-bold-1.60cmx2.00cm-diecut-3.svg)
+Les stickers 'Libreboot Inside' sont disponibles en tant que
+[PDF](logo/stickers/libreboot-inside-simple-bold-1.60cmx2.00cm-diecut-3.pdf)
+ou un 
+[vecteur](logo/stickers/libreboot-inside-simple-bold-1.60cmx2.00cm-diecut-3.svg)
 
-What other firmware exists outside of libreboot?
+Quels autres micrologiciels existent en dehors de libreboot?
 ==================================================
 
-The main freedom issue on any system, is the boot firmware (usually
-referred to as a BIOS or UEFI). Libreboot replaces the boot firmware
-with fully free code, but even with libreboot, there may still be other
-hardware components in the system (e.g. laptop) that run their own
-dedicated firmware, sometimes proprietary. These are on secondary
-processors, where the firmware is usually read-only, written for very
-specific tasks. While these are unrelated to libreboot, technically
-speaking, it makes sense to document some of the issues here.
+Le problème principal sur n'importe quel système est le micrologiciel de
+démarrage (habituellement appelé BIOS ou UEFI). Libreboot remplace le
+micrologiciel de démarrage avec du code totalement libre, mais même avec
+libreboot, il pourrait y avait d'autres composants matériels dans le système
+(p.ex ordinateur portable) qui exécutent leur propre micrologiciel dédicacé,
+quelquefois propriétaire. Ceux-ci sont sur des processeurs secondaires, où le
+micrologiciel est généralement en lecture seule, écrit pour des tâches très
+spécifiques. Bien qu'ils sont sans relation avec libreboot techniquement
+parlant, il fait sens de documenter quelques un des problèmes ici.
 
-Note that these issues are not unique to libreboot systems. They apply
-universally, to most systems. The issues described below are the most
-common (or otherwise critical).
+Notez que ces problèmes ne sont pas unique à des systèmes libreboot. Ils
+s'appliquent universellement, à la majorité des systèmes. Les problèmes décrit
+ci-dessousa sont les plus communs (ou autrement critique).
 
-Dealing with these problems will most likely be handled by a separate
-project.
+Faire face à ces problèmes sera certainement géré par un projet séparé.
 
-### External GPUs
+### Cartes graphiques externes
 
-The Video BIOS is present on most video cards. For integrated graphics,
-the VBIOS (special kind of OptionROM) is usually embedded
-in the main boot firmware. For external graphics, the VBIOS is
-usually on the graphics card itself. This is usually proprietary; the
-only difference is that SeaBIOS can execute it (alternatively, you embed it
-in a coreboot ROM image and have coreboot executes it, if you use a
-different payload, such as GRUB).
+Le BIOS Vidéo est présent sur la majorité des cartes vidéos. Pour les
+graphiques intégrés, le VBIOS (type spécial d'OptionROM) sont habituellement
+embarqué dans le micrologiciel principal de démarrage. Pour les graphiques
+externes, le VBIOS est habituellement sur la carte graphique elle-même. Il (le
+VBIOS) typiquement propriétaire; la seule différence est que SeaBIOS peut
+l'exécuter, alternativement, vous l'embarquez dans une image ROM de coreboot
+et coreboot va l'exécuter, si vous utiilisez une charge utile différente, tel
+que GRUB).
 
-On current libreboot systems, instead of VBIOS, coreboot native GPU init is used,
-which is currently only implemented for Intel GPUs.
-Other cards with proper KMS drivers can be initialized once Linux boots,
-but copy of VBIOS may be still needed to fetch proper VRAM frequency
-and other similar parameters (without executing VBIOS code).
+Sur les systèmes libreboot d'en ce moment, au lieu de VBIOS, l'initialisation
+native de la carte graphique par coreboot est utilisée, celle-ci étant
+implémentée seulement pour les cartes graphiques Intel en ce moment.
+Les autres cartes avec de bons pilotes KMS peuvent être initialisés une fois
+que Linux démarre, mais une copie du VBIOS serait peut-être encore nécessaire
+pour récupérer la bonne fréquence de la VRAM et autre paramètres similares
+(sans exécuter le code du VBIOS).
 
-In configurations where SeaBIOS and native GPU init are used together,
-a special shim VBIOS is added that uses coreboot linear framebuffer.
+Dans des configurations ou le SeaBIOS et l'initialisation native de la carte
+graphique sont utilisés ensemble, une cale ('shim') spéciale du VBIOS qui utilise le
+tampon d'image linéaire de coreboot.
 
+### Micrologiciel de l'EC (Embedded Controller = contrôleur embarqué)
 
-### EC (embedded controller) firmware 
+La majorité (tous?) des ordinateurs portables ont ceci. L'EC est un petit
+processeur séparé qui, basiquement, traite les entrées/sorties qui sont
+spécifiques aux ordinateurs portables. Par exemple:
 
-Most (all?) laptops have this. The EC (embedded controller) is a small,
-separate processor that basically processes inputs/outputs that are
-specific to laptops. For example:
-
--   When you flick the radio on/off switch, the EC will enable/disable
-    the wireless devices (wifi, bluetooth, etc) and enable/disable an
-    LED that indicates whether it's turned on or not
--   Listen to another chip that produces temperature readings, adjusting
-    fan speeds accordingly (or turning the fan(s) on/off).
--   Takes certain inputs from the keyboard, e.g. brightness up/down,
-    volume up/down.
--   Detect when the lid is closed or opened, and send a signal
-    indicating this.
+-   Quand vous basculer l'interrupteur radio marche/arrêt, l'EC
+    activera/désactivera les appareils sans fil (wifi, bluetooth, etc) et
+    activera/désactivera une LED qui indique si c'est en marche ou non.
+-   Écoute une autre puce qui produit des lectures de température, ajustant la
+    vitesse des ventilateurs en accordance (ou met en marche/arrête les
+    ventilateurs).
+-   Gère certaines entrées du clavier, p.ex plus/moins de luminosité,
+    plus/moins de volume.
+-   Détecte quand l'écran est rabattu ou ouvert, et envoie un signal
+    l'indiquant.
 -   Etc.
 
-Alexander Couzens from coreboot (lynxis on coreboot IRC) is working on a
-free EC firmware replacement for the ThinkPads that are supported in
-libreboot. See: <https://github.com/lynxis/h8s-ec> (not ready yet).
+Alexander Couzens de coreboot (lynxis sur l'IRC de coreboot) est en train de
+travailler sur un remplacement libre du micrologiciel de l'EC pour les
+ThinkPads étants supportés par Libreboot. Voyez
+<https://github.com/lynxis/h8s-ec> (pas encore prêt).
 
-Most (all?) chromebooks have free EC firmware. Libreboot is currently
-looking into supporting a few ARM-based chromebooks.
+La majorité (tous?) les chromebooks ont un micrologiciel d'EC libre. Libreboot
+est en ce moment en train de considérer le support de quelques chromebooks
+basés sur l'architecture ARM.
 
-EC is present on nearly all laptops. Other devices use, depending on complexity,
-either EC or variant with firmware in Mask ROM - SuperIO.
+L'EC est présent sur presque tout ordinateur portable. Les autres appareils
+utilisent, dépendant de leur complexité, soit l'EC ou une variante avec le
+micrologiciel dans la 'Mask ROM' - SuperIO.
 
-### HDD/SSD firmware 
+### Micrologiciel du DD/SSD
 
-HDDs and SSDs have firmware in them, intended to handle the internal
-workings of the device while exposing a simple, standard interface (such
-as AHCI/SATA) that the OS software can use, generically. This firmware
-is transparent to the user of the drive.
+Les DDs et SSDs ont un micrologiciel eux, sensé gérer les fonctionnements
+internes de l'appareil tout en exposant un interface standard et simple (tel
+que AHCI/SATA) que le logiciel du système d'exploitationpeut utiliser,
+génériquement. Ce micrologiciel est opaque pour l'utilisateur du disque.
 
-HDDs and SSDs are quite complex, and these days contain quite complex
-hardware which is even capable of running an entire operating system (by
-this, we mean that the drive itself is capable of running its own
-embedded OS), even GNU+Linux or BusyBox/Linux.
+Les DD et SSDs sont plutôt complexes, et de nos jours contiennent du matériel
+plutôt complexe qui est même capable d'exécuter un système d'exploitation tout
+entier (par celà, on veut dire que le disque en lui-même est capable de faire
+marcher son propre système d'exploitation embarqué), même GNU+Linux ou
+BusyBox/Linux.
 
-SSDs and HDDs are a special case, since they are persistent storage
-devices as well as computers.
+Les DDs et SSDs sont un cas spécial, puisqu'ils sont des appareils de
+stockage persistants ainsi que des ordinateurs.
 
-Example attack that malicious firmware could do: substitute your SSH
-keys, allowing unauthorized remote access by an unknown adversary. Or
-maybe substitute your GPG keys. SATA drives can also have DMA (through
-the controller), which means that they could read from system memory;
-the drive can have its own hidden storage, theoretically, where it could
-read your LUKS keys and store them unencrypted for future retrieval by
-an adversary.
+Exemple d'attaque qu'un micrologiciel malveillant pourrait faire: soudoyer
+vos clés SSH, autorisant un accés à distance par un adversaire inconnu. Ou
+peut-être voler vos clés GPG. Les disques SATA ont aussi le DMA (à travers le
+controleur), voulant dire qu'ils pourraient lire la mémoire du système; le
+disque peut avoir son propre stockage caché, théoriquement, où il pourrait
+lire votre clé LUKS et les stocker non chiffrée pour une future récupération
+par un adversaire.
 
-With proper IOMMU and use of USB instead of SATA, it might be possible
-to mitigate any DMA-related issues that could arise.
+Avec un bon IOMMU et utilisation de l'USB au lieu de SATA, il pourrait être
+possible de mitiger tout problèmes concernant le DMA (direct memory access)
+qui pourrait se présenter.
 
-Some proof of concepts have been demonstrated. For HDDs:
-<https://spritesmods.com/?art=hddhack&page=1> For SSDs:
+Quelques preuves conceptuelles ont été démontrée. Pour les DDs
+<https://spritesmods.com/?art=hddhack&page=1>.
+Pour les SSDs:
 <http://www.bunniestudios.com/blog/?p=3554>
 
-Viable free replacement firmware is currently unknown to exist. For
-SSDs, the
-[OpenSSD](http://www.openssd-project.org/wiki/The_OpenSSD_Project)
-project may be interesting.
+L'existence d'un remplacement libre du micrologicel viable n'est pour
+l'instant pas connue. Pour les SSDs, le projet
+[OpenSSD](http://www.openssd-project.org/wiki/The_OpenSSD_Project) pourrait
+être intéressant.
 
-Apparently, SATA drives themselves don't have DMA but can make use of
-it through the controller. This
+Apparemment, les disques SATA eux-mêmes n'ont pas le DMA mais peuvent le
+manipuler à travers le contrôleur.
+Regardez
 <http://www.lttconn.com/res/lttconn/pdres/201005/20100521170123066.pdf>
-(pages 388-414, 420-421, 427, 446-465, 492-522, 631-638) and this
+(pages 388-414, 420-421, 427, 446-465, 492-522, 631-638) et ça
 <http://www.intel.co.uk/content/dam/www/public/us/en/documents/technical-specifications/serial-ata-ahci-spec-rev1_3.pdf>
 (pages 59, 67, 94, 99).
 
-The following is based on discussion with Peter Stuge (CareBear\\) in
-the coreboot IRC channel on Friday, 18 September 2015, when
-investigating whether the SATA drive itself can make use of DMA. The
-following is based on the datasheets linked above:
+Ce qui suit est basé sur des discussions avec Peter Stuge (Carebear\\) dans le
+canal IRC de coreboot le Vendredi 18 Septembre 2015, lors de l'investigation
+si oui ou non le disque SATA en lui même peut utiliser le DMA.
+Le suivant est basé sur les fiches techniques mises en lien juste au dessus:
 
-According to those linked documents, FIS type 39h is *"DMA Activate FIS
-- Device to Host"*. It mentions *"transfer of data from the host to
-the device, and goes on to say: Upon receiving a DMA Activate, if the
-host adapter's DMA controller has been programmed and armed, the host
-adapter shall initiate the transmission of a Data FIS and shall transmit
-in this FIS the data corresponding to the host memory regions indicated
-by the DMA controller's context."* FIS is a protocol unit (Frame
-Information Structure). Based on this, it seems that a drive can tell
-the host controller that it would like for DMA to happen, but unless the
-host software has already or will in the future set up this DMA transfer
-then nothing happens. **A drive can also send DMA Setup**. If a DMA
-Setup FIS is sent first, with the Auto-Activate bit set, then it is
-already set up, and the drive can initiate DMA. The document goes on to
-say *"Upon receiving a DMA Setup, the receiver of the FIS shall
-validate the received DMA Setup request."* - in other words, the host
-is supposed to validate; but maybe there's a bug there. The document
-goes on to say *"The specific implementation of the buffer identifier
-and buffer/address validation is not specified"* - so noone will
-actually bother. *"the receiver of the FIS"* - in the case we're
-considering, that's the host controller hardware in the chipset and/or
-the kernel driver (most likely the kernel driver). All SATA devices have
-flash-upgradeable firmware, which can usually be updated by running
-software in your operating system; **malicious software running as root
-could update this firmware, or the firmware could already be
-malicious**. Your HDD or SSD is the perfect place for a malicious
-adversary to install malware, because it's a persistent storage device
-as well as a computer.
+D'après ces documents mis en lien, le FIS type 39h est *"DMA Activate FIS -
+appareil vers hôte"*. Ça mentionne le *"transfert de données de l'hôte vers
+l'appareil, et continue pour déclarer: lors de la réception d'un DMA Activate,
+si l'adapteur du contrôleur DMA de l'hôte a été programmé et armé, l'adapteur
+hôte doit initier la transmission d'un Data FIS et doit transmettre dans ce
+FIS les données correspondantes aux régions de la mémoire hôte indiquées par
+le contexte du contrôleur DMA."*
+FIS est une unité de protocole (Frame Information Structure = Information
+de Structure de Trames). Basé sur cela, il semble qu'un disque peut dire le
+contrôleur hôte qu'il voudrait que le DMA se fasse, mais à moins que le
+logiciel hôte a déjà configuré ou configurera le transfer DMA, alors rien ne se
+passe.**Un disque peut aussi envoyer des configurations/mises en place DMA**.
+Si un FIS de configuration DMA est d'abord envoyé, avec le bit Auto-Activate
+défini, alors c'est qu'il est déjà configuré, et le disque peut initier le
+DMA. Le document enchaîne pour dire *"lors de la réception d'une configuration
+DMA, le récepteur de la FIS doit valider la requête de configuration DMA
+reçue."* - en d'autres mots, l'hôté est supposé valider; mais peut-être il y a
+un bug là-bas. Le document continue, *"L'implémentation spécifique
+de l'identifieur de tampon et de la validation du tampon/adresse n'est pas
+spécifiée"* - donc personne ne va véritablement y faire attention. *"Le
+récepteur de la FIS"* - dans le cas que nous considérons, c'est le matériel du
+contrôleur hôte dans le jeu de puces et/ou le pilote du kernel (plus
+probablement le pilote du kernel). Tout les périphériques SATA ont un
+micrologiciel pouvant être mis à jour via flashage, qui peut être
+habituellement mis à jour en exécutant un logiciel dans votre système
+d'exploitation; **un maliciel s'exécutant avec des droits root pourrait mettre
+à jour ce micrologiciel, ou le micrologiciel pourrait être déjà malicieux**.
+Votre DD/SSD est le lieu parfait pour un adversaire malveillant, parce que
+c'est un périphérique de stockage persistent ainsi qu'un ordinateur.
 
-Based on this, it's safe to say that use of USB instead of SATA is
-advisable if security is a concern. USB 2.0 has plenty of bandwidth for
-many HDDs (a few high-end ones can use more bandwidth than USB 2.0 is
-capable of), but for SSDs it might be problematic (unless you're using
-USB 3.0, which is not yet usable in freedom. See
+En se basant sur ça, on peut dire sans crainte que l'utilisation de l'USB au
+le de SATA est à conseiller si la sécurité est une préoccupation. L'USB 2.0 a
+plein de bande passante pour pas mal de DDs (quelques uns haut de gamme
+peuvent utiliser plus de bande passante qu'USB 2.0 n'en est capable), mais
+pour les SSDs ça pourrait être  problématique (à moins que vous utilisiez USB
+3.0, qui n'est pas encore utilisable en liberté.
 
-Use of USB is also not an absolute guarantee of safety, so do beware.
-The attack surface becomes much smaller, but a malicious drive could
-still attempt a "fuzzing" attack (e.g. sending malformed USB
-descriptors, which is how the tyrant DRM on the Playstation 3 was
-broken, so that users could run their own operating system and run
-unsigned code). (you're probably safe, unless there's a security flaw
-in the USB library/driver that your OS uses. USB is generally considered
-one of the safest protocols, precisely because USB devices have no DMA)
+L'utilisation de l'USB n'est aussi pas une garantie absolue de sécurité, donc
+faites attention.
+La surface d'attaque devient bien plus pette, mais un disque malveillant
+pourrait encore tenter une attaque "fuzzing" (injection de données
+aléatoires
+pour tester un logiciel, p.ex ici, envoyer des descripteurs USB
+malformés, qui
+est d'ailleus comment la DRM tyrannique de la PlayStation 3 a été
+cassée, permettant aux utilisateurs d'exécuter leur propre système
+d'exploitation et exécuter du code non signé).
+(Vous être probablement en sécurité, à moins qu'il y a une faille de sécurité
+dans la bibliothèque/pilote que votre système d'exploitation utilise. L'USB
+est généralement considéré comme l'un des protocoles les plus sécurisés,
+précisément parce que les périphériques USB n'ont pas le DMA).
 
-Other links:
-
+Autres liens:
 -   <http://motherboard.vice.com/read/the-nsas-undetectable-hard-drive-hack-was-first-demonstrated-a-year-ago>
 
-It is recommended that you use full disk encryption, on HDDs connected
-via USB. There are several adapters available online, that allow you to
-connect SATA HDDs via USB. Libreboot documents how to install several
-distributions with full disk encryption. You can adapt these for use
-with USB drives:
+Il est recommandé que vous utilisez le chiffrement du disque tout entier sur
+les DDs connectés via USB. Il y a pas mal d'adaptateurs en ligne disponibles,
+permettant de connecter un DD SATA via USB. Libreboot documente comment
+installer quelques distributions avec le chiffrement du disque tout entier.
+Vous pouvez adapter ceux-là pour une utilisation avec des clés USB:
 
--   [Full disk encryption with Debian](../docs/gnulinux/encrypted_debian.md)
--   [Full disk encryption with Parabola](../docs/gnulinux/encrypted_parabola.md)
+-   [Chiffrement du disque tout entier avec Debian](../docs/gnulinux/encrypted_debian.md)
+-   [Chiffrement du disque tout entier avec Parabola](../docs/gnulinux/encrypted_parabola.md)
 
-The current theory (unproven) is that this will at least prevent
-malicious drives from wrongly manipulating data being read from or
-written to the drive, since it can't access your LUKS key if it's only
-ever in RAM, provided that the HDD doesn't have DMA (USB devices don't
-have DMA). The worst that it could do in this case is destroy your data.
-Of course, you should make sure never to put any keyfiles in the LUKS
-header. **Take what this paragraph says with a pinch of salt. This is
-still under discussion, and none of this is proven.**
+La théorie (non prouvée) en ce moment est que ça empêchera au moins des
+disques malveillants de manipuler de manière erronée des données étant lues ou
+écrites du disque, puisque il ne peut pas accéder votre clé LUKS si elle est
+jamais dans la RAM, en admettant que le DD n'a pas le DMA (les périphériques
+USB ne l'ont pas). Le pire qu'il pourrait faire dans ce cas est détruire vos
+données. Bien sûr, vous devriez vous assurer que vous ne mettez jamais de
+fichiers clés dans l'en-tête LUKS. **Prenez ce paragraphe avec une pincée de
+sel. C'est encore en discussion, et rien de celà n'a été prouvé**.
 
-### NIC (ethernet controller) 
+### NIC (contrôleur Ethernet)
 
-Ethernet NICs will typically run firmware inside, which is responsible
-for initializing the device internally. Theoretically, it could be
-configured to drop packets, or even modify them.
+Les cartes réseaux Ethernet exécuteront typiquement un micrologiciel à
+l'intérieur d'elles, qui est responsable à l'initialisation interne de
+l'appareil. Théoriquement, il pourrait être configuré pour ignorer des
+paquets, ou même les modifier.
 
-With proper IOMMU, it might be possible to mitigate the DMA-related
-issues. A USB NIC can also be used, which does not have DMA.
+Avec un bon IOMMU, il pourrait être possible de mitiger les problèmes
+concernant la DMA. Un carte réseau USB (qui n'a pas le DMA) pourrait être aussi utilisée.
 
-### CPU microcode 
+### microde du processeur
 
 Implements an instruction set. See 
 description. Here we mean microcode built in to the CPU. We are not
@@ -1140,7 +1194,7 @@ Unknown. Probably not.
 
 Where can I learn more about electronics
 ==========================================
-
+:
 * Basics of soldering and rework by PACE  
     Both series of videos are mandatory regardless of your soldering skill.
     * [Basic Soldering](https://www.youtube.com/watch?v=vIT4ra6Mo0s&list=PL926EC0F1F93C1837)
