@@ -1081,145 +1081,173 @@ paquets, ou même les modifier.
 Avec un bon IOMMU, il pourrait être possible de mitiger les problèmes
 concernant la DMA. Un carte réseau USB (qui n'a pas le DMA) pourrait être aussi utilisée.
 
-### microde du processeur
+### Microde du processeur
 
-Implements an instruction set. See 
-description. Here we mean microcode built in to the CPU. We are not
-talking about the updates supplied by the boot firmware (libreboot does
-not include microcode updates, and only supports systems that will work
-without it) Microcode can be very powerful. No proof that it's
-malicious, but it could theoretically
+Il implémente un ensemble d'instructions, voyez la description. Ici nous
+voulons dire du microcode embarqué dans le processeur. Nous ne parlons pas à
+propos des mises à jours fournies par le micrologiciel de démarrage (libreboot
+n'inclut pas des mises à jour du microcode et supporte seulement les systèmes
+qui marcheront sans). Le microcode peut être très puissant. Aucune preuve
+qu'il peut être malveillant, mais théoriquement il le pourrait.
 
-There isn't really a way to solve this, unless you use a CPU which does
-not have microcode. (ARM CPUs don't, but most ARM systems require blobs
-for the graphics hardware at present, and typically have other things
-like soldered wifi which might require blobs)
+Il n'y pas vraiment de façon de remédier à cela, à moins que vous utilisiez un
+processeur qui n'a pas de microcode. (Les processeurs ARM n'en ont pas, mais
+la majorité des systèmes ARM en ce moment nécessitent des blobs pour le
+matériel graphique, et typiquement ont d'autres choses comme le WiFi soudé à
+la carte mère qui pourrait avoir besoin de blobs)
 
-CPUs often on modern systems have a processor inside it for things like
-power management. ARM for example, has lots of these.
+Sur les systèmes modernes les processeurs ont un processeur à l'intérieur
+d'eux pour gérer des choses tel que l'alimentation. L'architecte ARM par
+exemple en a beaucoup de ceux-ci.
 
-### Sound card 
+### Carte son
 
-Sound hardware (integrated or discrete) typically has firmware on it
-(DSP) for processing input/output. Again, a USB DAC is a good
-workaround.
+Le matériel audio (intégré ou discret) a typiquement un micrologiciel dedans
+(DSP) pour traiter l'entréé/sortie. Encore une fois, un DAC par USB est une
+bonne solution de contournement.
 
-### Webcam 
+### Webcam
 
-Webcams have firmware integrated into them that process the image input
-into the camera; adjusting focus, white balancing and so on. Can use USB
-webcam hardware, to work around potential DMA issues; integrated webcams
-(on laptops, for instance) are discouraged by the libreboot project.
+Les webcams ont un micrologiciel intégré à l'intérieur d'elles qui traite
+l'image en entrée; ajustant le focus, la balance des blancs et ainsi de suite.
+Vous pouvez utiliser des webcams par USB afin de contourner les problèmes
+posés par le DMA; les webcams intégrées (sur les ordinateurs portables, par
+exemple) sont découragées par le projet Libreboot.
 
-### USB host controller 
+### Contrôleur USB hôte
 
-Doesn't really apply to current libreboot systems (none of them have
-USB 3.0 at the moment), but USB 3.0 host controllers typically rely on
-firmware to implement the XHCI specification. Some newer coreboot ports
-also require this blob, if you want to use USB 3.0.
+Ne s'applique pas vraiment aux systèmes Libreboot d'en ce moment (aucun d'eux
+n'a USB 3.0 pour l'instant), mais les contrôleurs USB3.0 hôte dépendent
+généralement sur l'implémentation de XHCI par le micrologiciel. Des
+adaptations plus récentes de coreboot nécessite aussi ce blob, si vous voulez
+utiliser USB 3.0.
+
+Ça n'affecte pas libreboot pour l'instant, parce que tout les systèmes
+supportés ont seulement des versions plus anciennes du protocole USB
+disponibles. Aussi, les périphériques USB n'ont pas le DMA (mais le contrôleur
+USB hôte en lui même oui).
+
+Avec un bon IOMMU, il est peut-être possible de mitiger les problèmes
+concernant le DMA (avec le contrôleur hôte).
 
 This doesn't affect libreboot at the moment, because all current
 systems that are supported only have older versions of USB available.
 USB devices also don't have DMA (but the USB host controller itself
 does).
 
-With proper IOMMU, it might be possible to mitigate the DMA-related
-issues (with the host controller).
+### Micrologiciel WWAN (réseaux étendus sans fil)
 
-### WWAN firmware 
+Quelques ordinateurs portables ont un lecteur de cartes SIM, avec une carte
+pour gérer le WWAN et par ailleurs se connecter à un réseau 3g/4g (p.ex GSM).
+C'est la même technologies qui est utilisé dans les téléphones portable pour
+un accés distant au réseau (ici internet).
 
-Some laptops might have a simcard reader in them, with a card for
-handling WWAN, connecting to a 3g/4g (e.g. GSM) network. This is the
-same technology used in mobile phones, for remote network access (e.g.
-internet).
+NOTE: à ne pas confondre avec le wifi. La WiFi est une technologie
+complètement différente et totalement sans lien.
 
-NOTE: not to be confused with wifi. Wifi is a different technology, and
-entirely unrelated.
+Le processeur de bande de bases à l'intérieur de la puce WWAN aura son propre
+système d'exploitation embarqué, la majorité étant probablement propriétaire.
+Utilisation de cette technologie implique les mêmes problèmes de
+confidentialité qu'avec les téléphones portables (traquage à distance par le
+réseau GSM, en triagulant le signal).
 
-The baseband processor inside the WWAN chip will have its own embedded
-operating system, most likely proprietary. Use of this technology also
-implies the same privacy issues as with mobile phones (remote tracking
-by the GSM network, by triangulating the signal).
+Sur certains ordinateurs portables, ces cartes utilisent l'USB
+(intérieurement), donc n'auront pasle DMA, mais ça reste un problème de
+confidentialité et de liberté. Si vous avez une carte/puce WWAN interne, le
+projet libreboot recommande que vous la désactiver et (idéalement si possible)
+l'enlevez physiquement. Si vous devez absolument utiliser cette technologie,
+un dongle USB WWAN est bien mieux parce qu'il peut être facilement enlevé
+lorsque vous n'en avez pas besoin, désactivant par là tout traquage de votre
+position géographique par des entités externes.
 
-On some laptops, these cards use USB (internally), so won't have DMA,
-but it's still a massive freedom and privacy issue. If you have an
-internal WWAN chip/card, the libreboot project recommends that you
-disable and (ideally, if possible) physically remove the hardware. If
-you absolutely must use this technology, an external USB dongle is much
-better because it can be easily removed when you don't need it, thereby
-disabling any external entities from tracking your location.
+L'utilisation de l'Ethernet ou du WiFi est recommandée, contrairement aux
+réseaux mobiles, puisque ceux-ci sont généralement plus sécurisés.
 
-Use of ethernet or wifi is recommended, as opposed to mobile networks,
-as these are generally much safer.
+Sur tout les ordinateurs portables supportés dans libreboot en ce moment, il
+est possible d'enlever la carte WWAN et la carte SIM si elles existent. La
+carte WWAN est à côté de la carte WiFi, et la carte SIM (si installé) sera
+dans une fente sous la batterie, ou à côté de la RAM.
 
-On all current libreboot laptops, it is possible to remove the WWAN card
-and sim card if it exists. The WWAN card is next to the wifi card, and
-the sim card (if installed) will be in a slot underneath the battery, or
-next to the RAM.
 
-Operating Systems
+Systèmes d'exploitation
 =================
 
-Can I use GNU+Linux?
+Puis-je utiliser GNU+Linux?
 --------------------------------------------------
 
-Absolutely! It is well-tested in libreboot, and highly recommended. See
-[installing GNU+Linux](../docs/gnulinux/grub_boot_installer.md) and
-[booting GNU+Linux](../docs/gnulinux/grub_cbfs.md).
+Absolument! C'est bien testé dans libreboot, et hautement recommandé. Jetez un
+coup d'oeil à la documentation pour [installer
+GNU+Linux]((../docs/gnulinux/grub_boot_installer.md)
+et
+[démarrer sur GNU+Linux](../docs/gnulinux/grub_cbfs.md).
 
-Any recent distribution should work, as long as it uses KMS (kernel mode
-setting) for the graphics.
+N'importe quelle distribution récente devrait marcher, tant qu'elle utilise
+KMS (Kernel Mode Setting) pour les graphiques.
 
-Fedora won't boot? (may also be applicable to Redhat/CentOS)
+Fedora ne veut pas démarrer? (appliquable peut-être aussi à RedHat/CentOS)
 -----------------------------------------------------------
 
-On Fedora, by default the grub.cfg tries to boot linux in 16-bit mode. You
-just have to modify Fedora's GRUB configuration.
-Refer to [the GNU+Linux page](docs/gnulinux/index.md#fedora-wont-boot).
+Sur Fedora, le grub.cfg par défaut essaye de démarrer Linux dans un mode
+16-bit. Vous avez juste à modifier la configuration GRUB de Fedora. Référez
+vous [à la page concernant
+GNU+Linux](../docs/gnulinux/index#fedora-wont-boot).
 
-
-Can I use BSD?
+Puis-je utiliser BSD?
 ----------------------------------
 
-Absolutely! Libreboot has native support for NetBSD, OpenBSD and LibertyBSD.
-Other distros are untested.
+Absolument! Libreboot supporte nativement NetBSD, OpenBSD et LibertyBSD.
+D'autres distributions basées sur BSD ne sont pas testées pour le moment.
 
-See:
+Voyez:
 [docs/bsd/](docs/bsd/)
 
-Are other operating systems compatible?
+D'autres systèmes d'exploitations sont compatible ?
 -------------------------------------------------------------------
 
-Unknown. Probably not.
+C'est inconnu. Probablement pas.
 
-Where can I learn more about electronics
+Où est-ce que je peux en apprendre plus sur l'électronique ?
 ==========================================
 :
-* Basics of soldering and rework by PACE  
-    Both series of videos are mandatory regardless of your soldering skill.
-    * [Basic Soldering](https://www.youtube.com/watch?v=vIT4ra6Mo0s&list=PL926EC0F1F93C1837)
-    * [Rework and Repair](https://www.youtube.com/watch?v=HKX-GBe_lUI&list=PL958FF32927823D12)
-* [edX course on basics of electronics](https://www.edx.org/course/circuits-and-electronics-1-basic-circuit-analysis)  
+
+* Basiques du soudage et resoudage par PACE (NdT: en anglais, il me semble
+  qu'il y a des traductions en français).
+    Les deux séries de vidéos sont obligatoires quelque soit votre compétence
+    en soudage
+    * [Soudage basique](https://www.youtube.com/watch?v=vIT4ra6Mo0s&list=PL926EC0F1F93C1837)
+    * [Resoudage et réparation](https://www.youtube.com/watch?v=HKX-GBe_lUI&list=PL958FF32927823D12)
+* [cours edX sur les basiques de l'électronique](https://www.edx.org/course/circuits-and-electronics-1-basic-circuit-analysis)  
     In most countries contents of this course is covered during
     middle and high school. It will also serve well to refresh your memory
     if you haven't used that knowledge ever since.
 * Impedance intro
-    * [Similiarities of Wave Behavior](https://www.youtube.com/watch?v=DovunOxlY1k)
-    * [Reflections in tranmission line](https://www.youtube.com/watch?v=y8GMH7vMAsQ)
-    * Stubs:
-        * [Wikipedia article on stubs](https://en.wikipedia.org/wiki/Stub_(electronics))
-        * [Polar Instruments article on stubs](http://www.polarinstruments.com/support/si/AP8166.html)  
-        With external SPI flashing we only care about unintended PCB stubs
-* Other YouTube channels with useful content about electronics
+    * [Similarités du comportement des ondes électronmagnétiques](https://www.youtube.com/watch?v=DovunOxlY1k)
+    * [Réflections dans la ligne de transmission](https://www.youtube.com/watch?v=y8GMH7vMAsQ)
+    * Guides d'onde:
+        * [Article Wikipédia sur les guides d'onde/section de ligne](https://en.wikipedia.org/wiki/Stub_(electronics))
+        * [Article de Polar Instruments sur les guides d'ondes/sections de ligne](http://www.polarinstruments.com/support/si/AP8166.html)  
+
+        Avec le flashage SPI externe nous nous préoccupons seulement des
+        sections de lignes non intentionnelles sur le PCB.
+
+* D'autres chaînes Youtube avec du contenu utile par rapport avec l'électronique.
+
     * [EEVblog](https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ)
     * [Louis Rossmann](https://www.youtube.com/channel/UCl2mFZoRqjw_ELax4Yisf6w)
     * [mikeselectricstuff](https://www.youtube.com/channel/UCcs0ZkP_as4PpHDhFcmCHyA)
     * [bigclive](https://www.youtube.com/channel/UCtM5z2gkrGRuWd0JQMx76qA)
     * [ElectroBOOM](https://www.youtube.com/channel/UCJ0-OtVpF0wOKEqT2Z1HEtA)
     * [Jeri Ellsworth](https://www.youtube.com/user/jeriellsworth/playlists)
+
+* Les fichiers Boardview (.brd) peuvent être ouverts avec
+[OpenBoardview](https://github.com/OpenBoardView/OpenBoardView)
+qui est un logiciel libre sous la license MIT.
+
 * Boardview files can be open with [OpenBoardview](https://github.com/OpenBoardView/OpenBoardView),
 which is free software under MIT license.
 
-Use of youtube-dl with mpv would be recommended for youtube links
+L'utilisation de
+[youtube-dl](https://github.com/ytdl-org/youtube-dl)+[mpv](https://mpv.io) est recommandée pour les liens youtube.
 
-Lastly the most important message to everybody gaining this wonderful new hobby - [Secret to Learning Electronics](https://www.youtube.com/watch?v=xhQ7d3BK3KQ)
+Enfin, le message le plus important pour tout le monde qui acquiert ce
+magnifique nouvel hobby : [le secret de l'apprentissage en électronique](https://www.youtube.com/watch?v=xhQ7d3BK3KQ)
