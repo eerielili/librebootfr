@@ -3,7 +3,15 @@ title: Comment programmer une puce flash SPI avec le BeagleBone Black ou Teensy 
 ...
 
 Ce document existe en tant que guide pour lire ou écrire dans une puce
-flash SPI avec le BeagleBone Black, utilisant le logiciel [flashrom]
+flash SPI avec le BeagleBone Black, utilisant le logiciel
+[flashrom](http://flashrom.org/Flashrom). Un BeagleBone Black, révision C a
+été utilisé lors de la création de ce guide, mais des révisions plus ancienne
+pourrait peut-être aussi marcher.
+
+***À NOTER: l'utilisation du BeagleBone Black est seulement à titre d'exemple,
+ne l'achetez à moins que vous LE voulez spécifiquement.*** *Il y a beaucoup
+d'ordinateur monocarte (SBC, Single Board Computer) à architecture ARM qui
+sont capables*
 
 This document exists as a guide for reading from or writing to an SPI
 flash chip with the BeagleBone Black, using the
