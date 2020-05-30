@@ -11,115 +11,119 @@ pourrait peut-être aussi marcher.
 ***À NOTER: l'utilisation du BeagleBone Black est seulement à titre d'exemple,
 ne l'achetez à moins que vous LE voulez spécifiquement.*** *Il y a beaucoup
 d'ordinateur monocarte (SBC, Single Board Computer) à architecture ARM qui
-sont capables*
+sont capables de programmation système interne (par flashage externe) et ils
+exécutent aussi bien cette tâche. L'utilisation commune d'arbre des
+périphériques (devicetree) sur ces appareils permet de les configurer de façon
+similaire, mais pas identique, donc un peu de recherche est à faire de votre
+côté. Mais il est possible d'utiliser des appareils plus petits comme la stm32
+bluepill avec un autre ordinateur pour arriver à des résultats semblables.*
 
-This document exists as a guide for reading from or writing to an SPI
-flash chip with the BeagleBone Black, using the
-[flashrom](http://flashrom.org/Flashrom) software. A BeagleBone Black,
-rev. C was used when creating this guide, but earlier revisions may also
-work.
+*Note: ce guide a été écrit pour Debian Stretch 9.5, qui est le dernier
+système d'exploitation pour BeagleBone Black à la date de Juin 2019.
+Il est possible que ces instructions sont obsolètes si de nouvelles versions
+de systèmes d'exploitations supportées ont été publiées depuis.*
 
-***NOTE: Use of BeagleBone black is for example purposes only,
-don't buy it unless you want _it_ specifically.*** *There are many ARM
-Single Board Computers (SBC) that are capable of in system programming
-(external flashing) and they perform similarly terrible at that task.
-Common use of devicetrees on those devices allows for configuring them
-in similar way, but not identical, so a bit of own research is required.
-Lastly SBC is an example of self-contained device that is capable of flashing,
-but it's possible to use smaller device like stm32 bluepill
-with another computer to achieve similar result.*
-
-*Note: This guide was written for Debian Stretch 9.5, which is the latest
-operating system for the BeagleBone Black as of June 2019. It is possible that
-these instructions may be outdated if newer operating systems versions
-have been released since then.*
-
-There was no justification for a further section for the Teensy. Simply
-refer to [this page on
+Il n'y avait pas de justification pour une section plus poussé pour le Teensy.
+Référez-vous simplement à [cette page sur
 flashrom.org](https://www.flashrom.org/Teensy_3.1_SPI_%2B_LPC/FWH_Flasher#ISP_Usage)
-for information about how to set it up, and correlate that with the pins
-on the SPI flash chip as per other guides in the libreboot documentation
-for each board. At the time of writing, the teensy is tested for
-flashing on the ThinkPad X200, but it should work for other targets.
-here is a photo of the setup for the teensy:
+pour des informations sur comment le configurer, et corrélez celà avec les
+PINs de la puce de flash SPI montrés dans d'autres guides de la documentation
+libreboot sur chaque carte mère.
+Au temps de l'écriture de ceci, le teensy est testé bon pour le flashage sur
+le ThinkPad X200, mais ça devrait marcher pour d'autres cibles.
+Voici une photo de la mise en place du teensy:
 <http://h5ai.swiftgeek.net/IMG_20160601_120855.jpg>
 
-Onto the Beaglebone black...
+Passons au BeagleBone Black...
 
-Hardware requirements
+Matériel requis
 =====================
 
-Shopping list (pictures of this hardware is shown later):
+Liste de courses (des images du matos sont montrées plus tard):
 
--   A [Flashrom](http://flashrom.org)-compatible external SPI
-    programmer: *BeagleBone Black*, sometimes referred to as 'BBB',
-    (rev. C) is highly recommended. You can buy one from
+-   Un programmeur SPI externe compatible [Flashrom](http://flashrom.org)
+    *BeagleBone Back*, référé souvent en tant que 'BBB' (rev. C), est
+    hautement recommandé. Vous pouvez en acheter un depuis
     [Adafruit](https://www.adafruit.com) (USA),
-    [ElectroKit](http://electrokit.com) (Sweden) or any of the
-    distributors listed on [BeagleBoard's website](http://beagleboard.org/black) (look below
-    'Purchase'). We recommend this product because we know that it
-    works well for our purposes and doesn't require any non-free
-    software.
+    [ElectroKit](http://electrokit.com) (Sweden) ou de n'importe qui figurant
+    dans la liste des fournisseurs listés sur le [site web de
+    BeagleBoard](http://beagleboard.org/black) (regardez en dessous de
+    'Acheter'). Nous recommandons ce produit parce que nous savons qu'il
+    marche bien pour nos missions et ne nécessite aucun logiciel non-libre.
 
--   Electrical/insulative tape: cover the entire bottom surface of the
-    BBB (the part that rests on a surface). This is important, when
-    placing the BBB on top of a board so that nothing shorts. Most
-    hardware/electronics stores have this. Optionally, you can use the
-    bottom half of a [hammond plastic
-    enclosure](http://www.hammondmfg.com/1593HAM.htm#BeagleBoneBlack).
--   Clip for connecting to the flash chip: if you have a SOIC-16 flash
-    chip (16 pins), you will need the *Pomona 5252* or equivalent. For
-    SOIC-8 flash chips (8 pins), you will need the *Pomona 5250* or
-    equivalent. Do check which chip you have, before ordering a clip.
-    Also, you might as well buy two clips or more since they break
-    easily. [Farnell element 14](http://farnell.com/) sells these and
-    ships to many countries. Some people find these clips difficult to
-    get hold of, especially in South America. If you know of any good
-    suppliers, please contact the libreboot project with the relevant
-    information. *If you can't get hold of a pomona clip, some other
-    clips might work, e.g. 3M, but they are not always reliable. You can
-    also directly solder the wires to the chip, if that suits you; the
-    clip is just for convenience, really.*
--   *External 3.3V DC power supply*, for powering the flash chip: an
-    ATX power supply / PSU (common on Intel/AMD desktop computers) will
-    work for this. A lab PSU (DC) will also work (adjusted to 3.3V).
-    -   Getting a multimeter might be worthwhile, to verify that it's
-        supplying 3.3V.
--   *External 5V DC power supply* (barrel connector), for powering the
-    BBB: the latter can have power supplied via USB, but a dedicated
-    power supply is recommended. These should be easy to find in most
-    places that sell electronics. OPTIONAL. Only needed if not
-    powering with the USB cable, or if you want to use [EHCI
-    debug](../misc/bbb_ehci.md).
--   *Pin header / jumper cables* (2.54mm / 0.1" headers): you should
-    get male--male, male--female and female--female cables in 10cm
-    size. Just get a load of them. Other possible names for these
-    cables/wires/leads are as follows:
-    -   flying leads
-    -   breadboard cables (since they are often used on breadboards).
-    -   You might also be able to make these cables yourself.
+-   Scotch isolant: couvrez entièrement le dessous du BBB (la partie qui
+    repose sur la surface de la carte mère). C'est important de s'assurer que
+    rien ne court-circuite lorsqu'on place le BBB sur une carte mère. La
+    majorité des magasins de bricolage/électronique en ont. Optionnellement,
+    vous pouvez utiliser la partie basse d'une [enclosure plastique
+    Hammond](http://www.hammondmfg.com/1593HAM.htm#BeagleBoneBlack).
+-   Des pinces pour se connecter sur la puce de flash: si vous avez une puce
+    flash SOIC-16 (16 pins), vous aurez besoin des *Pomona 5252* ou équivalent.
+    Pour les puces flash SOIC-8 (8 pins), vous aurez besoin des *Pomona 5250*
+    ou équivalent. Vérifiez quelle puce vous avez avant de commander une
+    pince.
+    Aussi, vous ferez bien d'acheter deux pinces ou plus car elles se cassent
+    facilement. [Farnell element 14](http://farnell.com/) vend celles-ci et
+    livre dans de nombreux pays. Certaines personnes trouvent qu'il est
+    difficile de s'en procurer, espécialement en Amérique du Sud.
+    Si vous connaissez de bon fournisseurs, veuillez silvouplait contacter le
+    projet libreboot avec les informations concernées. *Si vous ne pouvez pas
+    vous procurer une pince pomona, d'autres pinces marcheront peut-être, p.ex
+    3M, mais elles ne sont pas aussi fiables. Vous pouvez aussi souder
+    directement les fils sur la puce si ça vous convient; les pinces sont
+    juste là pour le comfort pour tout dire..*
+-   *Alimentation externe 3.3V DC* pour alimenter la puce flash: une
+    alimentation ATX / PSU (ou électrique, commune sur les ordinateurs de bureau Intel/AMD)
+    feront l'affaire pour ça. Un PSU de laboration (DC, ajusté 3.3V)
+    fonctionnera aussi.
+        -    Avoir un multimètre peut être utile pour vérifier que l'on
+             fournit bien 3.3V.
+-   *Alimentation externe 5.5V DC* ([connecteur coaxial](https://en.wikipedia.org/wiki/Coaxial_power_connector), pour
+    alimenter le BBB: ce dernier peut se faire alimenter via USB, mais une
+    alimentation dédiée est recommandée. Celles-ci devrait être facile à
+    trouver dans la plupart des magasins vendant de l'électronique. OPTIONEL.
+    Seulement nécessaire si vous n'alimentez pas par USB, ou si vous voulez
+    utiliser le [debug EHCI](../misc/bbb_ehci.md).
+-   *Broches / câbles volants* (broches 2.54mm/0.1"): vous devrez vous
+    procurer des câbles male--male, male--femelle et femelle--femelle de 10cm.
+    Prenez-en beaucoup. D'autres noms possibles pour ces cables/fils/cuivrés
+    sont:
+        - câbles volants
+        - cables de montage (puisqu'ils sont souvent utilisés sur les planches
+          de montages)
+        - vous pouvez aussi peut-être faire ces câbles vous-memes.
 
-    [Adafruit](https://www.adafruit.com) sell them, as do many others.
-    *Some people find them difficult to buy. Please contact the
-    libreboot project if you know of any good sellers.* You might also
-    be able to make these cables yourself. For PSU connections, using
-    long cables, e.g. 20cm, is fine, and you can extend them longer than
-    that if needed.
--   *Mini USB A-B cable* (the BeagleBone probably already comes with
-    one.) - *OPTIONAL - only needed for [EHCI
-    debug](../misc/bbb_ehci.md) or for serial/ssh access without
-    ethernet cable (g\_multi kernel module)*
--   *FTDI TTL cable or debug board*: used for accessing the serial
-    console on the BBB. [This
-    page](http://elinux.org/Beagleboard:BeagleBone_Black_Serial)
-    contains a list. *OPTIONAL\---only needed for serial console on
-    the BBB, if not using SSH via ethernet cable.*
+    [Adafruit](https://www.adafruit.com) en vend comme beaucoup d'autres.
+    *Certaines personnes trouvent qu'ils sont difficiles à acheter. veuillez
+    silvouplait contacter le project libreboot si vous connaissez de bon
+    vendeurs.* Il est aussi possible que vous fabriquez ces câbles vous-même.
+    Pour les connecteurs PSU, utiliser de long câbles, p.ex 20cm, est
+    acceptable et vous pouvez les étendre si besoin.
+-   *Câble USB Mini A-B* (le BeagleBone est déjà probablement fournit avec
+    l'un d'eux.) - *OPTIONEL - seulement nécessaire pour le [déboguage
+    EHCI](../misc/bbb_ehci.md) ou pour un accés ssh/série sans câble Ethernet
+    (module kernel g\_multi)*
+-   *Cable FTDI TTL ou carte de déboguage*: utilisé pour accéder la console
+    série sur le BBB. [Cette
+    page](http://elinux.org/Beagleboard:BeagleBone_Black_Serial) contient une
+    liste de tels câbles. *OPTIONNEL\---seulement nécessaire pour la console
+    série sur le BBB, si vous n'utilisez pas SSH via ethernet.*
 
-Setting up the 3.3V DC PSU
+Mettre en place le PSU 3.3V DC
 ==========================
 
-ATX PSU pinouts can be read on [this Wikipedia
-page](https://en.wikipedia.org/wiki/Power_supply_unit_%28computer%29#Wiring_diagrams).
+Le brochage des PSU ATX peut être lu sur cette [page
+Wikipédia](https://fr.wikipedia.org/wiki/Bloc_d%27alimentation#Alimentation_ATX).
+
+Vous pouvez utiliser le pin 1 ou 2 (fil orange) sur un PSU ATX 20-pin ou
+24-pin pour du 3.3V, et n'importe quels sources terre/masse (câbles noir)
+pour la terre.
+Court-circuitez (?) PS\_ON\# / Power on (fil vert; pin 16 sur le PSU ATX 24
+pin, ou le pin 14 sur un PSU ATX 20 pin) à la terre (fil noir juste à côté) en
+utilisant un câble/attache-feuilles/câble volant, puis allumez le PSU en
+connectant à la masse PS\_ON\# (c'est aussi la manière donc une carte mère ATX
+allume un PSU).
+
 
 You can use pin 1 or 2 (orange wire) on a 20-pin or 24-pin ATX PSU for
 3.3V, and any of the ground/earth sources (black cables) for ground.
@@ -149,20 +153,21 @@ connector, instead of going through the centre.
 Here is an example set up:\
 ![](images/x200/psu33.jpg "Copyright © 2015 Patrick "P. J." McDermott <pj@pehjota.net> see license notice at the end of this document")
 
-Accessing the operating system on the BBB
+Accéder au système d'exploitation du BBB
 =========================================
 
-Follow the [Getting Started](https://beagleboard.org/getting-started)
-instructions to install the latest version of Debian onto the BBB.
-It is recommended to download the eMMC IoT Flasher edition, which will
-write its image to the on-board eMMC.
+Suivez les instructions [de démarrage](https://beagleboard.org/getting-started)
+pour installer la dernière version de Debian sur le BBB. Il est recommandé de
+télécharger l'édition eMMC IoT Flasher, qui écrira son image sur l'eMMC
+intégrée.
 
-The operating system on the BBB can be accessed over SSH, with username
-'debian' and password 'temppwd'. Follow the instructions on the Getting
-Started page for complete details.
+Le système d'exploitation sur le BBB peut être accédé via SSH, avec comme nom
+d'utilisateur 'debian' et comme mot de passe 'temppwd'. Suivez les
+instructions sur la page de démarrage pour plus de détails.
 
-You will also be using the OS on your BBB for programming an SPI flash
-chip.
+Vous allez aussi utiliser le système d'exploitation sur votre BBB pour
+programmer une puce flash SPI.
+
 
 Alternatives to SSH (in case SSH fails)
 ---------------------------------------
