@@ -124,33 +124,25 @@ utilisant un câble/attache-feuilles/câble volant, puis allumez le PSU en
 connectant à la masse PS\_ON\# (c'est aussi la manière donc une carte mère ATX
 allume un PSU).
 
+*N'utilisez PAS les pins 4 et 6, ou 19 et 20 sur un PSU ATX 20 pins, ou encore
+21, 22 et 23 sur un PSU ATX 24 pins. Ces fils (les rouges) sont du 5V, et ils
+TUERONT votre puce de flash. Ne fournissez JAMAIS plus de 3.3V à votre puce de
+flash (si c'est une puce de flash 3.3V; les puces flash SPI de 5V et 1.8V
+existent, mais elles sont rares. Vérifiez toujours quel voltage votre puce
+flash supporte. La majorité de celles-ci prennent du 3.3V).*
 
-You can use pin 1 or 2 (orange wire) on a 20-pin or 24-pin ATX PSU for
-3.3V, and any of the ground/earth sources (black cables) for ground.
-Short PS\_ON\# / Power on (green wire; pin 16 on 24-pin ATX PSU, or pin
-14 on a 20-pin ATX PSU) to a ground (black; there is one right next to
-it) using a wire/paperclip/jumper, then power on the PSU by grounding
-PS\_ON\# (this is also how an ATX motherboard turns on a PSU).
+Vous avez seulement besoin d'une alimentation 3.3V et une masse pour la puce
+flash, après avoir raccordé PS\_ON\# à la terre/masse.
 
-*DO NOT use pin 4, 6, do NOT use pin 19 or 20 (on a
-20-pin ATX PSU), and DO NOT use pin 21, 22 or 23 (on a 24-pin
-ATX PSU). Those wires (the red ones) are 5V, and they WILL kill
-your flash chip. NEVER supply more than 3.3V to your flash
-chip (that is, if it's a 3.3V flash chip; 5V and 1.8V SPI flash chips
-do exist, but they are rare. Always check what voltage your chip takes.
-Most of them take 3.3V).*
+L'extrémité mâle d'un câble de broche 2.54mm ou 0.1 pouces n'est pas assez
+épais pour rester connecté de façon constante sur le PSU ATX par lui même.
+Lors de la connexion de câbles de broche sur le PSU ATX, utilisez une
+extrémité femelle attaché à un bout de fil plus épais (vous pourriez utiliser
+un attache-feuille), ou faites rentrer/glisser l'extrémité mâle du câble
+volant sur les côté du trou dans le connector, au lieu de passer dans le
+centre.
 
-You only need one 3.3V supply and one ground for the flash chip, after
-grounding PS\_ON\#.
-
-The male end of a 0.1" or 2.54mm header cable is not thick enough to
-remain permanently connected to the ATX PSU on its own. When connecting
-header cables to the connector on the ATX PSU, use a female end attached
-to a thicker piece of wire (you could use a paper clip), or wedge the
-male end of the jumper cable into the sides of the hole in the
-connector, instead of going through the centre.
-
-Here is an example set up:\
+Voici un exemple de mise en place:
 ![](images/x200/psu33.jpg "Copyright © 2015 Patrick "P. J." McDermott <pj@pehjota.net> see license notice at the end of this document")
 
 Accéder au système d'exploitation du BBB
@@ -168,53 +160,55 @@ instructions sur la page de démarrage pour plus de détails.
 Vous allez aussi utiliser le système d'exploitation sur votre BBB pour
 programmer une puce flash SPI.
 
-
-Alternatives to SSH (in case SSH fails)
+Alternatives à SSH (en cas ou SSH échoue)
 ---------------------------------------
 
-You can also use a serial FTDI debug board with GNU Screen, to access
-the serial console.
+Vous pouvez aussi utiliser une carte mère de déboguage FTDI, et accéder à la
+console série via GNU `screen`:
     # screen /dev/ttyUSB0 115200
 
-Here are some example photos:\
+Voici quelques photos d'exemples:
 ![](images/x200/ftdi.jpg) ![](images/x200/ftdi_port.jpg)\
 
-You can also connect the USB cable from the BBB to another computer and
-a new network interface will appear, with its own IP address. This is
-directly accessible from SSH, or screen:
-
+Vous pouvez aussi connecter le cable USB du BBB à un autre ordinateur et une
+nouvelle interface réseau apparaîtra avec sa propre adresse IP. Elle est
+directement accessible par SSH, ou screen:
+    
     # screen /dev/ttyACM0 115200
 
-You can also access the uboot console, using the serial method instead
-of SSH.
+Vous pouvez aussi accés à la console uboot en utilisant la méthode par
+connexion série
+au lieu de SSH.
 
-Setting up spidev on the BBB
+Mettre en place spidev sur le BBB
 ============================
 
-Log in to the BBB using either SSH or a serial console as
-described in [\#bbb\_access](#bbb_access).
+Authentifiez vous dans le BBB en utilisant soit SSH ou une console série comme
+décrit dans [\#bbb\_access](#bbb_access).
 
-*Note: The following commands are run as root. To run them from a normal user
-account, add yourself to the `gpio` group to configure the pins and the `spi`
-group to access spidev.*
+*Notez: les commandes suivantes sont exécutées en tant que root. Pour les
+exécuter à partir d'un compte utilisateur normal, ajoutez-vous au groupe
+`gpio` afin de configurer les pins et le groupe `spi` pour accéder au
+spidev.*
 
-Run the following commands to enable spidev:
+Exécutez les commandes suivantes pour activer spidev:
 
     # config-pin P9.17 spi_cs
     # config-pin P9.18 spi
     # config-pin P9.21 spi
     # config-pin P9.22 spi_sclk
 
-Verify that the spidev devices now exist:
+Vérifiez que les périphériques sont maintenant existant:
 
     # ls /dev/spidev*
 
-Output:
+Sortie:
 
     /dev/spidev1.0  /dev/spidev1.1  /dev/spidev2.0  /dev/spidev2.1
 
-Now the BBB is ready to be used for flashing. The following systemd service
-file can optionally be enabled to make this persistent across reboots.
+Maintenant le BBB est prêt à être utilisé pour le flashage. Le fichier de
+service systemd suivant peut être optionnellement être créé et activé pour
+rendre ce changement persistant après redémarrage(s).
 
 ```
 [Unit]
@@ -231,41 +225,41 @@ RemainAfterExit=yes
 [Install]
 WantedBy=multi-user.target
 ```
+Attrapez flashrom depuis l'archive des versions de libreboot, ou compilez
+le depuis libreboot\_src/git si vous avez besoin. Un binaire d'architecture
+ARM (compilé statiquement) de flashrom existe dans les versions de
+libreboot\_util. Mettez ce binaire sur votre BBB.
 
-Get flashrom from the libreboot\_util release archive, or build it from
-libreboot\_src/git if you need to. An ARM binary (statically compiled)
-for flashrom exists in libreboot\_util releases. Put the flashrom binary
-on your BBB.
+Vous aurez peut-être besoin de ich9gen, si vous allez flasher un ordinateur
+portable ICH9-M (tel que le X200). Obtenez-le depuis le dossier
+libreboot\_util, ou compilez le depuis libreboot\_src, et transférez le
+binaire d'architecture ARM sur votre BBB.
 
-You may also need ich9gen, if you will be flashing an ICH9-M laptop
-(such as the X200). Get it from libreboot\_util, or build it from
-libreboot\_src, and put the ARM binary for it on your BBB.
+Finalement, prenez votre image ROM que vous aimeriez flasher et transférez la
+sur votre BBB.
 
-Finally, get the ROM image that you would like to flash and put that on
-your BBB.
-
-Now test flashrom:
+Maitenant, testez flashrom:
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512
 
-Output:
+Sortie:
 
     Calibrating delay loop... OK.
     No EEPROM/flash device found.
     Note: flashrom can never write if the flash chip isn't found automatically.
 
-This means that it's working (the clip isn't connected to any flash
-chip, so the error is fine).
+Ça veut dire que ça marche (la pince n'est pas connecté à quelconque puce
+flash, donc l'erreur est normale).
 
-Connecting the Pomona 5250/5252
+Connecter le Pomona 5250/5252
 ===============================
 
-Use this image for reference when connecting the pomona to the BBB:
-<http://beagleboard.org/Support/bone101#headers> (D0 = MISO or connects
-to MISO).
+Utilisez cette image en tant que référence quand vous connectez le pomona au
+BBB: <http://beagleboard.org/Support/bone101#headers> (D0 = MISO ou connecte
+sur MISO).
 
-The following shows how to connect clip to the BBB (on the P9 header),
-for SOIC-16 (clip: Pomona 5252):
+Ce qui suit montre comment connecter la (les?) pince(s) sur BBB (sur la broche
+P9), pour un SOIC-16 (pince: Pomona 5252):
 
      NC              -       - 21
      1               -       - 17
@@ -274,15 +268,18 @@ for SOIC-16 (clip: Pomona 5252):
      NC              -       - NC
      NC              -       - NC
      18              -       - 3.3V (PSU)
-     22              -       - NC - this is pin 1 on the flash chip
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+     C'est comme ceci qu'il faudra se connecter. Les nombres font
+    références au numéros des pins sur BBB, sur les branchements près de la
+    prise jack DC.
 
-    You may also need to connect pins 1 and 9 (tie to 3.3V supply). These are HOLD# and WP#.
-    On some systems they are held high, if the flash chip is attached to the board.
-    If you're flashing a chip that isn't connected to a board, you'll almost certainly
-    have to connect them.
+    Vous aurez peut-être besoin de connecter les pins 1 et 9 (raccordez à
+    l'alimentation 3.3V). Ceux-là (les pins) sont HOLD# et WP#. Sur certains
+    systèmes ils sont ouverts, si la puce flash est attaché à la carte mère;
+    Si vous flashez une puce qui n'est pas connectée à la carte, il est
+    presque certains que vous auriez à les connecter.
 
-    SOIC16 pinout (more info available online, or in the datasheet for your flash chip):
+    Schéma de câblage d'un SOIC16 (plus d'informations disponibles en ligne,
+    ou dans la fiche technique de votre puce flash):
     HOLD    1-16    SCK
     VDD 2-15    MOSI
     N/C 3-14    N/C
@@ -292,51 +289,56 @@ for SOIC-16 (clip: Pomona 5252):
     SS  7-10    GND
     MISO    8-9 WP
 
-The following shows how to connect clip to the BBB (on the P9 header),
-for SOIC-8 (clip: Pomona 5250):
-
+Le suivant montre comment connecter une pince sur le BBB (sur la broche P9),
+pour un SOIC-8 (pince: Pomona 5250):
      18              -       - 1
      22              -       - NC
      NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+     3.3V (PSU)      -       - 17 - c'est le pin 1 sur la puce flash
+     C'est comme ceci qu'il faudra se connecter. Les nombres font
+    références au numéros des pins sur BBB, sur les branchements près de la
+    prise jack DC.
 
-    You may also need to connect pins 3 and 7 (tie to 3.3V supply). These are HOLD# and WP#.
-    On some systems they are held high, if the flash chip is attached to the board.
-    If you're flashing a chip that isn't connected to a board, you'll almost certainly
-    have to connect them.
+    Vous aurez peut-être besoin de connecter les pins 3 et 7 (raccordez à
+    l'alimentation 3.3V). Ceux-là (les pins) sont HOLD# et WP#. Sur certains
+    systèmes ils sont ouverts, si la puce flash est attaché à la carte mère;
+    Si vous flashez une puce qui n'est pas connectée à la carte, il est
+    presque certains que vous auriez à les connecter.
 
-    SOIC8 pinout (more info available online, or in the datasheet for your flash chip):
+    Schéma de câblage d'un SOIC8 (plus d'informations disponibles en ligne, ou
+    dans la fiche technique de votre puce flash):
     SS  1-8 VDD
     MISO    2-7 HOLD
     WP  3-6 SCK
     GND 4-5 MOSI
 
-`NC = no connection`
+`N/C = pas de connexion`
 
-*DO NOT connect 3.3V (PSU) yet. ONLY connect this once the pomona is
-connected to the flash chip.*
+*NE connectez PAS encore le 3.3V (PSU). Connectez le SEULEMENT une fois que le
+pomona est connecté sur la puce flash.*
 
-*You also need to connect the BLACK wire (ground/earth) from the 3.3V
-PSU to pin 2 on the BBB (P9 header). It is safe to install this now
-(that is, before you connect the pomona to the flash chip); in fact, you
-should.*
+*Vous aurez aussi besoin de connecter le fil NOIR (masse/terre) du PSU 3.3V au
+pin 2 sur le BBB (broche P9). C'est installable sans crainte maintenant (c'est
+à dire, avant que vous connectez le pomona sur la puce flash); en fait, vous
+devriez.*
 
-if you need to extend the 3.3v psu leads, just use the same colour M-F
-leads, *but* keep all other leads short and equal length (30cm or less).
-Keep in mind that length isn't inversely proportional to signal quality,
-so trying out different lengths will yield different results.
-Same goes for spispeed.
+Si vous avez besoin d'étendre les fils du psu 3.3V, utilisez juste les fils
+Mâles-Femelles de même couleur, *mais* gardez les autres fils courts et de
+même taille (30cm ou moins).
+Gardez à l'esprit que la taille n'est pas inversement proportionnelle à la
+qualité du signal, donc tester des longueurs différentes aménera des résultats
+différents.
+La même chose vaut pour spispeed.
 
-You should now have something that looks like this:\
+Vous devriez maintenant avoir quelque chose qui ressemble à ça:\
 ![](images/x200/5252_bbb0.jpg) ![](images/x200/5252_bbb1.jpg)
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>\
 Copyright © 2015 Patrick "P. J." McDermott <pj@pehjota.net>\
 Copyright © 2015 Albin Söderqvist\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
