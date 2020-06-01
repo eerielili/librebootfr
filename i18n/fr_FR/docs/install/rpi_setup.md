@@ -1,4 +1,4 @@
----
+--
 title: Comment programmer une puce flash SPI avec la Raspberry Pi
 ...
 
@@ -7,10 +7,6 @@ SPI avec la Raspberry Pi, utilisant le logiciel [flashrom](http://flashrom.org/F
 La plupart des révisions de la RPi devrait marcher.
 
 Le projet Libreboot recommande d'utiliser [GNU+Linux sans blob]()
-
-This document exists as a guide for reading from or writing to an SPI flash
-chip with the Raspberry Pi, using the [flashrom](http://flashrom.org/Flashrom)
-software. Most revisions of the RPi should work.
 
 Le projet Libreboot recommande l'utilisation de [GNU+Linux sans blobs](https://blog.rosenzweig.io/blobless-linux-on-the-pi.html)
 sur la Raspberry Pi, pour éviter d'avoir à éxecuter des logiciels non-libres. C'est devenu
@@ -46,59 +42,61 @@ Pour des photos, suivez le [Guide Libreboot de Récupération du T60](t60_unbric
     bloqué par une plaque en magnésium (que vous aurez à enlever).
 
 
-### Pomona Clip Pinout
+### Brochage pince Pomona
 
-Diagram of the 26 GPIO Pins of the Raspberry Pi Model B (for the Model
-B+ with 40 pins, start counting from the right and leave 14 pins):
+Diagramme des 26 pins GPIO de la Raspberry Pi modèle B ( pour le modèle B+
+avec 40 pins, commencez a compter depuis la droite et ignorez les 14 pins
+restants):
 
 ![](images/rpi/0012.png) ![](images/rpi/0013.png)
 
-     8-pin for X60:
+     8-pin pour le X60:
 
-    ~~~~ LCD (Front) ~~~~
+    ~~~~ LCD (Devant) ~~~~
             8765
             ----
             |  |
             ----
             1234
-    ~~~ Palmrest (back) ~~
+    ~~~ Repose-paume (arrière) ~~
 
-  Pin \#   SPI Pin Name   BP (Seeed)   BP (Spkfun)   [Beagleboard Black](http://beagleboard.org/Support/bone101#headers)   [Raspberry Pi](images/rpi/0000.jpg)
+  Pin \#   Nom du pin SPI  BP (Seeed)   BP (Spkfun)   [Beagleboard Black](http://beagleboard.org/Support/bone101#headers)   [Raspberry Pi](images/rpi/0000.jpg)
   -------- -------------- ------------ ------------- --------------------------------------------------------------------- -------------------------------------
   1        CS             White        Red           Pin 17                                                                24
   2        MISO           Black        Brown         Pin 21                                                                21
-  3        *not used*     *not used*   *not used*    *not used*                                                            *not used*
+  3        *pas utilisé*     *pas utilisé*   *pas utilisé*    *pas utilisé*                                                            *pas utilisé*
   4        GND            Brown        Black         Pin 1                                                                 25
   5        MOSI           Gray         Orange        Pin 18                                                                19
   6        CLK            Purple       Yellow        Pin 22                                                                23
-  7        *not used*     *not used*   *not used*    *not used*                                                            *not used*
+  7        *pas utilisé*     *pas utilisé*   *pas utilisé*    *pas utilisé*                                                            *pas utilisé*
   8        3.3V           *red*        White         [3.3V PSU RED](bbb_setup.md)      17
 
-Make sure the pinouts are correct; otherwise, Flashrom will fail to
-detect a chip, or it will "detect" a `0x0` chip. Finally, make sure
-that the Pomona clip makes contact with the metal wires of the chip. It
-can be a challenge, but keep trying.
+Soyez sûr que les brochages sont correct; sinon, flashrom échouera lors de la
+détection de la puce, ou détectera une puce `0x0`. Finalement, rendez-vous sûr
+que la pince Pomona est en contact avec les fils en métal de la puce. Ça peut
+être un challenge, mais continuez à essayer.
 
-### How to supply power to the flashchip
+### Comment alimenter la puce flash
 
-There are two ways to supply power to the chip: plugging in an AC
-adapter (without turning the laptop on), and using the 8th 3.3v pin.
+Il y a deux façons d'alimenter la puce: brancher un adaptateur AC (courant
+alternatif) sans allumer l'ordinateur portable, et utiliser le 8ième pin 3.3V.
 
-I have found that the SST chips work best with the 8th pin, while the
-Macronix chips require an AC Adapter to power up.
+J'ai découvert que les puces SST marche le mieux avec le 8ième pin, alors que
+les puces Macronix nécessitent un adaptateur AC pour être alimentées.
 
-*Never connect both the 8th pin and the AC adapter at the same time.*
+*Ne connectez jamais en même temps le 8ième pin et l'adaptateur AC en même
+temps.*
 
-Your results may vary.
+Vos résulats peuvent varier.
 
-Reading the Flashchip
+Lire la puce flash
 ----------------------
 
-First, visually inspect (with a magnifying glass) the type of flashchip
-on the motherboard.
+Premiérement, inspectez visuellement (avec une loupe grossissante) le type de
+puce flash sur la carte mère.
 
-Next, download and compile the latest Flashrom source code on the
-Raspberry Pi.
+Ensuite, téléchargez et compilez la dernière version du code source de
+Flashrom sur la Raspberry Pi.
 
     sudo apt-get install build-essential pciutils usbutils libpci-dev libusb-dev libftdi1 libftdi-dev zlib1g-dev subversion libusb-1.0-0-dev
     svn co svn://flashrom.org/flashrom/trunk flashrom
@@ -107,43 +105,45 @@ Raspberry Pi.
     sudo modprobe spi_bcm2708
     sudo modprobe spidev
 
-If your chip is an SST, run this command:
+Si votre puce est une SST, exécutez cette commande:
 
     sudo ./flashrom -p linux_spi:dev=/dev/spidev0.0 -r test.rom
 
-If your chip is a Macronix, run this command:
+Si votre puce est une Macronix, exécutez cette commande:
 
     sudo ./flashrom -c "MX25L1605" -p linux_spi:dev=/dev/spidev0.0 -r test.rom
 
-Next, check the md5sum of the dump:
+Ensuite, vérifiez la somme de contrôle md5 du cliché mémoire:
 
     md5sum test.rom
 
-Run the `flashrom` command again to make a second dump. Then, check the
-md5sum of the second dump:
+Exécutez la commande `flashrom` encore une fois pour générer un deuxième
+cliché mémoire. Ensuite, vérifiez la somme de contrôle md5 du deuxième cliché
+mémoire:
 
     md5sum test.rom
 
-If the md5sums match after three tries, `flashrom` has managed to read
-the flashchip precisely (but not always accurately). You may try and
-flash Libreboot now.
+Si les sommes de contrôles se correspondent après 3 essais, `flashrom` s'est
+débrouillé pour lire la puce flash précisément (mais pas toujours
+correctement). Vous devriez peut-être essayer de flasher libreboot maintenant.
 
-Flashing Libreboot
--------------------
+Flasher Libreboot
+------------------- 
 
-Note: replace `/path/to/libreboot.rom` with the location of your chosen ROM,
-such as `../bin/x60/libreboot_usqwerty.rom`):
+Note: remplacez `/chemin/vers/libreboot.rom` avec l'emplacement de votre ROM
+choisie, tel quel `../bin/x60/libreboot_usqwerty.rom`
 
-If your chip is an SST, run this command:
+Si votre puce est une SST, exécutez cette commande:
 
-    sudo ./flashrom -p linux_spi:dev=/dev/spidev0.0 -w /path/to/libreboot.rom
+    sudo ./flashrom -p linux_spi:dev=/dev/spidev0.0 -w /chemin/vers/libreboot.rom
 
-If your chip is a Macronix, run this command:
+Si votre puce est une Macronix, exécutez cette commande:
 
-    sudo ./flashrom -c "MX25L1605" -p linux_spi:dev=/dev/spidev0.0 -w /path/to/libreboot.rom
+    sudo ./flashrom -c "MX25L1605" -p linux_spi:dev=/dev/spidev0.0 -w
+    /chemin/vers/libreboot.rom
 
-Once that command outputs the following, the flash has completed
-successfully. If not, just flash again.
+Une fois que cette commande montre le suivant en sortie, le flashage a été
+complété avec succés. Sinon, juste reflashez.
 
     Reading old flash chip contents... done.
     Erasing and writing flash chip... Erase/write done.
@@ -156,7 +156,7 @@ successfully. If not, just flash again.
 -   [Flashing coreboot on a T60 with a Raspberry Pi -
     the\_unconventional's
     blog](https://web.archive.org/web/20150709043222/http://blogs.fsfe.org:80/the_unconventional/2015/05/08/coreboot-t60-raspberry-pi/)
--   *Pomona SOIC Clip flashing*
+-   *Flashage avec pince Pomona sur SOIC*
     -   [Arch Linux Wiki - Installing Arch Linux on
         Chromebook](https://wiki.archlinux.org/index.php/Chromebook)
     -   [Google Drive - Raspberry Pi SOIC Clip
@@ -164,9 +164,9 @@ successfully. If not, just flash again.
     -   [rPI with Flashrom and SOIC Clip
         Powerpoint](http://satxhackers.org/wp/hack-content/uploads/2013/04/rPI_flashrom.pdf)
 
-### Raspberry Pi Pinout Diagrams
+### Diagrammes de brochages pour la Raspberry Pi
 
-  MCP   3008 Pin   Pi GPIO Pin \#   Pi Pin Name
+  MCP   3008 Pin   Pi GPIO Pin \#   Pi      Nom de pin
   ----- ---------- ---------------- --------------------
   16    `VDD`      1                `3.3 V`
   15    `VREF`     1                `3.3 V`
@@ -183,42 +183,44 @@ successfully. If not, just flash again.
 Raspberry Pi (ThinkPad X200)
 -----------------------------
 
-### Requirements:
+### Requis:
 
--   An x86, x86\_64, or arm7l (for changing the libreboot.rom image mac
-    address)
--   Raspberry Pi and peripherals
--   Relevant SOIC clip
--   6 female - female jumpers
--   Internet connection
--   Screw drivers
+-   Un processeur d'architecture x86, x86_64, ou arm7l (pour changer l'adresse
+    MAC dans l'image libreboot.rom)
+-   Raspberry Pi et ses périphériques
+-   pince SOIC accordée
+-   6 fils volants (*jumpers*) femelle - femelle
+-   une connection internet
+-   des tournevis
 
-Follow the [ThinkPad X200: Initial installation
-guide](x200_external.md) to
-disassemble the laptop, and access the BIOS rom chip.
+Suivez le [guide d'installation initiale du ThinkPad X200](x200_external.md)
+afin de désassembler l'ordinateur portable et d'accéder à la puce rom du BIOS.
 
-Note: `x86#` refers to commands to be run on the x86 computer, and `pi#` refers
-to commands to be run on the pi. A good practice is to make a work directory to
-keep your libreboot stuff inside.
+Note: `x86#` fait référence aux commandes devant être exécutée sur
+l'ordinateur à architecture x86, et `pi#` se référe aux commandes devant être
+lue sur la Pi. Une bonne pratique est de faire un répertoire de travail pour
+garder vos trucs libreboot à l'intérieur.
 
     x86# mkdir ~/work
+
+Si vous utilisez Raspbian, vous pouvez exécutez **sudo raspi-config**, activer
+le SPI dans le menu Avancé et ensuite spidev sera activé. Simple, hein?
 
 If you're running Raspian, you can do **sudo raspi-config**, enable SPI
 under Advanced and then spidev will be enabled. Simple, eh?
 
-[Download Libreboot from their releases
-page](../../download/). For your safety, verify the
-GPG signature as well.
+[Téléchargez libreboot depuis leur page des versions](../../download/). Pour
+votre sécurité, vérifiez aussi la signature GPG.
 
     x86# gpg --keyserver prefered.keyserver.org --recv-keys 0x656F212E
 
     x86# for signature in $(ls *.sig); do gpg --verify $signature; done
 
-Install dependencies:
+Installez les dépendances:
 
     pi# sudo apt-get update && sudo apt-get install libftdi1 libftdi-dev libusb-dev libpci-dev subversion libusb-1.0-0-dev pciutils, zlib, libusb, build-essential
 
-Download and build flashrom.
+Téléchargez et compilez flashrom.
 
     pi# svn co svn://flashrom.org/flashrom/trunk ~/flashrom
 
@@ -228,157 +230,162 @@ Download and build flashrom.
 
     pi# sudo make install
 
-On your x86 box change the libreboot.rom mac address
+Sur votre machine x86, changez l'adresse MAC de l'image libreboot.rom
 
     x86# cd ~/work/libreboot_bin/
 
-Change the mac address on the libreboot images to match yours.
+Changez les adresses MAC dans les images Libreboot pour qu'elles correspondent
+à la votre.
 
     x86# ./ich9macchange XX:XX:XX:XX:XX:XX
 
-Move the libreboot.rom image over to your pi
+Déplacez l'image libreboot.rom sur votre Pi
 
-    x86# scp ~/work/libreboot_bin/<path_to_your_bin> pi@your.pi.address:~/flashrom/libreboot.rom
+    x86# scp ~/work/libreboot_bin/<chemin_vers_libreboot.rom>
+    pi@votre.pi.addresseIP:~/flashrom/libreboot.rom
 
-Shutdown your pi, write down your rom chip model, and wire up the clip
+Éteignez votre Pi, notez votre modèle de puce rom, et branchez la pince
 
     pi# sudo shutdown now -hP
 
-Chip model name
+Nom du modèle de la puce
 
 ![](images/rpi/0001.jpg)
 
-Pinout. You may want to download the image so you can zoom in on the
+Brochage. Vous allez peut-être télécharger l'image afin de zoomer sur le
+texte.
 text.
 
 ![](images/rpi/0002.jpg)
 
-  Pin \#   SPI Pin Name   Raspberry Pi Pin \#
+  Pin \#   Nom pin SPI   Raspberry Pi Pin \#
   -------- -------------- ---------------------
-  1        *not used*     *not used*
+  1        *pas utilisé*     *pas utilisé*
   2        3.3V           1
-  3        *not used*     *not used*
-  4        *not used*     *not used*
-  5        *not used*     *not used*
-  6        *not used*     *not used*
+  3        *pas utilisé*     *pas utilisé*
+  4        *pas utilisé*     *pas utilisé*
+  5        *pas utilisé*     *pas utilisé*
+  6        *pas utilisé*     *pas utilisé*
   7        CS\#           24
   8        S0/SIO1        21
-  9        *not used*     *not used*
+  9        *pas utilisé*     *pas utilisé*
   10       GND            25
-  11       *not used*     *not used*
-  12       *not used*     *not used*
-  13       *not used*     *not used*
-  14       *not used*     *not used*
+  11       *pas utilisé*     *pas utilisé*
+  12       *pas utilisé*     *pas utilisé*
+  13       *pas utilisé*     *pas utilisé*
+  14       *pas utilisé*     *pas utilisé*
   15       S1/SIO0        19
   16       SCLK           23
 
-Note: The raspberry pi 3.3V rail should be sufficient to power the chip during
-flashing, so no external power supply should be required; however, at the time
-of writing that has only been tested and confirmed for one chip, the
-MX25L6405D.
+Note: Le rail d'alimentation 3.3V du raspberry Pi devrait être suffisant pour
+alimenter la puce pendant le flashage, donc aucune source d'alimentation
+externe devrait être nécessaire; cependant, au temps de l'écriture de ceci, ça
+a seulement été testé et confirmé pour une puce, la MX25L6405D.
 
-Macronix Spec sheet so you can adjust your pinout for 8 pin 4Mb chips as
-necessary
+Voici la fiche de spécifications Macronix afin que vous puissiez ajuster comme
+nécessaire votre
+brochage pour les puces 8 pin 4Mo
 
 ![](images/rpi/0014.gif)
 
-At this point connect your SOIC clip to the rom chip before powering on
-your PI.
+À présent connectez votre pince SOIC à la puce rom avant d'allumer votre Pi.
 
-Power on your Pi, and run the following. Ensure you swap out
-"your\_chip\_name" with the proper name/model of your chip. Check that
-it can be read successfully. If you cannot read the chip and receive an
-error similar to "no EEPROM Detected" then
-you may want to make sure that MISO/MOSI are not swapped around, check
-with multimeter whether voltage is right and that ground is connected
-between "programmer" and target.
+Allumez votre Pi, et exécutez le suivant. Assurez-vous d'échanger
+"votre\_nom\_de\_puce" avec le bon modèle/nom de votre puce. Assurez qu'elle
+peut être lue avec succés. Si vous ne pouvez pas lire la puce et que vous
+recevez une erreur similaire à "no EEPROM detected" alors vous devriez vous
+assurez que les fils MISO/MOSI ne sont pas inversés, vérifiez avec un
+multimètre si oui ou non le voltage est bon et que la masse est connectée
+entre le "programmeur" et la cible.
 
     pi# cd ~/flashrom
 
-    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <your_chip_name> -r romread1.rom
+    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <votre_nom_de_puce> -r romread1.rom
 
-    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <your_chip_name> -r romread2.rom
+    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <votre_nom_de_puce> -r romread2.rom
 
-    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <your_chip_name> -r romread3.rom
+    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <votre_nom_de_puce> -r romread3.rom
 
     pi# sha512sum romread*.rom
 
-If they are identical sha512 hashes then you can generally assume that
-it's safe to flash your rom.
+Si il y a des sommes de contrôles sha512 identiques alors vous pouvez
+généralement assumer qu'il est sûr de flasher votre ROM.
 
-    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <your_chip_name> -w libreboot.rom
+    pi# ./flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --chip <votre_nom_de_puce> -w libreboot.rom
 
-It may fail a couple times, but keep at it and when you get the message
-`Verifying flash... Verified` or
-`Warning: Chip content is identical to the requested image` then you're
-done.
+Ça peut échouer un nombre de fois, mais continuez et quand vous obtenez le
+message
+`Verifying flash... Verified` ou
+`Warning: Chip content is identical to the requested image` alors vous avez
+fini.
 
-Shut down your pi, put your box back together, and install a libre OS
-for great good!
+Éteignez votre Pi, réassemblez votre machine, et installez un SE libre pour un
+grand bien !
 
 Raspberry Pi (C720 Chromebook)
 -------------------------------
 
-The Raspberry Pi (a multipurpose \$25 GNU+Linux computer) can be used as
-a BIOS flashing tool, thanks to its GPIO pins and SPI support.
+La Raspberry Pi (un ordinateur GNU+Linux polyvalent pour 25\$) peut être
+utilisé en tant qu'outil de flashage de BIOS, grâce à ses pins GPIO et son
+support de SPI.
 
-### [](#what-you-need){#user-content-what-you-need .anchor}What you need
 
--   \$25 - Raspberry Pi Model B (Rev.2 or higher)
--   \$10-20 - SOIC-8 Pomona Clip
-    -   Usually comes bundled with nice, color-colored *female to
-        female* wires
+### [](#what-you-need){#user-content-what-you-need .anchor}De quoi avez-vous besoin
 
-### [](#raspberry-pi-pinouts){#user-content-raspberry-pi-pinouts .anchor}Raspberry Pi Pinouts
+-   \$25 - Raspberry Pi Modèle B (Rev.2 ou plus haut)
+-   \$10-20 - Pince Pomona pour SOIC-8
+    -   En général fournit avec de bon fils colourés *femelle à femelle*
 
-GPIO Pinouts:
+### [](#raspberry-pi-pinouts){#user-content-raspberry-pi-pinouts.anchor}Brochages Raspberry Pi
+
+Brochages GPIO:
 
 ![](images/rpi/0009.png) ![](images/rpi/0010.png)
 
-> \*Diagram made by ["Pacman" from Win-Raid
-> Forums\*](http://www.win-raid.com/t58f16-Guide-Recover-from-failed-BIOS-flash-using-Raspberry-PI.md)
+> \*Diagramme fait par ["Pacman" des forums 
+> Win-raid\*](http://www.win-raid.com/t58f16-Guide-Recover-from-failed-BIOS-flash-using-Raspberry-PI.md)
 
-SOIC Pinouts:
+Brochages SOIC:
 
 ![](docs/rpi/0011.png)
 
-### [](#plugging-in-the-soic-clip){#user-content-plugging-in-the-soic-clip .anchor}Plugging in the SOIC Clip
+### [](#plugging-in-the-soic-clip){#user-content-plugging-in-the-soic-clip.anchor}Brancher la pince pour SOIC 
 
-We have to connect the Raspberry Pi to the SOIC Clip as shown in the
-below diagram (using the f-f wires usually included with the Pomona
-clip).
+Nous devons connecter la Raspberry Pi à la pince pour SOIC comme montré dans
+le diagramme ci-dessous (en utilisant les fils f-f généralement inclus avec la
+pince Pomona).
 
-![SOIC Pinouts for C720 Chromebook](images/rpi/0003.png)
+![Brochages SOIC pour le Chromebook C720](images/rpi/0003.png)
 
-(C720 Only?) The diagram depicts a "bridged" connection. You will need
-to fashion one with some copper wire:
+(C720 seulement?) le diagramme dépicte une connexion "pontée". Vous aurez
+besoin d'en faire une avec un fil en cuivre:
 
-![Bridged wires](images/rpi/0004.jpg)
+![Fils pontés](images/rpi/0004.jpg)
 
-Plug in the wires to the clip as shown below:
+Branchez les fils dans la pince comme montré ci-dessous:
 
-![Pomona Clip connections](images/rpi/0005.jpg)
+![Connexions pince Pomona](images/rpi/0005.jpg)
 
-Plug in the other end of the wires to the Raspberry Pi as shown below:
+Branchez l'autre extrémité des fils dans la Raspberry Pi comme montré
+ci-dessous:
 
-![Raspberry Pi connections](images/rpi/0006.jpg)
+![Connexions Raspberry Pi](images/rpi/0006.jpg)
 
-(C720 only?) Plug in the "bridged" wires as shown below:
+(C720 seulement?) branchez les fils pontés comme montré ci-dessous:
 
-![Bridged wires connected](images/rpi/0007.jpg)
+![Fils pontés connectés](images/rpi/0007.jpg)
 
-Finally, put the Pomona SOIC clip on the chip:
+Finalement, mettez la pince Pomona pour SOIC sur la puce:
 
-![Pomona Clip Connected](images/rpi/0008.jpg)
+![Pince Pomona connectée](images/rpi/0008.jpg)
 
 ### Flashrom
 
-[Once it's all set up, flashrom works out of the
-box.](http://www.flashrom.org/RaspberryPi)
+[Une fois que tout est mis en place, flashrom marche d'entrée de jeu.](http://www.flashrom.org/RaspberryPi)
 
 ### Sources
 
--   *Pomona SOIC Clip flashing*
+-   *Flashage avec pince Pomona pour SOIC*
     -   [Arch Linux Wiki - Installing Arch Linux on
         Chromebook](https://wiki.archlinux.org/index.php/Chromebook)
     -   [Google Drive - Raspberry Pi SOIC Clip
@@ -398,4 +405,4 @@ Copyright © 2015 snuffeluffegus <>\
 Copyright © 2015 Kevin Keijzer <>\
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-This page is available under the [CC BY SA 4.0](../cc-by-sa-4.0.txt)
+Cette page est disponible sous la licence [CC BY SA 4.0](../cc-by-sa-4.0.txt)
