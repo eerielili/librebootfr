@@ -1,26 +1,26 @@
 ---
-title: Intel D945GCLF flashing tutorial 
+title: Tutoriel de flashage de la carte mère Intel D945GCLF 
 ...
 
-This guide is for those who want libreboot on their Intel D945GCLF
-motherboard while they still have the original BIOS present.
+Ce guide est pour ceux voulant Libreboot ceux leur carte mère Intel D945GCLF
+alors que le BIOS originel est toujours présent.
 
-For information about this board, go to
+Pour avoir des informations à propos de cette carte mère, allez dans
 [../hardware/d945gclf.md](../hardware/d945gclf.md)
 
-Flashing instructions {#clip}
+Instructions de flashage {#clip}
 =====================
 
-Refer to [bbb\_setup.md](bbb_setup.md) for how to set up the BBB for
-external flashing.
+Référez vous à [bbb\_setup.md](bbb_setup.md) pour savoir comment configurer le
+BBB pour le flashage.
 
-Here is an image of the flash chip:\
+Voici une image de la puce flash:
 ![](../images/d945gclf/d945gclf_spi.jpg)
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).

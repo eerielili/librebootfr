@@ -1,55 +1,55 @@
 ---
-title: GA-G41M-ES2L flashing tutorial 
+title: Tutoriel de flashage de la carte mère GA-G41M-ES2L
 ...
 
-This guide is for those who want libreboot on their Intel GA-G41M-ES2L
-motherboard while they still have the original BIOS present.
+Ce guide est pour ceux voulant Libreboot sur leur carte mère Intel
+GA-G41M-ES2L alors qu'ils ont le BIOS originel toujours présent.
 
-Flash chip size {#flashchips}
+Taille de la puce flash {#flashchips}
 ===============
 
-Use this to find out:
+Utilisez ceci pour la trouver:
 
     # flashrom -p internal
 
-Flashing instructions {#clip}
+Instructions de flashage {#clip}
 =====================
 
-Refer to [bbb\_setup.md](bbb_setup.md) for how to set up the BBB for
-external flashing. *You can only externally reprogram one of the chips
-at a time, and you need to disable the chip that you're not flashing,
-by connecting 3v3 to /CS of that chip, so you will actually need second test
-clip or IC pin mini grabber.*
+Référez vous à [bbb\_setup.md](bbb_setup.md) pour savoir comment configurer le
+BBB pour le flashage externe. *Vous pouvez seulement reprogrammer une des
+puces à la fois, et vous devez désactiver la puce que vous ne flashez pas, en
+connectant le 3.3V au /CS de cette puce, de telle façon que vous aurez besoin
+d'une seconde pince de test ou une petit pince de pin IC.*
 
-Here is an image of the flash chip:\
+Voici une image de la puce flash:\
 ![](../images/ga-g41m-es2l/ga-g41m-es2l.jpg)
 
-Internal flashing is possible. Boot with the proprietary BIOS and
-GNU+Linux. There are 2 flash chips (one is backup).
+Le flashage interne est possible. Démarrez avec le BIOS propriétaire et
+GNU+Linux. Il y a 2 puces flash (une est de sauvegarde).
 
-Flash the first chip:
+Flashez la première puce:
 
     ./flashrom -p internal:dualbiosindex=0 -w libreboot.rom
 
-Flash the second chip:
+Flashez la seconde puce:
 
     ./flashrom -p internal:dualbiosindex=1 -w libreboot.rom
 
-NOTE: you can still boot the system with just the main flash chip
-connected, after desoldering the backup chip. This has been tested while
-libreboot was already installed onto the main chip.
+NOTE: vous pouvez toujours démarrer le système avec juste la puce flash
+principale connectée, après avoir désoudé la puce de sauvegarde. Ça a été
+testé pendant que Libreboot était déjà installé sur la puce principale.
 
-NOTE: You need the latest flashrom. Just get it on flashrom.org from
-their SVN or Git repos.
+NOTE: Vous aurez besoin de la dernière version de flashrom. Obtenez là depuis
+leur dépôt SVN sur flashrom.org ou sur Git.
 
-NOTE: due to a bug in the hardware, the MAC address is hardcoded in
-coreboot-libre. Therefore, you must set your own MAC address in your
-operating system.
+NOTE: dû à un bug dans le matériel, l'adresse MAC est codée en dur dans
+coreboot-libre. Donc, vous devez définir votre propre adresse MAC dans votre
+système d'exploitation.
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
