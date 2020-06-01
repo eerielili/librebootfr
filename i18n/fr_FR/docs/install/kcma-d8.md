@@ -1,38 +1,41 @@
 ---
-title: KCMA-D8 external flashing instructions 
+title: Instructions de flashage externe de la carte KCMA-D8
 x-toc-enable: true
 ...
 
-Initial flashing instructions for kcma-d8.
+Instructions initiales de flashage pour kcma-d8.
 
-This guide is for those who want libreboot on their ASUS kcma-d8
-motherboard, while they still have the proprietary ASUS BIOS present.
-This guide can also be followed (adapted) if you brick you board, to
-know how to recover.
+Ce guide est pour ceux voulant libreboot sur leur carte mère ASUS kcma-d8,
+pendant qu'ils ont toujours le BIOS propriétaire d'ASUS présent.
+Ce guide peut être aussi suivi (adapté) si vous bousillez (*brick*) votre
+carte, pour savoir comment la remettre sur pattes.
 
-*Memory initialization is still problematic, for some modules. We
-recommend avoiding Kingston modules.*
+*L'initialisation de la mémoire est encore problématique pour certains
+modules. Nous recommandons d'éviter les modules Kingston.*
 
-For more general information about this board, refer to
-[../hardware/kcma-d8.md](../hardware/kcma-d8.md).
+Pour plus d'informations générales à propos de cette carte, référez-vous à
+[../hardware/kcma-m8.md](../hardware/kcma-d8.md).
 
-TODO: show photos here, and other info.
+AFAIRE: montrer ici des photos et d'autres infos.
 
-External programmer {#programmer}
+Programmeur externe {#programmer}
 ===================
+
+Référez-vous à [bbb\_setup.md](bbb_setup.md) pour un guide sur comment
+configurer un programmeur SPI externe.
 
 Refer to [bbb\_setup.md](bbb_setup.md) for a guide on how to set up
 an external SPI programmer.
 
-The flash chip is in a PDIP 8 socket (SPI flash chip) on the
-motherboard, which you take out and then re-flash with libreboot, using
-the programmer. *DO NOT* remove the chip with your hands. Use a chip
-extractor tool.
+La puce de flash est dans un réceptable PDIP 8 (puce flash SPI) sur la carte
+mère, que vous devez sortir et re-flasher avec libreboot, en utilisant le
+programmeur. *NE PAS* retirer la puce avec vos mains nues. Utilisez un outil
+extracteur de puces.
 
 Copyright © 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
