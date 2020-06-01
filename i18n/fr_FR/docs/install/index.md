@@ -367,9 +367,12 @@ Vous devrez voir notamment le suivant en sortie:
 
     Vérification du flash.... VÉRIFIÉ.
 
-Extinction.
+Éteignez l'appareil.
 
 Copyright © 2014, 2015, 2016 Leah Rowe <info@minifree.org>\
 
-La permission est accordé pour copier, distribuer et/ou modifier ce document sous les termes de la GNU Free Documentation Licence version 1.3 ou n'importe quelles autre version plus récentes publié par la Free Software Foundation avec aucune Sections Invariantes, Texte de Couverture, et Texte de quatrième de couverture.
-Une copie de cette licence est trouvé dans [fdl-1.3.md](fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
