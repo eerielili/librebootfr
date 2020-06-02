@@ -1,88 +1,96 @@
 ---
-title: Flashing the T400 with a BeagleBone Black
+title: Flashage du T400 avec un BeagleBone Black
 ...
 
-Initial flashing instructions for T400.
+Instructions initiales de flashage pour le T400.
 
-This guide is for those who want libreboot on their ThinkPad T400 while
-they still have the original Lenovo BIOS present. This guide can also be
-followed (adapted) if you brick your T400, to know how to recover.
+Ce guide est pour ceux voulant Libreboot sur leur ThinkPad T400 alors qu'ils
+ont toujours le BIOS de Lenovo présent. Ce guide peut aussi être suivi
+(adapté) si vous bousillez (*brick*) votre T400, pour vous montrer comment le
+remettre d'aplomb.
 
-An
-["HMM"](https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/43y6629_05.pdf#page=386)
-(Hardware Maintenance Manual) detailing the process of \[dis\]assembly
-is available for this model. Be careful when reassembling the laptop as
-the screws on page 114 (with title "1130 Keyboard bezel") are swapped
-and if you follow the HMM you will punch a hole through the bezel in the
-upper right corner.
+Un ["MMM"](https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/43y6629_05.pdf#page=386)
+(Manuel de Maintenance Matérielle <=> Hardware Maintenance Manual)
+qui détaille le processus de \[dés\]assemblage de ce modèle est disponible. Soyez
+vigilants lors du réassemblage de l'ordinateur portable car les vis sur la
+page 114 (avec le titre "1130 Keyboard bezel") sont échangées/inversées et si
+vous suivez le manuel vous percerez un trou à travers le coin
+supérieur droit du cadre.
 
-Serial port {#serial_port}
+Port série {#serial_port}
 -----------
 
-EHCI debug might not be needed. It has been reported that the docking
-station for this laptop has a serial port, so it might be possible to
-use that instead.
+Le déboguage EHCI n'est peut-être pas nécessaire. Il a été rapporté que la
+station d'appareillage (dock) pour cet ordinateur portable a un port série,
+donc il serait peut-être possible d'utiliser ça à la place.
 
-A note about CPUs
+Une note à propos des processeurs
 =================
 
-[ThinkWiki](http://www.thinkwiki.org/wiki/Category:T400) has a list of
-CPUs for this system. The Core 2 Duo P8400, P8600 and P8700 are believed
-to work in libreboot.
+Le [ThinkWiki](http://www.thinkwiki.org/wiki/Category:R400) a une liste de
+processeurs pour ce système. Le Core 2 Duo P8400, P8600 et P8700 marcherait dans
+libreboot. 
+Les Core 2 Duo T9600, T9500, T9550 et T9900 sont tous compatibles, ça nous a
+été rapporté par des utilisateurs. 
 
-T9600, T9500, T9550 and T9900 are all compatible, as reported by users.
-
-Quad-core CPUs
+Processeurs 4 coeurs
 --------------
 
-Very likely to be compatible, but requires hardware modification.
-Based on info from German forum post about installing Core Quad CPU on T500 found in coreboot mailing list. Currently work in progress and no guide available.
+Il est très semblable que ça soit compatible, mais ça demande des
+modifications matérielles.
+C'est basé sur des informations d'un billet d'un allemand sur un forum, trouvé
+sur les listes de diffusions de coreboot, à
+propos de l'installation d'un processeur Core Quad sur un T500. Actuellement
+un travail en cours et aucun guide n'est disponible.
 
-- [Coreboot mailing list post](https://mail.coreboot.org/pipermail/coreboot/2016-November/082463.html)
-- [German forum post about install Core Quad on T500](https://thinkpad-forum.de/threads/199129)
+- [Billet sur la liste de diffusion de Coreboot](https://mail.coreboot.org/pipermail/coreboot/2016-November/082463.html)
+- [Billet sur un forum d'un allemand à propos de l'installation d'un
+  processeur Core Quad sur un T500](https://thinkpad-forum.de/threads/199129)
 
 
-A note about GPUs
+Une note à propos des cartes graphiques
 =================
 
-Some models have an Intel GPU, while others have both an ATI and an
-Intel GPU; this is referred to as "switchable graphics". In the *BIOS
-setup* program for lenovobios, you can specify that the system will use
-one or the other (but not both).
+Certains modèles ont une carte graphique Intel, pendant que d'autres ont à la
+fois une ATI et une Intel; c'est référencé en tant que "Double Graphiques
+(Dual Graphics)" (précedemment "graphiques échangeables").
+Dans le programme *BIOS setup* pour le lenovobios, vous pouvez spécifier au
+système d'utiliser un des deux (mais pas les deux à la fois).
 
-Libreboot is known to work on systems with only the Intel GPU, using
-native graphics initialization. On systems with switchable graphics, the
-Intel GPU is used and the ATI GPU is disabled, so native graphics
-initialization works all the same.
+Libreboot est connu pour marcher sur des systèmes avec seulement la carte
+graphique Intel, utilisant l'initialisation native des graphiques. Sur des
+systèmes avec graphiques échangeables, la carte graphique Intel est utilisée
+et celle ATI est désactivée, donc l'initialisation native des graphiques
+marche partout pareil.
 
-CPU paste required
+Pâte thermique processeur requise
 ==================
 
-See [\#paste](#paste).
+Voyez pour la [\#pâte](#paste).
 
-Flash chip size {#flashchips}
+Taille de puce flash {#flashchips}
 ===============
 
-Use this to find out:
-
+Utilisez ceci pour la trouver:
+    
     # flashrom -p internal
 
-MAC address {#macaddress}
+Adresse MAC {#macadress}
 ===========
 
-Refer to [mac\_address.md](../hardware/mac_address.md).
+Référez-vous au document [mac\_address.md](../hardware/mac_address.md).
 
-Initial BBB configuration
+Configuration initiale BBB
 =========================
 
-Refer to [bbb\_setup.md](bbb_setup.md) for how to configure the BBB
-for flashing.
+Référez-vous au document [bbb\_setup.md](bbb_setup.md) sur comment configurer
+le BBB pour le flashage.
 
-The following shows how to connect clip to the BBB (on the P9 header),
-for SOIC-16 (clip: Pomona 5252):
+Le suivant montre comment connecter une pince au BBB (sur la broche P9), pour
+un SOIC-16 (pince: Pomona 5252):
 
-    POMONA 5252 (correlate with the BBB guide)
-    ===  ethernet jack and VGA port ====
+    POMONA 5252 (corrélez avec le guide sur le BBB)
+    ===  ethernet, jack et port VGA ====
      NC              -       - 21
      1               -       - 17
      NC              -       - NC
@@ -90,130 +98,135 @@ for SOIC-16 (clip: Pomona 5252):
      NC              -       - NC
      NC              -       - NC
      18              -       - 3.3V (PSU)
-     22              -       - NC - this is pin 1 on the flash chip
-    ===  SATA port ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+     22              -       - NC - c'est le pin 1 sur la puce flash
+    ===  port SATA ===
+    C'est comme ceci que vous connecterez. Les nombres font références au
+    numéro de pins sur le BBB, sur les fiches près de la fiche mâle DC.
 
-The following shows how to connect clip to the BBB (on the P9 header),
-for SOIC-8 (clip: Pomona 5250):
 
-    POMONA 5250 (correlate with the BBB guide)
-    ===  RAM slots ====
+Le suivant montre comment connecter une pince au BBB (sur la broche P9), pour
+un SOIC-8 (pince: Pomona 5250):
+
+    POMONA 5250 (corrélez avec le guide sur le BBB)
+    ===  emplacements RAM  ====
      18              -       - 1
      22              -       - NC
      NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip
-    ===  slot where the AC jack is connected ===
+     3.3V (PSU)      -       - 17 - c'est le pin 1 sur la puce flash
+    ===  emplacement ou la prise mâle AC est connectée ===
+    C'est comme ceci que vous connecterez. Les nombres font références au
+    numéro de pins sur le BBB, sur les fiches près de la fiche mâle DC.
 
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
-
-The procedure
+Désassemblage
 -------------
 
-Remove *all* screws, placing them in the order that you removed them:\
+Enlevez *tous* les vis, les plaçant dans l'ordre dans lesquels vous les avez
+enlevés:
 ![](images/t400/0001.jpg) ![](images/t400/0002.jpg)
 
-Remove those three screws then remove the rear bezel:\
+Enlevez ces trois vis puis enlevez le cadre arrière:\
 ![](images/t400/0003.jpg) ![](images/t400/0004.jpg)
 ![](images/t400/0005.jpg) ![](images/t400/0006.jpg)
 
-Remove the speakers:\
+Enlevez les haut-parleurs:\
 ![](images/t400/0007.jpg) ![](images/t400/0008.jpg)
 ![](images/t400/0009.jpg) ![](images/t400/0010.jpg)
 ![](images/t400/0011.jpg)
 
-Remove the wifi:\
+Enlevez la WiFi:\
 ![](images/t400/0012.jpg) ![](images/t400/0013.jpg)
 
-Remove this cable:\
+Enlevez ce câble:\
 ![](images/t400/0014.jpg) ![](images/t400/0015.jpg)
 ![](images/t400/0016.jpg) ![](images/t400/0017.jpg)
 ![](images/t400/0018.jpg)
 
-Unroute those antenna wires:\
+Déroutez ces fils d'antenne:\
 ![](images/t400/0019.jpg) ![](images/t400/0020.jpg)
 ![](images/t400/0021.jpg) ![](images/t400/0022.jpg)
 ![](images/t400/0023.jpg)
 
-Remove the LCD assembly:\
+Enlevez l'assemblage de l'écran LCD:\
 ![](images/t400/0024.jpg) ![](images/t400/0025.jpg)
 ![](images/t400/0026.jpg) ![](images/t400/0027.jpg)
 ![](images/t400/0028.jpg) ![](images/t400/0029.jpg)
 ![](images/t400/0030.jpg) ![](images/t400/0031.jpg)
 
-Disconnect the NVRAM battery:\
+Déconnectez la batterie NVRAM:\
 ![](images/t400/0033.jpg)
 
-Disconnect the fan:\
+Déconnectez le ventilateur:\
 ![](images/t400/0034.jpg)
 
-Unscrew these:\
+Dévissez ces vis:\
 ![](images/t400/0035.jpg) ![](images/t400/0036.jpg)
 ![](images/t400/0037.jpg) ![](images/t400/0038.jpg)
 
-Unscrew the heatsink, then lift it off:\
+Dévissez le dissipateur de chaleur, puis soulevez-le:\
 ![](images/t400/0039.jpg) ![](images/t400/0040.jpg)
 
-Disconnect the power jack:\
+Déconnectez la prise d'alimentation:\
 ![](images/t400/0041.jpg) ![](images/t400/0042.jpg)
 
-Loosen this:\
+Désserrez ceci:\
 ![](images/t400/0043.jpg)
 
-Remove this:\
+Enlevez ceci:\
 ![](images/t400/0044.jpg) ![](images/t400/0045.jpg)
 ![](images/t400/0046.jpg) ![](images/t400/0047.jpg)
 ![](images/t400/0048.jpg)
 
-Unscrew these:\
+Dévissez ces vis:\
 ![](images/t400/0049.jpg) ![](images/t400/0050.jpg)
 
-Remove this:\
+Enlevez ça:\
 ![](images/t400/0051.jpg) ![](images/t400/0052.jpg)
 
-Unscrew this:\
+Dévissez ceci:\
 ![](images/t400/0053.jpg)
 
-Remove the motherboard (the cage is still attached) from the right hand
-side, then lift it out:\
+Enlevez la carte mère (la cage est encore attaché) depuis le côté de votre
+main droite, puis soulevez là en dehors:\
 ![](images/t400/0054.jpg) ![](images/t400/0055.jpg)
 ![](images/t400/0056.jpg)
 
-Remove these screws, placing the screws in the same layout and marking
-each screw hole (so that you know what ones to put the screws back into
-later): ![](images/t400/0057.jpg) ![](images/t400/0058.jpg)
+Enlevez toutes les vis, marquez chaque trou de telle façon que vous saurez les
+réinsérer. Vous devriez placer les vis dans une disposition correspondant à
+l'ordre qu'ils étaient avant enlevage:\
+![](images/t400/0057.jpg) ![](images/t400/0058.jpg)
 ![](images/t400/0059.jpg) ![](images/t400/0060.jpg)
 ![](images/t400/0061.jpg) ![](images/t400/0062.jpg)
 
-Separate the motherboard:\
+Séparez la carte mère de l'ensemble:\
 ![](images/t400/0063.jpg) ![](images/t400/0064.jpg)
 
-Connect your programmer, then connect GND and 3.3V\
+Connectez votre programmeur, puis connectez la masse et le 3.3V\
 ![](images/t400/0065.jpg) ![](images/t400/0066.jpg)
 ![](images/t400/0067.jpg) ![](images/t400/0069.jpg)
 ![](images/t400/0070.jpg) ![](images/t400/0071.jpg)
 
-A dedicated 3.3V PSU was used to create this guide, but at ATX PSU is
-also fine:\
+Une alimentation (NdT:*PSU*) 3.3V dédiée a été utilisé pour créer ce guide,
+mais une alimentation ATX fait aussi l'affaire:\
 ![](images/t400/0072.jpg)
 
-Of course, make sure to turn on your PSU:\
+Bien sûr, soyez certain d'allumer votre alimentation:\
 ![](images/x200/disassembly/0013.jpg)
 
-Now, you should be ready to install libreboot.
+Maintenant, vous devriez être prêt à installer libreboot.
 
-Flashrom binaries for ARM (tested on a BBB) are distributed in
-libreboot\_util. Alternatively, libreboot also distributes flashrom
-source code which can be built.
+Les binaires de flashrom pour l'architecture ARM (testé sur un BBB) sont
+distribués/fournis dans libreboot\_util. Alternativement, libreboot distribue
+aussi le code source de flashrom pouvant être compilé.
 
-Log in as root on your BBB, using the instructions in
+Authentifiez-vous en tant que root sur votre BBB, en utilisant les
+instructions dans le doc
 [bbb\_setup.html\#bbb\_access](bbb_setup.html#bbb_access).
 
-Test that flashrom works:
+Testez afin de savoir si flashrom marche:
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512\
 
-In this case, the output was:
+Dans ce cas là, la sortie était:
 
     flashrom v0.9.7-r1854 on Linux 3.8.13-bone47 (armv7l)
     flashrom is free software, get the source code at http://www.flashrom.org
@@ -224,48 +237,56 @@ In this case, the output was:
     Multiple flash chip definitions match the detected chip(s): "MX25L6405(D)", "MX25L6406E/MX25L6436E", "MX25L6445E/MX25L6473E"
     Please specify which chip definition to use with the -c <chipname> option.
 
-How to backup factory.rom (change the -c option as needed, for your flash
-chip):
+Comment sauvegarder factory.rom (changez l'option -c en accordance selon votre
+puce flash):
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory.rom
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory1.rom
+factory.rom
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory2.rom
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r
 
-Note: the `-c` option is not required in libreboot's patched flashrom, because
-the redundant flash chip definitions in `flashchips.c` have been removed.
+factory1.rom
 
-Now compare the 3 images:
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r
+
+factory2.rom
+
+Note: l'option `-c` n'est pas nécessaire dans la version de flashrom patchée
+par libreboot, parce que les définitions redondantes de puces flash dans
+*flashchips.c* ont été enlevée.
+
+Maintenant comparez les 3 images:
 
     # sha512sum factory*.rom
 
-If the hashes match, then just copy one of them (the factory.rom) to a
-safe place (on a drive connected to another system, not the BBB). This
-is useful for reverse engineering work, if there is a desirable
-behaviour in the original firmware that could be replicated in coreboot
-and libreboot.
+Si les hashs correspondent, alors copiez juste l'un d'eux (le factory.rom)
+dans un endroit sûr (sur un disque connecté sur un autre système, pas le BBB).
+C'est utile pour le travail d'ingénérie inversé, au cas où il y a un
+comportement désirable dans le micrologiciel originel qui pourrait être
+répliqué dans coreboot et libreboot.
 
-Follow the instructions at
+Suivez les instructions dans le document 
 [../hardware/gm45\_remove\_me.html\#ich9gen](../hardware/gm45_remove_me.html#ich9gen)
-to change the MAC address inside the libreboot ROM image, before
-flashing it. Although there is a default MAC address inside the ROM
-image, this is not what you want. *Make sure to always change the MAC
-address to one that is correct for your system.*
+pour changer l'adresse MAC à l'intérieur de l'image ROM de libreboot, avant de
+la flasher. Bien qu'il y a une adresse MAC par défaut à l'intérieur de l'image
+ROM, c'est ce que vous voulez. *Soyez sûr de toujours changer l'adresse MAC
+par une qui est correcte pour votre machine.*
 
-Now flash it:
+Maintenant flashez là:
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w path/to/libreboot/rom/image.rom -V
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w
+        path/to/libreboot/rom/image.rom -V
 
 ![](images/x200/disassembly/0015.jpg)
 
-You might see errors, but if it says `Verifying flash... VERIFIED` at
-the end, then it's flashed and should boot. If you see errors, try
-again (and again, and again); the message `Chip content is identical to
-the requested image` is also an indication of a successful
-installation.
+Vous verrez peut-être des erreurs, mais si ça dit `Verifying flash...
+VERIFIED` à la fin, alors c'est flashé et ça devrait démarrer. Si vous voyez
+des erreurs, essayez encore (et encore et encore); le message `Chip content is
+identical to the requested image` est aussi un indicateur d'une installation
+fructueuse.
 
-Example output from running the command (see above):
+Exemple de sortie lors de l'exécution de la commande ci-dessus:
 
     flashrom v0.9.7-r1854 on Linux 3.8.13-bone47 (armv7l)
     flashrom is free software, get the source code at http://www.flashrom.org
@@ -278,82 +299,86 @@ Example output from running the command (see above):
     Erase/write done.
     Verifying flash... VERIFIED.
 
-Thermal paste (IMPORTANT)
+Pâte thermique (IMPORTANT)
 =========================
 
-Because part of this procedure involved removing the heatsink, you will
-need to apply new paste. Arctic MX-4 is ok. You will also need isopropyl
-alcohol and an anti-static cloth to clean with.
+Parce qu'une partie de cette procédhre a nécessité d'enlever le dissipateur de
+chaleur, vous aurez besoin d'appliquer une nouvelle pâte. L'Arctic MX-4 est
+ok. Vous aurez aussi besoin pour nettoyer d'alcool isopropyl et de tissus anti électricité
+statique.
 
-When re-installing the heatsink, you must first clean off all old paste
-with the alcohol/cloth. Then apply new paste. Arctic MX-4 is also much
-better than the default paste used on these systems.
+Quand vous réinstallez le dissipateur de chaleur, vous devez d'abord nettoyer
+toute la vieille pâte avec l'alcool/le tissu. Puis ensuite appliquer la
+nouvelle pâte. L'Arctic MX-4 est d'ailleurs bien mieux que celle utilisée par
+défaut sur ces machines.
 
 ![](images/t400/paste.jpg)
 
-NOTE: the photo above is for illustration purposes only, and does not
-show how to properly apply the thermal paste. Other guides online detail
-the proper application procedure.
+NOTE: la photo ci-dessus est dans des buts d'illustration seulement, et ne
+montre pas comment appliquer proprement la pâte thermique. D'autres guides en
+ligne détaillent la bonne procédure d'application.
 
-Wifi
+WiFi
 ====
 
-The T400 typically comes with an Intel wifi chipset, which does not work
-without proprietary software. For a list of wifi chipsets that work
-without proprietary software, see
+Le T400 est fournit avec un jeu de puce WiFi Intel, qui ne marche pas sans
+logiciel propriétaire. Pour une liste de jeux de puces qui marchent sans
+logiciel propriétaire, voyez le document
 [../hardware/\#recommended\_wifi](../hardware/#recommended_wifi).
 
-Some T400 laptops might come with an Atheros chipset, but this is
-802.11g only.
+Certains ordinateurs portables T400 peuvent être fournis avec un jeu de puce
+Atheros, mais ont seulement le protocole 802.11g.
 
-It is recommended that you install a new wifi chipset. This can only be
-done after installing libreboot, because the original firmware has a
-whitelist of approved chips, and it will refuse to boot if you use an
-'unauthorized' wifi card.
+Il est recommandé que vous installiez un nouveau jeu de puce WiFi. Ça peut
+seulement être fait après avoir installé Libreboot, parce que le micrologiciel
+original a une liste blanche de puces approuvés, et refusera de démarrer si
+vous utilisez un carte wifi 'non autorisée'.
 
-The following photos show an Atheros AR5B95 being installed, to replace
-the Intel chip that this T400 came with:\
+Les photos suivantes montrent un Atheros AR5B95 en train d'être installé, pour
+remplacer la puce Intel dont le T400 a été fourni avec:
 ![](images/t400/0012.jpg) ![](images/t400/ar5b95.jpg)
 
 WWAN
 ====
 
-If you have a WWAN/3G card and/or sim card reader, remove them
-permanently. The WWAN-3G card has proprietary firmware inside; the
-technology is identical to what is used in mobile phones, so it can also
-track your movements.
+Si vous avez une carte WWAN/3G et/ou un lecteur de carte sim, enlevez les
+définitevement. La carte WWAN-3G a du micrologiciel propriétaire à
+l'intérieur; la technologie est identique à celle utilisée dans les téléphones
+mobiles, car elle peut traquer vos mouvements.
 
-Not to be confused with wifi (wifi is fine).
+À ne pas confondre avec le WiFi (le WiFi est OK).
 
-Memory
+Mémoire
 ======
 
-You need DDR3 SODIMM PC3-8500 RAM installed, in matching pairs
-(speed/size). Non-matching pairs won't work. You can also install a
-single module (meaning, one of the slots will be empty) in slot 0.
+Vous aurez besoin que de la RAM de type DDR3 SODIMM PC3-8500 soit installé, en
+paire identique en vitesse/taille. Les paires non correspondantes ne
+marcheront pas. Vous pouvez aussi installer un seul module (voulant dire que
+l'un des emplacements sera vide) dans l'emplacement (*slot*) 0.
 
-Make sure that the RAM you buy is the 2Rx8 density.
+Soyez sûr que la RAM que vous achetez soit de densité 2Rx8.
 
-[This page](http://www.forum.thinkpads.com/viewtopic.php?p=760721) might
-be useful for RAM compatibility info (note: coreboot raminit is
-different, so this page might be BS)
+[Cette page](http://www.forum.thinkpads.com/viewtopic.php?p=760721) pourrait
+être utile pour des informations sur la compatibilité de la RAM (note:
+l'initialisation de la RAM dans coreboot est différente, donc cette page
+pourrait être des conneries)
 
-The following photo shows 8GiB (2x4GiB) of RAM installed:\
+La photo suivante montre 8Go (2x4Go) de RAM installée:\
 ![](images/t400/memory.jpg)
 
-Boot it!
+Démarrez le!
 --------
 
-You should see something like this:
+Vous devriez voir quelque chose comme ceci:
 
 ![](images/t400/boot0.jpg) ![](images/t400/boot1.jpg)
 
-Now [install GNU+Linux](../gnulinux/).
+Maintenant [installez GNU+Linux](../gnulinux/).
 
 Copyright © 2015 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
