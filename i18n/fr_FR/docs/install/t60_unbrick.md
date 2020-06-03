@@ -1,36 +1,39 @@
 ---
-title: ThinkPad T60 Recovery guide
+title: Guide de récupération du T60
 x-toc-enable: true
 ...
 
-This section documents how to recover from a bad flash that prevents
-your ThinkPad T60 from booting.
+Cette section documente comment récupérer après un mauvais flashage empêchant
+le démarrage de votre ThinkPad T60.
 
-Brick type 1: bucts not reset. {#bucts_brick}
+Type de bousillage 1: bucts non réinitialisé {#bucts\_brick}
 ==============================
 
-You still have Lenovo BIOS, or you had libreboot running and you flashed
-another ROM; and you had bucts 1 set and the ROM wasn't dd'd.\* or if
-Lenovo BIOS was present and libreboot wasn't flashed.\
+Vous avez encore le BIOS Lenono, ou Libreboot était en cours d'exécution et
+vous avez flashé une autre ROM; et 'bucts 1' était défini et la ROM n'a pas
+été `dd`\* ou alors le BIOS Lenovo était présent et libreboot n'était pas
+flashé.\
 
-In this case, unbricking is easy: reset BUC.TS to 0 by removing that
-yellow cmos coin (it's a battery) and putting it back after a minute or
-two:\
+Dans ce cas là, la récupération est facile: réinitialisez BUC.TS à 0 en
+enlevant cette pièce jaune cmos (c'est une batterie) puis en la remettant une
+ou deux minutes après:\
 ![](../images/t60_dev/0006.JPG)\
 
-\*Those dd commands should be applied to all newly compiled T60 ROM
-images (the ROM images in libreboot binary archives already have this
-applied!):\
-dd if=coreboot.rom of=top64k.bin bs=1 skip=\$\[\$(stat -c %s
+\*Ces commandes dd devraient être appliquées à toutes images ROM pour T60
+nouvellement compilés (les images ROM dans les archives des binaires ont déjà
+ça d'appliqué!):\
+    
+    # dd if=coreboot.rom of=top64k.bin bs=1 skip=\$\[\$(stat -c %s
 coreboot.rom) - 0x10000\] count=64k\
-dd if=coreboot.rom bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x20000\]
+    # dd if=coreboot.rom bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x20000\]
 count=64k | hexdump\
-dd if=top64k.bin of=coreboot.rom bs=1 seek=\$\[\$(stat -c %s
+    # dd if=top64k.bin of=coreboot.rom bs=1 seek=\$\[\$(stat -c %s
 coreboot.rom) - 0x20000\] count=64k conv=notrunc\
-(doing this makes the ROM suitable for use when flashing a system that
-still has Lenovo BIOS running, using those instructions:
-<http://www.coreboot.org/Board:lenovo/x60/Installation>. (it says x60,
-but instructions for t60 are identical)
+
+Faire ceci rend la ROM prête pour le flashage sur un système exécutant
+toujours le BIOS Lenovo, en utilisant ces instructions:
+<http://www.coreboot.org/Board:lenovo/x60/Installation> (ça dit x60,
+mais les instructions pour le T60 sont identiques).
 
 bad rom (or user error), system won't boot {#recovery}
 ===========================================
