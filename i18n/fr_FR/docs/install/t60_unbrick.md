@@ -35,180 +35,190 @@ toujours le BIOS Lenovo, en utilisant ces instructions:
 <http://www.coreboot.org/Board:lenovo/x60/Installation> (ça dit x60,
 mais les instructions pour le T60 sont identiques).
 
-bad rom (or user error), system won't boot {#recovery}
+Mauvaise rom (ou erreur utilisateur), le système ne démarrera pas {#recovery}
 ===========================================
 
-In this scenario, you compiled a ROM that had an incorrect
-configuration, or there is an actual bug preventing your system from
-booting. Or, maybe, you set BUC.TS to 0 and shut down after first flash
-while Lenovo BIOS was running. In any case, your system is bricked and
-will not boot at all.
+Dans ce scénario, vous avez compilé une ROM qui avait une configuration
+incorrecte, ou il y a un véritable bug empêchant votre système de démarrer.
+Ou, peut-être, vous avez défini BUC.TS à 0 et avez éteint après le premier
+flash pendant que le BIOS Lenovo était en train de s'exécuter. Dans n'importe
+quel cas, votre système est bousillé (*bricked*, rendu aussi utile qu'une
+brique) et ne voudra pas démarrer du tout.
 
-"Unbricking" means flashing a known-good (working) ROM. The problem:
-you can't boot the system, making this difficult. In this situation,
-external hardware (see hardware requirements above) is needed which can
-flash the SPI chip (where libreboot resides).
+Le "débriquage" (*unbricking*) signifie qu'on flashe une ROM connue pour
+marcher. Le problème: vous ne pouvez pas démarrer le problème, rendant cette
+tâche difficile. Dans cette situation, du matériel externe (voir les requis
+matériels ci-dessus) est nécessaire, pouvant flasher la puce SPI (où libreboot
+réside).
 
-Remove those screws and remove the HDD:\
+Enlevez ces vis et enlevez le DD (Disque Dur):\
 ![](../images/t60_dev/0001.JPG) ![](../images/t60_dev/0002.JPG)
 
-Lift off the palm rest:\
+Soulevez le repose paume:\
 ![](../images/t60_dev/0003.JPG)
 
-Lift up the keyboard, pull it back a bit, flip it over like that and
-then disconnect it from the board:\
+Soulevez le clavier, ramenez le un peu en arrière, basculez le comme ci puis
+ensuite déconnectez-le de la carte:\
 ![](../images/t60_dev/0004.JPG) ![](../images/t60_dev/0005.JPG)
 ![](../images/t60_dev/0006.JPG)
 
-Gently wedge both sides loose:\
+Décoincez gentiment les deux bords:\
 ![](../images/t60_dev/0007.JPG) ![](../images/t60_dev/0008.JPG)
 
-Remove that cable from the position:\
+Enlevez ce câble de sa position:\
 ![](../images/t60_dev/0009.JPG) ![](../images/t60_dev/0010.JPG)
 
-Now remove that bezel. Remove wifi, nvram battery and speaker connector
-(also remove 56k modem, on the left of wifi):\
+Maintenant enlevez ce cadre. Enlevez la WiFI, la batterie NVRAM, les
+connecteurs d'hauts-parleurs (enlevez aussi le modem 56K, sur la gauche de la
+WiFi):\
 ![](../images/t60_dev/0011.JPG)
 
-Remove those screws:\
+Enlevez ces vis:\
 ![](../images/t60_dev/0012.JPG)
 
-Disconnect the power jack:\
+Enlevez la prise d'alimentation mâle:
 ![](../images/t60_dev/0013.JPG)
 
-Remove nvram battery:\
+Enlevez la batterie NVRAM
 ![](../images/t60_dev/0014.JPG)
 
-Disconnect cable (for 56k modem) and disconnect the other cable:\
+Déconnectez le câble (pour les modems 56Ko) et déconnectez les autres câbles:\
 ![](../images/t60_dev/0015.JPG) ![](../images/t60_dev/0016.JPG)
 
-Disconnect speaker cable:\
+Déconnectez le câble du haut-parleur:\
 ![](../images/t60_dev/0017.JPG)
 
-Disconnect the other end of the 56k modem cable:\
+Déconnectez l'autre extrémité du câble du modem 56k:\
 ![](../images/t60_dev/0018.JPG)
 
-Make sure you removed it:\
+Assurez-vous que vous l'avez enlevé:\
 ![](../images/t60_dev/0019.JPG)
 
-Unscrew those:\
+Dévissez ces vis:\
 ![](../images/t60_dev/0020.JPG)
 
-Make sure you removed those:\
+Assurez-vous que vous les avez enlevé:\
 ![](../images/t60_dev/0021.JPG)
 
-Disconnect LCD cable from board:\
+Déconnectez le câble de l'écran LCD de la carte mère:\
 ![](../images/t60_dev/0022.JPG)
 
-Remove those screws then remove the LCD assembly:\
+Enlevez ces vis puis enlevez l'assemblage/l'ensemble de l'écran LCD:\
 ![](../images/t60_dev/0023.JPG) ![](../images/t60_dev/0024.JPG)
 ![](../images/t60_dev/0025.JPG)
 
-Once again, make sure you removed those:\
+Encore une fois, assurez-vous que vous les avez bien enlevé:\
 ![](../images/t60_dev/0026.JPG)
 
-Remove the shielding containing the motherboard, then flip it over.
-Remove these screws, placing them on a steady surface in the same layout
-as they were in before you removed them. Also, you should mark each
-screw hole after removing the screw (a permanent marker pen will do),
-this is so that you have a point of reference when re-assembling the
-system:
+Enlevez la protection contenant la carte mère, puis retournez-la.
+Enlevez ces vis, les plaçant sur une surface plane dans la même disposition
+qu'ils étaient avant que vous les enleviez. Aussi, vous devriez marquer chaque
+trou de vis après en avoir enlevé un (un marqueur permanent fera l'affaire),
+comme ça vous avez un point de référence lors du réassemblage du système:
 
 ![](../images/t60_dev/0027.JPG) ![](../images/t60_dev/0028.JPG)
 ![](../images/t60_dev/0029.JPG) ![](../images/t60_dev/0031.JPG)
 ![](../images/t60_dev/0032.JPG) ![](../images/t60_dev/0033.JPG)
 
-Now wire up the BBB and the Pomona with your PSU.\
-Refer to [bbb\_setup.md](bbb_setup.md) for how to setup the BBB for
-flashing.
+Maintenant branchez le BBB et la pince Pomona avec votre alimentation.\
+Référez-vous au document [bbb\_setup](bbb_setup.md) sur comment mettre en
+place le BBB pour le flashage.
 
-*Note, the guide mentions a 3.3v DC PSU but you don't need this on the
-T60: if you don't have or don't want to use an external PSU, then make
-sure not to connect the 3.3v leads mentioned in the guide; instead,
-connect the AC adapter (the one that normally charges your battery) so
-that the board has power (but don't boot it up)*
+*Notez, le guide mentionne une alim DC 3.3V mais vous n'avez pas besoin de ça
+sur le T60: si vous n'avez pas ou ne voulez pas utiliser une alimentation
+externe, alors assurez-vous de ne pas connecter les fils/câbles 3.3V
+mentionnés dans le guide; à la place, connectez l'adaptateur DC (celui qui
+charge normalement votre batterie), comme ça la carte est alimentée (mais ne
+la démarrez/l'allumez pas)*
 
 ![](../images/t60_dev/0030.JPG)
 
-Correlate the following with the BBB guide linked above:
+Corrélez le suivant avec le lien du guide BBB partagé ci-dessus:
 
     POMONA 5250:
     ===  DVD drive ====
      18              -       - 1
-     22              -       - NC               ---- RAM is on this end
+     22              -       - NC               ---- RAM est sur cette
+     extrémité
      NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip
+     3.3V (alim)      -       - 17 - c'est le pin 1 sur la puce flash
     ===  audio jacks ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+    C'est comme ceci que vous connecterez. Les nombres font références au
+    numéro de pins sur le BBB, sur les fiches près de la fiche mâle DC.
 
-Connect the pomona from the BBB to the flash chip. No pics
-unfortunately. (use the text diagram above).
+Connectez la pince pomona du BBB à la puce flash. Malheuresement, pas d'image
+disponibles pour le moment. (utilisez le diagramme textuel ci-dessus).
 
-Flashrom binaries for ARM (tested on a BBB) are distributed in
-libreboot\_util. Alternatively, libreboot also distributes flashrom
-source code which can be built.
+Les binaires de flashrom pour l'architecture ARM (testé sur un BBB) sont
+distribués/fournis dans libreboot\_util. Alternativement, libreboot distribue
+aussi le code source de flashrom pouvant être compilé.
 
-SSH'd into the BBB:
+Connectez-vous via SSH sur le BBB:
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w
 
-yourrom.rom
+votre-rom.rom
 
-It should be `Verifying flash... VERIFIED` at the end. If flashrom
-complains about multiple flash chip definitions detected, then choose
-one of them following the instructions in the output.
+La sortie de cette commande devrait dire `Verifying flash... VERIFIED` à la
+fin. Si flashrom se plaint de multiples définitions de puces flash détectées,
+alors choisissez l'une d'elles en suivant les instructions mentionnées dans la
+sortie de la commande.
 
-Put those screws back:\
+Remettez ces vis en place:\
 ![](../images/t60_dev/0047.JPG)
 
-Put it back into lower chassis:\
+Remettez la carte dans le châssis inférieur:\
 ![](../images/t60_dev/0048.JPG)
 
-Attach LCD and insert screws (also, attach the lcd cable to the board):\
+Attachez l'écran LCD et insérez les vis (aussi, attachezle câble LCD à la
+carte):\
 ![](../images/t60_dev/0049.JPG)
 
-Insert those screws:\
+Insérez ces vis:\
 ![](../images/t60_dev/0050.JPG)
 
-On the CPU (and there is another chip south-east to it, sorry forgot to
-take pic) clean off the old thermal paste (with the alcohol) and apply
-new (Artic Silver 5 is good, others are good too) you should also clean
-the heatsink the same way\
+Sur le processeur (et il y a une autre puce dans son sud-est, j'ai oublié de
+prendre une photo, désolé), nettoyez la vieille pâte thermique avec de
+l'alcool isopropyl et un tissu anti électricité statique, puis appliquez de
+la nouvelle pâte thermique (l'Arctic Silver 5 est pas mal, les autres aussi);
+vous devriez faire de même avec le dissipateur de châleur:\
 ![](../images/t60_dev/0051.JPG)
 
-Attach the heatsink and install the screws (also, make sure to install
-the AC jack as highlighted):\
+Attachez le dissipateur de châleur et installez les vis (aussi, soyez sûr
+d'installer la prise mâle jack comme mis en évidence):\
 ![](../images/t60_dev/0052.JPG)
 
-Reinstall that upper bezel:\
+Réinstallez ce cadre supérieur:\
 ![](../images/t60_dev/0053.JPG)
 
-Do that:\
+Faites ceci:\
 ![](../images/t60_dev/0054.JPG) ![](../images/t60_dev/0055.JPG)
 
-Re-attach modem, wifi, (wwan?), and all necessary cables. Sorry, forgot
-to take pics. Look at previous removal steps to see where they go back
-to.
+Ré-attachez les cartes modems, WiFi, (WWAN?), et tout autres câbles
+nécessaires. Désolé, j'ai oublié de prendre des photos.
+Jetez un coup d'oeil aux étapes précédentes concernant leur enlèvement pour
+voir où est-ce qu'ils vont.
 
-Attach keyboard and install nvram battery:\
+Attachez le clavier et installez la batterie de la NVRAM:\
 ![](../images/t60_dev/0056.JPG) ![](../images/t60_dev/0057.JPG)
 
-Place keyboard and (sorry, forgot to take pics) reinstall the palmrest
-and insert screws on the underside:\
+Placez la carte mère et (désolé, pas pris de photos) réinstallez le repose
+paume et insérez des vis par en dessous:\
 ![](../images/t60_dev/0058.JPG)
 
-It lives!\
+Ça marche!\
 ![](../images/t60_dev/0071.JPG) ![](../images/t60_dev/0072.JPG)
 ![](../images/t60_dev/0073.JPG)
 
-Always stress test ('stress -c 2' and xsensors. below 90C is ok) when
-replacing cpu paste/heatsink:\
+Faites toujours un test de stress (exécutez 'stress -c 2' et regardez la
+sortie de xsensors. Températures en dessous de 90°C => c'est bon) quand vous
+remplacez la pâte du processeur ou le dissipateur de chaleur:\
 ![](../images/t60_dev/0074.JPG)
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
