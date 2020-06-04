@@ -229,7 +229,6 @@ Dans ce cas là, la sortie était:
     Multiple flash chip definitions match the detected chip(s): "MX25L6405(D)", "MX25L6406E/MX25L6436E", "MX25L6445E/MX25L6473E"
     Please specify which chip definition to use with the -c <chipname> option.
 
-Comment sauvegarder factory.rom (changez l'option -c en accordance selon votre
 puce flash):
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r
@@ -246,7 +245,7 @@ factory2.rom
 
 Note: l'option `-c` n'est pas nécessaire dans la version de flashrom patchée
 par libreboot, parce que les définitions redondantes de puces flash dans
-*flashchips.c* ont été enlevée.
+*flashchips.c* ont été enlevées.
 
 Maintenant comparez les 3 images:
 
@@ -359,7 +358,7 @@ pourrait être des conneries)
 La photo suivante montre 8Go (2x4Go) de RAM installée:\
 ![](images/t400/memory.jpg)
 
-Démarrez là!
+Démarrez le!
 --------
 
 Vous devriez voir quelque chose comme ceci:

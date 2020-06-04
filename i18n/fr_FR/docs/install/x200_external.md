@@ -1,121 +1,130 @@
 ---
-title: Flashing the X200 with a BeagleBone Black
+title: Flashé le X200 avec un BeagleBone Black
 x-toc-enable: true
 ...
 
-This guide is for those who want libreboot on their ThinkPad X200 while
-they still have the original Lenovo BIOS present. This guide can also be
-followed (adapted) if you brick your X200, to know how to recover.
+Ce guide est pour ceux voulant Libreboot sur leur ThinkPad X200 alors qu'ils
+ont encore le BIOS Lenovo originel présent. Ce guide peut aussi être suivi
+(adapté) si vous bousillez (*brick*) votre X200, afin de savoir comment
+y recourir.
 
-X200 laptops with libreboot pre-installed
+Ordinateurs portables avec libreboot pré-installé
 =========================================
 
-If you don't want to install libreboot yourself, companies exist that
-sell these laptops with libreboot pre-installed, along with a free
-GNU+Linux distribution.
+Si vous ne voulez pas installer Libreboot vous-même, des entreprises existent
+et qui vendent ces ordinateurs portables avec libreboot préinstallé, avec de
+plus une distribution GNU+Linux libre.
 
-Flash chip size
+Taille de la puce flash
 ===============
 
-Run this command on x200 to find out flash chip model and its size:
+Exécutez cette command sur le x200 pour trouver le modèle de la puce flash et
+sa taille:
 
     # flashrom -p internal
 
-The X200S and X200 Tablet will use a WSON-8 flash chip, on the bottom of the
-motherboard (this requires removal of the motherboard). Not all X200S/X200T are
-supported; see the [hardware](../hardware/x200.html#x200s) page.
+Le X200S et le X200 Tablet utiliseront une puce flash WS0N-8, qui se situe en
+dessous, de l'autre côté de la carte mère (ça nécessite l'enlèvement de celle-ci). Pas tout les
+X200S/X200T sont supportés; voir la page sur le
+[matériel](../hardware/x200.html#x200s).
 
-MAC address
+Adresse MAC
 ===========
 
-Refer to [mac\_address.md](../hardware/mac_address.md).
+Référez-vous à [mac\_address.md](../hardware/mac_address.md).
 
-Initial BBB configuration
+Configuration BBB initialle
 =========================
 
-Refer to [bbb\_setup.md](bbb_setup.md) for how to set up the BBB for
-flashing.
+Référez-vous à [bbb\_setup.md](bbb_setup.md) pour savoir comment configurer le
+BBB pour le flashage.
 
-The following table shows how to connect the test clip to the BBB (on the P9
-header), for SOIC-8/SOIC-16:
+Le tableau suivant montre comment connecter la pince de test au BBB (sur la
+broche P9), pour les SOIC-8/SOIC-16
 
-|BeagleBoneBlack|Pin on P9|SPI |25xx SOIC8 pin|SOIC16|Ball    |DTS      |
-|---------------|---------|----|--------------|------|--------|---------|
-|I2C1_SCL       |17       |/CS |1             |7     |A16     |spi0_cs0 |
-|I2C1_SDA       |18       |MOSI|5             |15    |B16     |spi0_d1  |
-|UART2_RXD      |22       |CLK |6             |16    |A17     |spi0_sclk|
-|UART2_TXD      |21       |MISO|2             |8     |B17     |spi0_d0  |
-|GND            |1 or 2   |GND |4             |10    |GND     |GND      |
-|VDD_3V3D       |3 or 4   |Vcc |8             |2     |VDD_3V3D|VDD_3V3D |
+|BeagleBoneBlack|Pin sur P9|SPI |Pin 25xx SOIC8|SOIC16|Boule   |DTS      |
+|---------------|----------|----|--------------|------|--------|---------|
+|I2C1_SCL       |17        |/CS |1             |7     |A16     |spi0_cs0 |
+|I2C1_SDA       |18        |MOSI|5             |15    |B16     |spi0_d1  |
+|UART2_RXD      |22        |CLK |6             |16    |A17     |spi0_sclk|
+|UART2_TXD      |21        |MISO|2             |8     |B17     |spi0_d0  |
+|GND            |1 or 2    |GND |4             |10    |GND     |GND      |
+|VDD_3V3D       |3 or 4    |Vcc |8             |2     |VDD_3V3D|VDD_3V3D |
 
-*Pictures of flash chip location are located further down on this page*
+*Des photos situant la puce flash sont plus bas sur cette page.*
 
-If onboard 3.3V supply happens to be insuficient, use a separate
-module/power supply and set its current limit to 400mA.
-Do not forget that in this case ground has to be continuous across between
-motherboard, BBB and PSU (all three)!
+Si l'alimentation embarquée de 3.3V se montre insuffisante, utilisez un
+module/alimentation séparé et définissez la limite du courant à 400mA.
+N'oubliez pas que dans ce cas la masse doit être continue entre la carte mère,
+le BBB et le PSU (tout les trois)!
 
-On the X200S and X200 Tablet the flash chip is underneath the board, in a WSON
-package. The pinout is very much the same as a SOIC-8, but such package makes
-it impossible to use testclip.  In order to enable external flashing of device,
-chip has to be changed to SOIC-8 one. Such procedure requires hot air station
-and soldering station (with "knife" K-Tip to easily solder SOIC-8).
+Sur les X2OOS et X200 Tablet la puce flash est en-dessous la carte mère, dans
+un paquet WSON. Le brochage est quasiment le même qu'un SOIC-8, mais un tel
+paquet rend impossible l'utilisation de la pince de test. Afin d'activer le
+flashage externe de l'appareil, la puce doit être changée par une de type
+SOIC-8.
+Une telle procédure requiert une station de soudage avec pistolet à air chaud
+(avec le "couteau" K-Tip pour facilement soudé la puce type SOIC-8).
 
-Check the list of SOIC-8 flash chips at [List of supported flash
-chips](https://www.flashrom.org/Supported_hardware#Supported_flash_chips)\ 25XX
-series SPI NOR Flash in 8/16MiB sizes will work fine with libreboot.
+Jetez un coup d'oeil à la liste des puces flash de type SOIC-8 sur la [liste
+des puces flashs
+supportés](https://www.flashrom.org/Supported_Hardware#Supported_flash_chips)\
+Les '25XX series SPI NOR Flash' de taille 8 ou 16Mo marcheront correctement
+avec Libreboot.
 
-The procedure
+La procédure
 -------------
 
-This section is for the X200. This does not apply to the X200S or X200
-Tablet (for those systems, you have to remove the motherboard
-completely, since the flash chip is on the other side of the board).
+Cette section concerne le X200. Elle ne s'applique pas au X200S ou X200 Tablet
+(pour ces systèmes, vous devez complétement enlever la carte mère, puisque la
+puce flash est de l'autre côté de la carte mère).
 
-Remove these screws:\
+Enlevez ces vis:\
 ![](images/x200/disassembly/0003.jpg)
 
-Gently push the keyboard towards the screen, then lift it off, and optionally
-disconnect it from the board:\
+Poussez gentiment le clavier vers l'écran, puis soulevez-le, et
+optionnellement déconnectez-le de la carte mère:\
 ![](images/x200/disassembly/0004.jpg)
 ![](images/x200/disassembly/0005.jpg)
 
-Disconnect the cable of the fingerpring reader, and then pull up the palm rest,
-lifting up the left and right side of it:\
+Déconnectez le câble du lecteur d'empreinte, puis ensuite prenez le
+repose paume, soulevant son côté droit et gauche:\
 ![](images/x200/disassembly/0006.1.jpg)
 ![](images/x200/disassembly/0006.jpg)
 
-This shows the location of the flash chip, for both SOIC-8 and SOIC-16:\
+Ces images montrent l'emplacement de la puce flash, pour les SOIC-8 et
+SOIC-16:
 ![](images/x200/x200_soic16.jpg)
 ![](images/x200/x200_soic8.jpg)
 
-Lift back the tape that covers a part of the flash chip, and then
-connect the clip:\
+Soulevez et repliez l'adhésif couvrant une partie de la puce flash, puis
+ensuite connectez la pince:\
 ![](images/x200/disassembly/0008.jpg)
 
-On pin 2 of the BBB, where you have the ground (GND), connect the ground
-to your PSU:\
+Sur le pin 2 du BBB, où se situe la terre (GND), connectez cette terre à votre
+bloc d'alimentation du pc portable (PSU):\
 ![](images/x200/disassembly/0009.jpg)
 ![](images/x200/disassembly/0010.jpg)
 
-Connect the 3.3V DC supply from your PSU to the flash chip (via the clip):\
+Connectez (via la pince) l'alimentation 3.3V DC de votre PSU à la puce flash:\
 ![](images/x200/disassembly/0011.jpg)
 ![](images/x200/disassembly/0012.jpg)
 
-Now, you should be ready to install libreboot.
+Maintenant, vous devriez être prêt à installer libreboot.
 
-Flashrom binaries for ARM (tested on a BBB) are distributed in
-libreboot\_util. Alternatively, libreboot also distributes flashrom
-source code which can be built.
+Les binaires de flashrom pour l'architecture ARM (testé sur un BBB) sont
+distribués/fournis dans libreboot\_util. Alternativement, libreboot distribue
+aussi le code source de flashrom pouvant être compilé.
 
-Log in as root on your BBB, using the instructions in
+Authentifiez-vous en tant que root sur votre BBB, en utilisant les
+instructions dans le doc
 [bbb\_setup.html\#bbb\_access](bbb_setup.html#bbb_access).
 
-Probe for chips with flashrom:
+Testez afin de savoir si flashrom marche:
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512\
 
-In this case, the output was:
+Dans ce cas là, la sortie était:
 
     flashrom v0.9.7-r1854 on Linux 3.8.13-bone47 (armv7l)
     flashrom is free software, get the source code at http://www.flashrom.org
@@ -126,48 +135,50 @@ In this case, the output was:
     Multiple flash chip definitions match the detected chip(s): "MX25L6405(D)", "MX25L6406E/MX25L6436E", "MX25L6445E/MX25L6473E"
     Please specify which chip definition to use with the -c <chipname> option.
 
-Here is how to backup factory.rom:
+Voici comment sauvegarder factory.rom:
 
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory.rom
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory1.rom
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -r factory2.rom
 
-Note: the `-c` option is not required in libreboot's patched
-flashrom, because the redundant flash chip definitions in *flashchips.c*
-have been removed.
 
-Now compare the 3 images:
+Note: l'option `-c` n'est pas nécessaire dans la version de flashrom patchée
+par libreboot, parce que les définitions redondantes de puces flash dans
+*flashchips.c* ont été enlevées.
+
+Maintenant comparez les 3 images:
 
     # sha512sum factory*.rom
 
-If the hashes match and if hex editor (like `dhex`) shows that
-they have valid contents (eg. it's not filled entirely with `0x00`/`0xFF`),
-then just copy one of them (the factory.rom) to a
-safe place (on a drive connected to another system, not the BBB). This
-is useful for reverse engineering work, if there is a desirable
-behaviour in the original firmware that could be replicated in coreboot
-and libreboot.
+Si les hashs correspondent, qu'un éditeur hexadécimal (comme `dhex`) montre
+qu'ils ont des contenus valides (p.ex ils ne sont pas entièrement remplis avec
+des `0x00`/`0xFF`)
+alors copiez juste l'un d'eux (le factory.rom)
+dans un endroit sûr (sur un disque connecté sur un autre système, pas le BBB).
+C'est utile pour le travail d'ingénérie inversé, au cas où il y a un
+comportement désirable dans le micrologiciel originel qui pourrait être
+répliqué dans coreboot et libreboot.
 
-Follow the instructions at
+Suivez les instructions dans le document 
 [../hardware/gm45\_remove\_me.html\#ich9gen](../hardware/gm45_remove_me.html#ich9gen)
-to change the MAC address inside the libreboot ROM image, before
-flashing it. Although there is a default MAC address inside the ROM
-image, this is not what you want. Make sure to always change the MAC
-address to one that is correct for your system.
+pour changer l'adresse MAC à l'intérieur de l'image ROM de libreboot, avant de
+la flasher. Bien qu'il y a une adresse MAC par défaut à l'intérieur de l'image
+ROM, c'est ce que vous voulez. *Soyez sûr de toujours changer l'adresse MAC
+par une qui est correcte pour votre machine.*
 
-Now flash it:
-
+Maintenant flashez là:
+    
     # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w path/to/libreboot/rom/image.rom
 
 ![](images/x200/disassembly/0015.jpg)
 
-You might see errors, but if it says `Verifying flash... VERIFIED` at
-the end, then it's flashed and should boot. If you see errors, try
-again (and again, and again); the message `Chip content is identical to
-the requested image` is also an indication of a successful
-installation.
+Vous verrez peut-être des erreurs, mais si ça dit `Verifying flash...
+VERIFIED` à la fin, alors c'est flashé et ça devrait démarrer. Si vous voyez
+des erreurs, essayez encore (et encore et encore); le message `Chip content is
+identical to the requested image` est aussi un indicateur d'une installation
+fructueuse.
 
-Example output from running the command (see above):
+Exemple de sortie lors de l'exécution de la commande ci-dessus:
 
     flashrom v0.9.7-r1854 on Linux 3.8.13-bone47 (armv7l)
     flashrom is free software, get the source code at http://www.flashrom.org
@@ -180,24 +191,24 @@ Example output from running the command (see above):
     Erase/write done.
     Verifying flash... VERIFIED.
 
-Wifi
+WiFi
 ====
 
-The X200 typically comes with an Intel wifi chipset, which does not work
-without proprietary software. For a list of wifi chipsets that work
-without proprietary software, see
+Le X200 est fournit avec un jeu de puce WiFi Intel, qui ne marche pas sans
+logiciel propriétaire. Pour une liste de jeux de puces qui marchent sans
+logiciel propriétaire, voyez le document
 [../hardware/\#recommended\_wifi](../hardware/#recommended_wifi).
 
-Some X200 laptops come with an Atheros chipset, but this is 802.11g
-only.
+Certains ordinateurs portables X200 peuvent être fournis avec un jeu de puce
+Atheros, mais ont seulement le protocole 802.11g.
 
-It is recommended that you install a new wifi chipset. This can only be
-done after installing libreboot, because the original firmware has a
-whitelist of approved chips, and it will refuse to boot if you use an
-'unauthorized' wifi card.
+Il est recommandé que vous installiez un nouveau jeu de puce WiFi. Ça peut
+seulement être fait après avoir installé Libreboot, parce que le micrologiciel
+original a une liste blanche de puces approuvés, et refusera de démarrer si
+vous utilisez un carte wifi 'non autorisée'.
 
-The following photos show an Atheros AR5B95 being installed, to replace
-the Intel chip that this X200 came with:
+Les photos suivantes montrent un Atheros AR5B95 en train d'être installé, pour
+remplacer la puce Intel dont le X200 a été fourni avec:
 
 ![](images/x200/disassembly/0016.jpg)
 ![](images/x200/disassembly/0017.jpg)
@@ -205,101 +216,102 @@ the Intel chip that this X200 came with:
 WWAN
 ====
 
-If you have a WWAN/3G card and/or sim card reader, remove them
-permanently. The WWAN-3G card has proprietary firmware inside; the
-technology is identical to what is used in mobile phones, so it can also
-track your movements.
+Si vous avez une carte WWAN/3G et/ou un lecteur de carte sim, enlevez les
+définitevement. La carte WWAN-3G a du micrologiciel propriétaire à
+l'intérieur; la technologie est identique à celle utilisée dans les téléphones
+mobiles, car elle peut traquer vos mouvements.
 
-Not to be confused with wifi (wifi is fine).
+À ne pas confondre avec le WiFi (le WiFi est OK).
 
-Intel Turbo Memory
+Mémoire Intel Turbo (Intel Turbo Memory)
 ==================
 
-Some X200 devices were sold with Intel Turbo Memory installed in the top-most
-mini PCI-e slot.
+Certains X200 étaient vendus avec 'Intel Turbo Memory' installé dans le
+réceptacle mini PCI-e le plus haut.
 
-If you have one installed, you should probably remove it as it mostly likely
-brings no benefits, while having many issues:
--  It has been [shown to be
-   ineffective](http://www.anandtech.com/show/2252) at disk caching or battery
-   saving in most use cases. Having it installed might lead to more
-   battery consumption.
--  Using it will most likely lead to data loss because with its
-   [driver](https://github.com/yarrick/turbomem),
-   "data cannot be written/read back reliably". The driver development
-   has also stopped.
--  It might also be a security risk as it may have access to the system
-   RAM through the PCIe bus.
+Si vous avez ce module installé, vous devriez problablement l'enlevez car il
+n'apporte aucun bénéfices, pendant qu'il a de nombreux soucis:
+-  Il a été [montré inefficace](http://www.anandtech.com/show/2252) pour mettre le disque en cache ou sauver de
+   la batterie dans la majorité des cas d'utilisations. L'avoir installé
+   pourrait amener à une plus grande consommation de la batterie.
+-  L'utiliser aménera probablement a une perte de données parce qu'avec son
+   [driver](https://github.com/yarrick/turbomem), "les données ne peuvent pas
+   être lues/écrites en retour de façon fiabe". Aussi, son développement a
+   stoppé.
+-  Ça peut être aussii un risque de sécurité puisqu'il pourrait avoir accès à
+   la RAM du système via le bus PCIe.
 
-Memory
+Mémoire
 ======
 
-You need DDR3 SODIMM PC3-8500 RAM installed, in matching pairs
-(speed/size) as some non-matching pairs are known not to work.
-You can also install a single module (meaning, one of the
-slots will be empty) in slot 0.
+Vous aurez besoin que de la RAM de type DDR3 SODIMM PC3-8500 soit installé, en
+paire identique en vitesse/taille. Les paires non correspondantes ne
+marcheront pas. Vous pouvez aussi installer un seul module (voulant dire que
+l'un des emplacements sera vide) dans l'emplacement (*slot*) 0.
 
-Make sure that the RAM you buy is the 2Rx8 density.
+Soyez sûr que la RAM que vous achetez soit de densité 2Rx8.
 
-In this photo, 8GiB of RAM (2x4GiB) is installed:
-
+La photo suivante montre 8Go (2x4Go) de RAM installée:\
 ![](images/x200/disassembly/0018.jpg)
 
-Boot it!
+Démarrez le!
 --------
 
-You should see something like this:
+Vous devriez voir quelque chose comme ceci:
 
 ![](images/x200/disassembly/0019.jpg)
 
-Now [install GNU+Linux](../gnulinux/).
+Maintenant [installez GNU+Linux](../gnulinux/).
 
-X200S and X200 Tablet users: GPIO33 trick will not work.
+Utilisateurs du X200S et X200 Tablet: l'astuce du GPIO33 ne marchera pas
 --------------------------------------------------------
 
-sgsit found out about a pin called GPIO33, which can be grounded to
-disable the flashing protections by the descriptor and stop the ME from
-starting (which itself interferes with flashing attempts). The theory
-was proven correct; however, it is still useless in practise.
+sgsit a découvert un pin appelé GPIO33, qui peut être mis à la terre
+/masse pour désactiver les protections de flashages du descripteur et donc
+pouvoir stopper le démarrage de la ME (Intel Management Engine), qui interfére
+avec les tentatives de flashages.
+La théorie s'est révélée correcte; néamoins, c'est encore à ce jour inutile en
+pratique.
 
-Look just above the 7 in TP37 (that's GPIO33):
+Jetez un coup d'oeil au dessus du '7' dans 'TP37' (c'est le GPIO33):
 
 ![](../hardware/images/x200/gpio33_location.jpg)
 
-By default we would see this in lenovobios, when trying flashrom -p
-internal -w rom.rom:
+Par défaut nous devrons voir ceci dans le BIOS lenovo (lenovobios), lorsqu'on
+essaye la command `flashrom -p internal -w rom.rom`:
 
     FREG0: Warning: Flash Descriptor region (0x00000000-0x00000fff) is read-only.
     FREG2: Warning: Management Engine region (0x00001000-0x005f5fff) is locked.
 
-With GPIO33 grounded during boot, this disabled the flash protections as
-set by descriptor, and stopped the ME from starting. The output changed
-to:
+Avec le GPIO33 mis à la masse pendant le démarrage, ça a désactivé les
+protections contre le flashage mises en place par le descripteur, et a arrêté
+le démarrage de la ME. La sortie a changé:
 
     The Flash Descriptor Override Strap-Pin is set. Restrictions implied by
     the Master Section of the flash descriptor are NOT in effect. Please note
     that Protected Range (PR) restrictions still apply.
 
-The part in bold is what got us. This was still observed:
+La partie en gras est ce qui nous a eu. Ceci a été quand même observé:
 
     PR0: Warning: 0x007e0000-0x01ffffff is read-only.
     PR4: Warning: 0x005f8000-0x005fffff is locked.
 
-It is actually possible to disable these protections. Lenovobios does,
-when updating the BIOS (proprietary one). One possible way to go about
-this would be to debug the BIOS update utility from Lenovo, to find out
-how it's disabling these protections. Some more research is available
-here:
+Il est actuellement possible de désactiver ces protections. Le BIOS de Lenovo
+(propriétaire) le fait quand il doit se mettre à jour.
+Une manière d'affronter le problème serait de déboguer l'utilitaire de mise à
+jour du BIOS de Lenovo à des fins d'ingéniérie inversée, pour savoir comme il
+désactive ces protections.
+Plus d'éléments de recherche sont disponibles ici:
 <http://www.coreboot.org/Board:lenovo/x200/internal_flashing_research>
 
-On a related note, libreboot has a utility that could help with
-investigating this:
+D'autre part, libreboot a un utilitaire qui pourrait aider à l'investigation
+de celà:
 [../hardware/gm45\_remove\_me.html\#demefactory](../hardware/gm45_remove_me.md#demefactory)
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
