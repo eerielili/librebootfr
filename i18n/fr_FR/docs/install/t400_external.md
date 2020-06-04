@@ -302,7 +302,7 @@ Exemple de sortie lors de l'exécution de la commande ci-dessus:
 Pâte thermique (IMPORTANT)
 =========================
 
-Parce qu'une partie de cette procédhre a nécessité d'enlever le dissipateur de
+Parce qu'une partie de cette procédure a nécessité d'enlever le dissipateur de
 chaleur, vous aurez besoin d'appliquer une nouvelle pâte. L'Arctic MX-4 est
 ok. Vous aurez aussi besoin pour nettoyer d'alcool isopropyl et de tissus anti électricité
 statique.
