@@ -170,7 +170,7 @@ Remettez ces vis en place:\
 Remettez la carte dans le châssis inférieur:\
 ![](../images/t60_dev/0048.JPG)
 
-Attachez l'écran LCD et insérez les vis (aussi, attachezle câble LCD à la
+Connectez l'écran LCD et insérez les vis (aussi, connectez le câble LCD à la
 carte):\
 ![](../images/t60_dev/0049.JPG)
 
@@ -184,7 +184,7 @@ la nouvelle pâte thermique (l'Arctic Silver 5 est pas mal, les autres aussi);
 vous devriez faire de même avec le dissipateur de châleur:\
 ![](../images/t60_dev/0051.JPG)
 
-Attachez le dissipateur de châleur et installez les vis (aussi, soyez sûr
+Connectez le dissipateur de châleur et installez les vis (aussi, soyez sûr
 d'installer la prise mâle jack comme mis en évidence):\
 ![](../images/t60_dev/0052.JPG)
 
@@ -194,12 +194,12 @@ Réinstallez ce cadre supérieur:\
 Faites ceci:\
 ![](../images/t60_dev/0054.JPG) ![](../images/t60_dev/0055.JPG)
 
-Ré-attachez les cartes modems, WiFi, (WWAN?), et tout autres câbles
+Reconnectez les cartes modems, WiFi, (WWAN?), et tout autres câbles
 nécessaires. Désolé, j'ai oublié de prendre des photos.
 Jetez un coup d'oeil aux étapes précédentes concernant leur enlèvement pour
 voir où est-ce qu'ils vont.
 
-Attachez le clavier et installez la batterie de la NVRAM:\
+Connectez le clavier et installez la batterie de la NVRAM:\
 ![](../images/t60_dev/0056.JPG) ![](../images/t60_dev/0057.JPG)
 
 Placez la carte mère et (désolé, pas pris de photos) réinstallez le repose
