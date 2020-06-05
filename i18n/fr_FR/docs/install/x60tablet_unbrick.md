@@ -1,125 +1,131 @@
 ---
-title: ThinkPad X60 Tablet Recovery guide
+title: Guide de récupération du X60 Tablet
 x-toc-enable: true
 ...
 
-This section documents how to recover from a bad flash that prevents
-your ThinkPad X60 Tablet from booting.
+Cette section documente comment recouvrir d'un mauvaise flashage qui empêche
+votre ThinkPad X60 Tablet de démarrer.
 
-Brick type 1: bucts not reset. {#bucts_brick}
+Bousillage (brick) de type 1: bucts pas réinitialisé. {#bucts_brick}
 ==============================
 
-You still have Lenovo BIOS, or you had libreboot running and you flashed
-another ROM; and you had bucts 1 set and the ROM wasn't dd'd.\* or if
-Lenovo BIOS was present and libreboot wasn't flashed.\
+Vous avez encore le BIOS de Lenovo, ou si vous avez Libreboot en cours
+d'exécution et vous avez flashé une autre ROM; et vous avez défini bucts sur 1
+et la ROM n'a pas été `dd`.\* Ou si le BIOS Lenovo était présent et Libreboot
+n'était pas flashé.\
 
-In this case, unbricking is easy: reset BUC.TS to 0 by removing that
-yellow cmos coin (it's a battery) and putting it back after a minute or
-two:\
+Dans ce cas, le recouvrement est facile: réinitialisez BUC.TS à 0 en enlevant
+cette pièce jaune cmos (c'est une batterie) et en la remettant une ou deux
+minutes plus tard:
 ![](../images/x60t_unbrick/0008.JPG)\
 
-\*Those dd commands should be applied to all newly compiled X60 ROM
-images (the ROM images in libreboot binary archives already have this
-applied!):
+\*Ces commandes dd devrait être appliquée à toutes les nouvelles images ROM
+pour X60 compilées (les images ROM dans les archives de binaires de libreboot
+ont déjà ça d'appliqué!):
 
     dd if=coreboot.rom of=top64k.bin bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x10000\] count=64k
     dd if=coreboot.rom bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x20000\] count=64k | hexdump
     dd if=top64k.bin of=coreboot.rom bs=1 seek=\$\[\$(stat -c %s coreboot.rom) - 0x20000\] count=64k conv=notrunc
 
-(doing this makes the ROM suitable for use when flashing a system that
-still has Lenovo BIOS running, using those instructions:
-<http://www.coreboot.org/Board:lenovo/x60/Installation>.
+(faire ça rend le bios enclin à l'utilisation lors du flashage d'un système
+ayant toujours le BIOS Lenovo en marche, en utilisant ces instructions:
+<http://www.coreboot.org/Board:lenovo/x60/Installation>.)
 
-bad rom (or user error), system won't boot {#recovery}
+ROM corrompue (ou erreur de l'utilsateur), le système ne veut pas démarrer {#recovery}
 ===========================================
 
-In this scenario, you compiled a ROM that had an incorrect
-configuration, or there is an actual bug preventing your system from
-booting. Or, maybe, you set BUC.TS to 0 and shut down after first flash
-while Lenovo BIOS was running. In any case, your system is bricked and
-will not boot at all.
+Dans ce cas de figure, vous avez compilé une ROM ayant une configuration
+incorrecte, ou il y a un véritable bogue empêchant votre système de démarrer.
+flashage pendant que le BIOS Lenovo s'exécutait.
+Dans tout les cas, votre machine est bousillée (*bricked*) et ne démarrera
+pas du tout.
 
-"Unbricking" means flashing a known-good (working) ROM. The problem:
-you can't boot the system, making this difficult. In this situation,
-external hardware (see hardware requirements above) is needed which can
-flash the SPI chip (where libreboot resides).
+Le "débriquage" (*unbricking*) signifie qu'on flashe une ROM connue pour
+marcher. Le problème: vous ne pouvez pas démarrer le problème, rendant cette
+tâche difficile. Dans cette situation, du matériel externe (voir les requis
+matériels ci-dessus) est nécessaire, pouvant flasher la puce SPI (où libreboot
+réside).
 
 ![](../images/x60t_unbrick/0000.JPG)
 
-Remove those screws:\
+Enlevez ces vis:\
 ![](../images/x60t_unbrick/0001.JPG)
 
-Remove the HDD:\
+Enlevez le disque dur:\
 ![](../images/x60t_unbrick/0002.JPG)
 
-Push keyboard forward to loosen it:\
+Poussez le clavier vers l'avant pour le déserrer:\
 ![](../images/x60t_unbrick/0003.JPG)
 
-Lift:\
+Soulevez:\
 ![](../images/x60t_unbrick/0004.JPG)
 
-Remove those:\
+Enlevez ces vis:\
 ![](../images/x60t_unbrick/0005.JPG)
 
 ![](../images/x60t_unbrick/0006.JPG)
 
-Also remove that (marked) and unroute the antenna cables:\
+Aussi, enlevez ce qui est marqué et déroutez les câbles d'antenne:\
 ![](../images/x60t_unbrick/0007.JPG)
 
-For some X60T laptops, you have to unroute those too:\
+Pour certains ordinateurs portables X60T, vous devez déroutez ceux-là aussi:\
 ![](../images/x60t_unbrick/0010.JPG)
 
-Remove the LCD extend board screws. Also remove those screws (see blue
-marks) and remove/unroute the cables and remove the metal plate:\
+Enlevez les vis de la carte d'extension de l'écran LCD. Enlevez aussi ces vis
+(voir marques bleues) et enlevez/déroutez ces câbles puis enlevez la plaque en
+métal:\
 ![](../images/x60t_unbrick/0008.JPG)
 
-Remove that screw and then remove the board:\
+Enlevez cette vis puis ensuite enlevez la carte:\
 ![](../images/x60t_unbrick/0009.JPG)
 
-Now wire up the BBB and the Pomona with your PSU.\
-Refer to [bbb\_setup.md](bbb_setup.md) for how to setup the BBB for
-flashing.\
-*Note, the guide mentions a 3.3v DC PSU but you don't need this on the
-X60 Tablet: if you don't have or don't want to use an external PSU,
-then make sure not to connect the 3.3v leads mentioned in the guide;
-instead, connect the AC adapter (the one that normally charges your
-battery) so that the board has power (but don't boot it up)*
+Maintenant branchez la BBB et la pince Pomona sur votre alimentation.\
+Référez au document [bbb\_setup.md](bbb_setup.md) pour savoir comment
+configurer le BBB pour le flashage.\
+
+*Notez, le guide mentionne une alim DC 3.3V mais vous n'avez pas besoin de ça
+sur le X60 Tablet:: si vous n'avez pas ou ne voulez pas utiliser une alimentation
+externe, alors assurez-vous de ne pas connecter les fils/câbles 3.3V
+mentionnés dans le guide; à la place, connectez l'adaptateur DC (celui qui
+charge normalement votre batterie), comme ça la carte est alimentée (mais ne
+la démarrez/l'allumez pas)*
+
 ![](../images/x60t_unbrick/0011.JPG)\
-Correlate the following with the BBB guide linked above:
+Corrélez le suivant avec le guide BBB partagé au-dessus:
 
     POMONA 5250:
-    ===  golden finger and wifi switch ====
+    ===  "doigt d'or" et interrupteur wifi ====
      18              -       - 1
-     22              -       - NC                    ---------- audio jacks are on this end
+     22              -       - NC                    ---------- les prises jacks audio sont à cette extrêmité
      NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip
-    ===  CPU fan ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+     3.3V (PSU)      -       - 17 - c'est le pin 1 sur la puce flash.
+    === ventilo processeur ===
+    C'est comme ceci que vous connecterez. Les nombres font références au
+    numéro de pins sur le BBB, sur les fiches près de la fiche mâle DC.
 
-Connecting the BBB and pomona (in this image, an external 3.3v DC PSU
-was used):\
+Connexion du BBB et de la pince pomona (dans cette image un PSU externe DC de
+3.3V a été utilisé):\
 ![](images/x60/th_bbb_flashing.jpg)
 
-Flashrom binaries for ARM (tested on a BBB) are distributed in
-libreboot\_util. Alternatively, libreboot also distributes flashrom
-source code which can be built.
+Les binaires de flashrom pour l'architecture ARM (testé sur un BBB) sont
+distribués/fournis dans libreboot\_util. Alternativement, libreboot distribue
+aussi le code source de flashrom pouvant être compilé.
 
-SSH'd into the BBB:
+Connectez-vous via SSH sur le BBB:
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w yourrom.rom
 
-yourrom.rom
+La sortie de cette commande devrait dire `Verifying flash... VERIFIED` à la
+fin. Si flashrom se plaint de multiples définitions de puces flash détectées,
+alors choisissez l'une d'elles en suivant les instructions mentionnées dans la
+sortie de la commande.
 
-It should be `Verifying flash... VERIFIED` at the end. If flashrom
-complains about multiple flash chip definitions detected, then choose
-one of them following the instructions in the output.
-
-Reverse the steps to re-assemble your system.
+Faites l'inverse pour ré-assembler votre système.
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
