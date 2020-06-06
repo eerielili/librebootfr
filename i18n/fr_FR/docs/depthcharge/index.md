@@ -1,176 +1,189 @@
 ---
-title: Depthcharge payload 
+title: Charge utile deptcharge
 x-toc-enable: true
 ...
 
-This section relates to the depthcharge payload used in libreboot.
+Cette section concerne la charge utilise depthcharge utilisée dans libreboot.
 
-CrOS security model
+Modèle de sécurité CrOS
 ===================
 
-CrOS (Chromium OS/Chrome OS) devices such as Chromebooks implement a strict
-security model to ensure that these devices do not become compromised, that is
-implemented as the verified boot (vboot) reference, most of which is executed
-within depthcharge. A detailed overview of the CrOS security model is available
-on the dedicated page.
+Les appareils CrOS (Système d'exploitation Chromium/Chrome) tel que les 
+Chromebooks,  implémentent un modèle de sécurité strict pour s'assurer
+que ces appareils ne sont pas compromis, ce modèle est implémenté en tant que
+démarrage vérifié de référence (vboot), dont la majorité est exécuté dans
+depthcharge. Un vue d'ensemble détaillé du modèle de sécurité CrOS est
+disponible sur la page dédiée.
 
-In spite of the CrOS security model, depthcharge won't allow booting kernels
-without verifying their signature and booting from external media or legacy
-payload unless explicitly allowed: see [configuring verified boot
-parameters](#configuring_verified_boot_parameters).
+Malgré le modèle de sécurité CrOS, depthcharge ne permettra pas de démarrer
+des kernels sans vérifier leur signature et de démarrer sur des médium
+externes ou charges utiles classique, sauf si explicitement autorisé.
+Voyez la [configuration des paramètres de la vérification au démarrage.](#configuring_verified_boot_parameters).
 
-Developer mode screen
+Écran du mode développeur
 =====================
 
-The developer mode screen can be accessed in depthcharge when developer mode is
-enabled.  Developer mode can be enabled from the recovery mode screen.
+L'écran du mode développeur peut être accédé dans depthcharge quand le mode
+est activé. Il peut l'être depuis l'écran du mode récupération/dépannage.
 
-It allows booting normally, booting from internal storage, booting from
-external media (when enabled), booting from legacy payload (when enabled),
-showing information about the device and disabling developer mode.
+Ça permet de démarrer normalement, de démarrer depuis le stockage interne, de
+démarrer à partir d'un média externe (p.ex USB) (quand activé), de démarrer
+depuis une charge utile classique (quand activé), de montrer des informations
+à propos de l'appareil et de désactiver le mode développeur.
 
-Holding the developer mode screen
+Maintenir l'écran du mode développeur
 ---------------------------------
 
-As instructed on the developer mode screen, the screen can be held by pressing
-*Ctrl + H* in the first 3 seconds after the screen is shown.  After that delay,
-depthcharge will resume booting normally.
+Comme indiqué sur l'écran du mode développeur, l'écran peut être maintenu en
+pressant *CTRL + H* dans les 3 premières secondes après que l'écran apparait.
+Après ce délai, depthcharge démarrera normalement.
 
-Booting normally
+Démarrer normalement
 ----------------
 
-As instructed on the developer mode screen, a regular boot will happen after *3
-seconds* (if developer mode screen is not held).
+Comme indiqué sur l'écran du mode développeur, un démarrage normal se fera
+après 3 secondes (si l'écran du mode développeur n'est pas maintenu).
 
-The default boot medium (internal storage, external media, legacy payload) is
-shown on screen.
+Le type du média de démarrage par défaut (stockage interne, média externe, charge
+utile classique) est montré à l'écran.
 
-Booting from different mediums
+Démarrer depuis différents médiums
 ------------------------------
 
-Depthcharge allows booting from different mediums, when they are allowed (see
-[configuring verified boot parameters](#configuring_verified_boot_parameters)
-to enable or disable boot mediums).
+Quand ils sont autorisés, depthcharge permet le démarrage depuis différents
+médium (voyez la
+[configuration des paramètres de la vérification au démarrage.](#configuring_verified_boot_parameters)
+pour activer pour désactiver ces médiums de démarrage).
 
-As instructed on the developer mode screen, booting from various mediums can be
-triggered by pressing various key combinations:
+Comme indiqué sur l'écran du mode développeur, démarrer à partir de médiums
+variés peut être enclenché grâce à des combinaisons de touches:
 
--   Internal storage: *Ctrl + D*
--   External media: *Ctrl + U* (when enabled)
--   Legacy payload: *Ctrl + L* (when enabled)
+-   Stockage interne: *Ctrl + D*
+-   Média externe: *Ctrl + U* (quand activé)
+-   Charge utile classique: *Ctrl + L* (quand activé)
 
-Showing device information
+Montrer les informations de l'appareil
 --------------------------
 
-As instructed on the developer mode screen, showing device information can be
-triggered by pressing *Ctrl + I* or *Tab*.  Various information is shown,
-including vboot non-volatile data, TPM status, GBB flags and key hashes.
+Comme indiqué sur l'écran du mode développeur, montrer des informations sur
+l'appareil peut être enclenché en pressant *Ctrl + I* ou *Tab*. Des
+informations variées sont montrées, comprenant les données non-volatile de
+vboot, statut TPM, drapeaux GBB et hashs/somme de contrôles des clés.
 
-Warnings
+Avertissements
 --------
 
-The developer mode screen will show warnings when:
+L'écran du mode développeur montrera des avertissements quand:
 
--   Booting kernels without verifying their signature is enabled
--   Booting from external media is enabled
--   Booting legacy payloads is enabled
+-   Démarrer des kernels sans vérifier leur signature est activé
+-   Démarrer depuis un média externe est activé
+-   Démarrer les charges utiles classique est activé
 
-Recovery mode screen
+Écran du mode de recouvrement/dépannage
 ====================
 
-The recovery mode screen can be accessed in depthcharge, by pressing *Escape +
-Refresh + Power* when the device is off.
+L'écran du mode de recouvrement/dépannage peut être accéder dans deptcharge,
+en pressant *Échap + Rafraîchir + Bouton Marche/Arrêt* quand la machine est
+éteinte.
 
-It allows recovering the device from a bad state by booting from a trusted
-recovery media. When accessed with the device in a good state, it also allows
-enabling developer mode.
+Ça permet de recouvrir la machine d'un état corrompu/erroné en démarrant sur
+un média de récupération de confiance.
+Quand accédé alors que la machine est dans un bon état, ça permet aussi
+d'activer le mode développeur.
 
-Recovering from a bad state
+Recouvrir d'un mauvais état
 ---------------------------
 
-When the device fails to verify the signature of a piece of the boot software
-or when an error occurs, it is considered to be in a bad state and will
-instruct the user to reboot to recovery mode.
+Quand l'appareil échoue la vérification de la signature d'une partie du
+logiciel de démarrage ou quand une erreur arrive, il est considéré être dans
+un mauvais état et demandera à l'utilisateur de redémarrer sur le mode de
+récupération.
 
-Recovery mode boots using only software located in write-protected memory, that
-is considered to be trusted and safe.
+Le mode de récupération démarre seulement le logiciel situé dans la mémoire
+protégée en écriture, qui est considérée de confiance et sécurisée.
 
-Recovery mode then allows recovering the device by booting from a trusted
-recovery media, that is automatically detected when recovery mode starts. When
-no external media is found or when the recovery media is invalid, instructions
-are shown on screen.
+Le mode de récupération permet alors de recouvrir/dépanner l'appareil en
+démarrant d'un média externe de confiance, qui est automatiquement détecté
+quand le mode de récupération commence. Quand aucun média externe est trouvé
+ou quand celui-ci est invalide, des instructions sont montrées à l'écran.
 
-Trusted recovery media are external media (USB drives, SD cards, etc) that hold
-a kernel signed with the recovery key.
+Les média de récupérations de confiance sont des médiums externe (clés USB,
+cartes SD, etc) qui stockent un kernel signé avec la clé de
+dépannage/recouvrement;
 
-Google provides images of such recovery media for Chrome OS (which are not
-advised to users as they contain proprietary software).
+Google fournit des images de tels médiums de récupération pour Chrome OS (qui
+ne sont pas recommandées aux utilisateurs car elles contiennent des logiciels
+propriétaires).
 
-They are signed with Google's recovery keys, that are pre-installed on the
-device when it ships.
+Elles sont signées avec les clés de récupération de Google, qui sont
+préinstallées sur l'appareil lors de la livraison.
 
-When replacing the full flash of the device, the pre-installed keys are
-replaced. When the recovery private key is available (e.g. when using
-self-generated keys), it can be used to sign a kernel for recovery purposes.
+Lors du remplacement du flash entier de l'appareil, les clés préinstallées
+sont remplacées. Quand la clé de recouvrement privée est disponible (p.ex
+quand on utile des clés générées soi-même), elle peut être utilisée pour
+signer un kernel à des fins de recouvrement.
 
-Enabling developer mode
+Activer le mode développpeur
 -----------------------
 
-As instructed on the recovery mode screen, developer mode can be enabled by
-pressing *Ctrl + D*.  Instructions to confirm enabling developer mode are then
-shown on screen.
+Comme indiqué sur l'écran du mode de récupération, le mode développeur
+peut-être activé en pressant *Ctrl + D*. Les instructions pour confirmer
+l'activation du mode développeur sont ensuite montrées sur l'écran.
 
-Configuring verified boot parameters
+Configurer les paramètres de vérification du démarrage
 ====================================
 
-Depthcharge's behavior relies on the verified boot (vboot) reference
-implementation, that can be configured with parameters stored in the verified
-boot non-volatile storage.
+Le comportement de depthcharge dépend de l'implémentation du démarrage vérifié
+(vboot, **V**erified **B**oot), qui peut être configuré avec des paramètres
+stocké dans le stockage non-volatile du démarrage vérifié.
 
-These parameters can be modified with the `crossystem` tool, that requires
-sufficient privileges to access the verified boot non-volatile storage.
+Ces paramètres peuvent être modifiés avec l'outil `crossystem`, nécessitant
+des privilèges suffisants pour accéder au stockage non-volatile du démarrage
+vérifié.
 
-`crossystem` relies on `mosys`, that is used to access the verified boot
-non-volatile storage on some devices. `crossystem` and `mosys` are both free
-software and their source code is made available by Google:
+`crossystem` dépend de `mosys`, qui est utilisé pour accéder le stockage
+non-volatile du démarrage vérifié sur certaines machines. `crossystem` et
+`mosys` sont tout deux libre et leur code source est rendu disponible par
+Google:
 [crossystem](https://chromium.googlesource.com/chromiumos/platform/vboot_reference/).
 [mosys](https://chromium.googlesource.com/chromiumos/platform/mosys/).
 
-These tools are not distributed along with Libreboot yet. However, they are
-preinstalled on the device, with ChromeOS.
+Ces outils ne sont pas encore distribués avec Libreboot. Cependant, ils sont
+préinstallés sur la machine, avec ChromeOS.
 
-Some of these parameters have the potential of *weakening the security of the
-device*. In particular, disabling kernels signature verification, external
-media boot and legacy payload boot can weaken the security of the device.
+Certains de ces paramètres ont le potentiel *d'affaiblir la sécurité de
+l'appareil*. En particulier, la désactivation de la vérification de la
+signature des kernels, le démarrage sur un média externe ou une charge utile
+classique peuvent affaiblir la sécurité de l'appareil.
 
-The following parameters can be configured:
+Les paramètres suivant peuvent être configurés:
 
-Kernels signature verification:
+Vérification de la signature des kernels:
 
-    # crossystem dev_boot_signed_only=1 # enable
-    # crossystem dev_boot_signed_only=0 # disable
+    # crossystem dev_boot_signed_only=1 # activer
+    # crossystem dev_boot_signed_only=0 # désactiver
 
-External media boot:
+Démarrage sur média externe:
 
-    # crossystem dev_boot_usb=1 # enable
-    # crossystem dev_boot_usb=0 # disable
+    # crossystem dev_boot_usb=1 # activer
+    # crossystem dev_boot_usb=0 # désactiver
 
-Legacy payload boot:
+Démarrage sur charge utile classique:
 
-    # crossystem dev_boot_legacy=1 # enable 
-    # crossystem dev_boot_legacy=0 # disable
+    # crossystem dev_boot_legacy=1 # activer 
+    # crossystem dev_boot_legacy=0 # désactiver
 
-Default boot medium:
+Médium de démarrage par défaut:
 
-    # crossystem dev_default_boot=disk # internal storage
-    # crossystem dev_default_boot=usb # external media
-    # crossystem dev_default_boot=legacy # legacy payload
+    # crossystem dev_default_boot=disk # stockage interne
+    # crossystem dev_default_boot=usb # média externe 
+    # crossystem dev_default_boot=legacy # charge utile classique
 
 
 Copyright © 2015 Paul Kocialkowski <contact@paulk.fr>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
