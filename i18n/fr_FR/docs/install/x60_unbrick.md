@@ -1,218 +1,229 @@
 ---
-title: ThinkPad X60 Recovery guide
+title: Guide de recouvrement pour le ThinkPad X60
 x-toc-enable: true
 ...
 
-This section documents how to recover from a bad flash that prevents
-your ThinkPad X60 from booting.
+
+Cette section documente comment récupérer après un mauvais flashage empêchant
+le démarrage de votre ThinkPad X60.
+
+
 
 Brick type 1: bucts not reset. {#bucts_brick}
 ==============================
 
-You still have Lenovo BIOS, or you had libreboot running and you flashed
-another ROM; and you had bucts 1 set and the ROM wasn't dd'd.\* or if
-Lenovo BIOS was present and libreboot wasn't flashed.\
+Vous avez encore le BIOS Lenono, ou Libreboot était en cours d'exécution et
+vous avez flashé une autre ROM; et 'bucts 1' était défini et la ROM n'a pas
+été `dd`\* ou alors le BIOS Lenovo était présent et libreboot n'était pas
+flashé.\
 
-In this case, unbricking is easy: reset BUC.TS to 0 by removing that
-yellow cmos coin (it's a battery) and putting it back after a minute or
-two:\
+Dans ce cas là, la récupération est facile: réinitialisez BUC.TS à 0 en
+enlevant cette pièce jaune cmos (c'est une batterie) puis en la remettant une
+ou deux minutes après:\
 ![](../images/x60_unbrick/0004.jpg)\
 
-\*Those dd commands should be applied to all newly compiled X60 ROM
-images (the ROM images in libreboot binary archives already have this
-applied!):
+\*Ces commandes dd devraient être appliquées à toutes images ROM pour X60
+nouvellement compilés (les images ROM dans les archives des binaires ont déjà
+ça d'appliqué!):\
 
     dd if=coreboot.rom of=top64k.bin bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x10000\] count=64k
     dd if=coreboot.rom bs=1 skip=\$\[\$(stat -c %s coreboot.rom) - 0x20000\] count=64k | hexdump
     dd if=top64k.bin of=coreboot.rom bs=1 seek=\$\[\$(stat -c %s coreboot.rom) - 0x20000\] count=64k conv=notrunc
 
-(doing this makes the ROM suitable for use when flashing a system that
-still has Lenovo BIOS running, using those instructions:
-<http://www.coreboot.org/Board:lenovo/x60/Installation>.
+Faire ceci rend la ROM prête pour le flashage sur un système exécutant
+toujours le BIOS Lenovo, en utilisant ces instructions:
+<http://www.coreboot.org/Board:lenovo/x60/Installation>
 
-bad rom (or user error), system won't boot {#recovery}
+Mauvaise rom (ou erreur utilisateur), le système ne démarrera pas {#recovery}
 ===========================================
 
-In this scenario, you compiled a ROM that had an incorrect
-configuration, or there is an actual bug preventing your system from
-booting. Or, maybe, you set BUC.TS to 0 and shut down after first flash
-while Lenovo BIOS was running. In any case, your system is bricked and
-will not boot at all.
+Dans ce scénario, vous avez compilé une ROM qui avait une configuration
+incorrecte, ou il y a un véritable bug empêchant votre système de démarrer.
+Ou, peut-être, vous avez défini BUC.TS à 0 et avez éteint après le premier
+flash pendant que le BIOS Lenovo était en train de s'exécuter. Dans n'importe
+quel cas, votre système est bousillé (*bricked*, rendu aussi utile qu'une
+brique) et ne voudra pas démarrer du tout.
 
-"Unbricking" means flashing a known-good (working) ROM. The problem:
-you can't boot the system, making this difficult. In this situation,
-external hardware (see hardware requirements above) is needed which can
-flash the SPI chip (where libreboot resides).
+Le "débriquage" (*unbricking*) signifie qu'on flashe une ROM connue pour
+marcher. Le problème: vous ne pouvez pas démarrer le problème, rendant cette
+tâche difficile. Dans cette situation, du matériel externe (voir les requis
+matériels ci-dessus) est nécessaire, pouvant flasher la puce SPI (où libreboot
+réside).
 
-Remove those screws:\
+Enlevez ces vis:\
 ![](../images/x60_unbrick/0000.jpg)
 
-Push the keyboard forward (carefully):\
+Poussez le clavier vers l'avant (avec précautions):\
 ![](../images/x60_unbrick/0001.jpg)
 
-Lift the keyboard up and disconnect it from the board:\
+Soulevez le clavier et déconnectez le de la carte mère:\
 ![](../images/x60_unbrick/0002.jpg)
 
-Grab the right-hand side of the chassis and force it off (gently) and
-pry up the rest of the chassis:\
+Attrapez le côté droit du chassis et forcez le gentiment vers le dehors, et
+faîtes levier pour enlever le reste du chassis:\
 ![](../images/x60_unbrick/0003.jpg)
 
-You should now have this:\
+Vous devriez avoir maintenant ceci:\
 ![](../images/x60_unbrick/0004.jpg)
 
-Disconnect the wifi antenna cables, the modem cable and the speaker:\
+Déconnectez les câbles d'antenne WiFi, les câbles du modem et le
+haut-parleur:\
 ![](../images/x60_unbrick/0005.jpg)
 
-Unroute the cables along their path, carefully lifting the tape that
-holds them in place. Then, disconnect the modem cable (other end) and
-power connection and unroute all the cables so that they dangle by the
-monitor hinge on the right-hand side:\
+Déroutez les câbles en suivant le chemin inverse, soulevant avec précaute
+l'adhésif qui les maintiennent en place, puis, déconnectez les câbles du modem
+(autre extrémité) et d'ailmentation et déroutez tous les câbles de façon
+qu'ils pendent à côté de la charnière de l'écran sur le côté droit:\
 ![](../images/x60_unbrick/0006.jpg)
 
-Disconnect the monitor from the motherboard, and unroute the grey
-antenna cable, carefully lifting the tape that holds it into place:\
+Déconnectez l'écran de la carte mère, et déroutez le câble antenne gris,
+soulevant avec précaution l'adhésif qui le maintient en place:\
 ![](../images/x60_unbrick/0008.jpg)
 
-Carefully lift the remaining tape and unroute the left antenna cable so
-that it is loose:\
+Soulevez avec précaution l'adhésif restant et déroutez le câble antenne gauche
+pour qu'il soit détendu:\
 ![](../images/x60_unbrick/0009.jpg)
 
-Remove the screw that is highlighted (do NOT remove the other one; it
-holds part of the heatsink (other side) into place):\
+Enlevez le vis qui est surligné (n'enlevez PAS l'autre; il maintient une
+partie du dissipateur de châleur (l'autre côté) en place):\
 ![](../images/x60_unbrick/0011.jpg)
 
-Remove those screws:\
+Enlevez ces vis:\
 ![](../images/x60_unbrick/0012.jpg)
 
-Carefully remove the plate, like so:\
+Enlevez avec précaution la plaque, comme ceci:\
 ![](../images/x60_unbrick/0013.jpg)
 
-Remove the SATA connector:\
+Enlevez le connecteur SATA:\
 ![](../images/x60_unbrick/0014.jpg)
 
-Now remove the motherboard (gently) and cast the lcd/chassis aside:\
+Maintenant enlevez (gentiment) la carte mère et mettez de côté l'écran LCD/ le
+chassis:\
 ![](../images/x60_unbrick/0015.jpg)
 
-Lift back that tape and hold it with something. Highlighted is the SPI
-flash chip:\
+Repliez cet adhésif et tenez le avec quelque chose. Ce qui est surligné est la
+puce flash SPI:\
 ![](../images/x60_unbrick/0016.jpg)
 
-Now wire up the BBB and the Pomona with your PSU.\
-Refer to [bbb\_setup.md](bbb_setup.md) for how to setup the BBB for
-flashing.\
-*Note, the guide mentions a 3.3v DC PSU but you don't need this on the
-X60: if you don't have or don't want to use an external PSU, then make
-sure not to connect the 3.3v leads mentioned in the guide; instead,
-connect the AC adapter (the one that normally charges your battery) so
-that the board has power (but don't boot it up)*
+Maintenant branchez le BBB et la pince Pomona avec votre alimentation.\
+Référez-vous au document [bbb\_setup](bbb_setup.md) sur comment mettre en
+place le BBB pour le flashage.
+
+*Notez, le guide mentionne une alim DC 3.3V mais vous n'avez pas besoin de ça
+sur le T60: si vous n'avez pas ou ne voulez pas utiliser une alimentation
+externe, alors assurez-vous de ne pas connecter les fils/câbles 3.3V
+mentionnés dans le guide; à la place, connectez l'adaptateur DC (celui qui
+charge normalement votre batterie), comme ça la carte est alimentée (mais ne
+la démarrez/l'allumez pas)*
 ![](../images/x60_unbrick/0017.jpg)\
-Correlate the following with the BBB guide linked above:
+Corrélez le suivant avec le lien du guide BBB partagé ci-dessus:
 
     POMONA 5250:
-    ===  golden finger and wifi switch ====
+    ===  "doigt d'or" et interrupteur WiFi ====
      18              -       - 1
-     22              -       - NC                    ---------- audio jacks are on this end
+     22              -       - NC                    ---------- prise jack audio sont sur cette extrémité
      NC              -       - 21
-     3.3V (PSU)      -       - 17 - this is pin 1 on the flash chip
-    ===  CPU fan ===
-    This is how you will connect. Numbers refer to pin numbers on the BBB, on the plugs near the DC jack.
+     3.3V (alim)      -       - 17 - c'est le pin 1 sur la puce flash
+    === ventilo processeur ===
+    C'est comme ceci que vous connecterez. Les nombres font références au
+    numéro de pins sur le BBB, sur les fiches près de la fiche mâle DC.
 
-Connecting the BBB and pomona (in this image, an external 3.3v DC PSU
-was used):\
+Connectez le BBB et le pomona (dans cette image, une alimentation 3.3V DC a
+été utilisée):\
 ![](images/x60/th_bbb_flashing.jpg)
 
-Flashrom binaries for ARM (tested on a BBB) are distributed in
-libreboot\_util. Alternatively, libreboot also distributes flashrom
-source code which can be built.
+Les binaires de flashrom pour l'architecture ARM (testé sur un BBB) sont
+distribués/fournis dans libreboot\_util. Alternativement, libreboot distribue
+aussi le code source de flashrom pouvant être compilé.
 
-SSH'd into the BBB:
+Connectez-vous via SSH sur le BBB:
 
-    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w
+    # ./flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=512 -w yourrom.rom
 
-yourrom.rom
+La sortie de cette commande devrait dire `Verifying flash... VERIFIED` à la
+fin. Si flashrom se plaint de multiples définitions de puces flash détectées,
+alors choisissez l'une d'elles en suivant les instructions mentionnées dans la
+sortie de la commande.
 
-It should be `Verifying flash... VERIFIED` at the end. If flashrom
-complains about multiple flash chip definitions detected, then choose
-one of them following the instructions in the output.
-
-Remove the programmer and put it away somewhere. Put back the tape and
-press firmly over it:\
+Enlevez le programmeur et mettez le ailleurs quelque part. Remettez l'adhésif
+en pressant fermement:\
 ![](../images/x60_unbrick/0026.jpg)
 
-Your empty chassis:\
+Votre chassis vide:\
 ![](../images/x60_unbrick/0027.jpg)
 
-Put the motherboard back in:\
+Remettez la carte mère dedans:\
 ![](../images/x60_unbrick/0028.jpg)
 
-Reconnect SATA:\
+Reconnectez le(s) SATA:\
 ![](../images/x60_unbrick/0029.jpg)
 
-Put the plate back and re-insert those screws:\
+Remettez la plaque et réinsérez ces vis:\
 ![](../images/x60_unbrick/0030.jpg)
 
-Re-route that antenna cable around the fan and apply the tape:\
+Reroutez ce câble antenne autour du ventilateur et réappliquez un adhésif:\
 ![](../images/x60_unbrick/0031.jpg)
 
-Route the cable here and then (not shown, due to error on my part)
-reconnect the monitor cable to the motherboard and re-insert the
-screws:\
+Routez le câble ici puis, (pas montré, à cause d'une erreur de ma part)
+reconnectez le câble de l'écran à la carte mère et réinsérez les vis:\
 ![](../images/x60_unbrick/0032.jpg)
 
-Re-insert that screw:\
+Réinsérez ce vis:\
 ![](../images/x60_unbrick/0033.jpg)
 
-Route the black antenna cable like so:\
+Routez le câble antenne noir comme ceci:\
 ![](../images/x60_unbrick/0034.jpg)
 
-Tuck it in neatly like so:\
+Rentrez-le bien comme il faut comme ceci:\
 ![](../images/x60_unbrick/0035.jpg)
 
-Route the modem cable like so:\
+Routez le câble modem comme ceci:\
 ![](../images/x60_unbrick/0036.jpg)
 
-Connect modem cable to board and tuck it in neatly like so:\
+Connectez le câble modem à la carte mère et rentrez-le bien comme il faut
+comme ceci:\
 ![](../images/x60_unbrick/0037.jpg)
 
-Route the power connection and connect it to the board like so:\
+Routez la connection de l'alimentation et connectez-la à la carte mère comme
+ceci:\
 ![](../images/x60_unbrick/0038.jpg)
 
-Route the antenna and modem cables neatly like so:\
+Routez les câbles d'antenne et modem bien comme il faut comme ceci:\
 ![](../images/x60_unbrick/0039.jpg)
 
-Connect the wifi antenna cables. At the start of the tutorial, this
-system had an Intel wifi chip. Here you see I've replaced it with an
-Atheros AR5B95 (supports 802.11n and can be used without blobs):\
+Connectez les câbles antenne WiFi. Au début du tuto, ce système avait une puce
+WiFi Intel. Ici vous pouvez voir que je l'ai remplacé par un Atheros AR5B95
+(supporte le protocole 802.11n et peut être utilisé sans blobs):\
 ![](../images/x60_unbrick/0040.jpg)
 
-Connect the modem cable:\
+Connectez le câble modem:\
 ![](../images/x60_unbrick/0041.jpg)
 
-Connect the speaker:\
+Connectez l'haut-parleur:\
 ![](../images/x60_unbrick/0042.jpg)
 
-You should now have this:\
+Vous devriez maintenant avoir ceci:\
 ![](../images/x60_unbrick/0043.jpg)
 
-Re-connect the upper chassis:\
+Reconnectez le chassis supérieur:\
 ![](../images/x60_unbrick/0044.jpg)
 
-Re-connect the keyboard:\
+Reconnectez le clavier:\
 ![](../images/x60_unbrick/0045.jpg)
 
-Re-insert the screws that you removed earlier:\
+Réinsérez les vis enlevés plus tôt:\
 ![](../images/x60_unbrick/0046.jpg)
 
-Power on!\
+Allumez!\
 ![](../images/x60_unbrick/0047.jpg)
 
-Operating system:\
+Système d'exploitation:\
 ![](../images/x60_unbrick/0049.jpg)
 
 Copyright © 2014, 2015 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).

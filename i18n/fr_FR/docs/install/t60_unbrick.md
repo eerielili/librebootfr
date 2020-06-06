@@ -57,7 +57,7 @@ Enlevez ces vis et enlevez le DD (Disque Dur):\
 Soulevez le repose paume:\
 ![](../images/t60_dev/0003.JPG)
 
-Soulevez le clavier, ramenez le un peu en arrière, basculez le comme ci puis
+Soulevez le clavier, ramenez le un peu en arrière, basculez le comme ceci puis
 ensuite déconnectez-le de la carte:\
 ![](../images/t60_dev/0004.JPG) ![](../images/t60_dev/0005.JPG)
 ![](../images/t60_dev/0006.JPG)
@@ -138,8 +138,7 @@ Corrélez le suivant avec le lien du guide BBB partagé ci-dessus:
     POMONA 5250:
     ===  DVD drive ====
      18              -       - 1
-     22              -       - NC               ---- RAM est sur cette
-     extrémité
+     22              -       - NC               ---- La RAM est sur cette extrémité
      NC              -       - 21
      3.3V (alim)      -       - 17 - c'est le pin 1 sur la puce flash
     ===  audio jacks ===
