@@ -1,33 +1,34 @@
 ---
-title: Product Codenames
+title: Nom de code des produits
 ...
 
 Introduction
 ============
 
-This document lists product codenames for some hardware.
-Please note that just because a certain device is listed here does NOT mean
-that it is supported in Libreboot. For supported devices refer to the
-installation documentation.
+Ce document liste les noms de code de produit pour certains matériels.
+Notez silvouplaît que juste parce qu'un appareil est listé ici, ne veux PAS
+dire qu'il est supporté par Libreboot. Pour les appareils supportés,
+référez-vous aux [documents d'installation](../docs/install/).
 
-### A note on GPUs
+### Une note sur les cartes graphiques
 
-Some laptops come with and without a discrete GPU (dGPU). Whether the
-motherboard includes one or not can be determined by (in descending order
-of reliability):
+Certains ordinateurs portables sont fournis avec et sans une carte graphique
+discréte (dGPU). Savoir si oui ou non une carte mère en inclut une peut être
+déterminé par (ordonné de façon descendante en fonction 
+de la robustesse):
 
--   often thorough disassembly and searching for the actual chip
--   looking at white PCB markings near RAM slots / under keyboard
-    and comparing with some known codenames (if not available FRU ID sticker)
-    listed below.
--   sometimes by looking at heatsink grills: on
-    discrete GPU laptops these will look orange and on intergrated ones
-    they will appear silver.
+-   souvent grâce à un désassemblage complet et chercherla puce en question
+-   regarder s'il y a des marquages PCB blancs près des emplacements RAM/ sous
+    le clavier et comparé avec certains noms de code connus (si l'autocollant
+    FRU ID n'est pas disponible) listés ci-dessous.
+-   parfois en regardant les grilles d'un dissipateur de chaleur: sur les
+    ordinateurs portables avec une carte graphique discrète, celles-ci
+    apparaîtront orange et sur ceux qui ont la carte graphique intégré, argenté.
 
-List of models and codenames
+Liste des modèles et noms de code
 ============================
 
-### Codenames
+### Noms de code 
 
 -   Asus Chromebook C201PA: speedy\_rk3288, veyron-speedy
 
@@ -40,35 +41,39 @@ List of models and codenames
 -   ThinkPad X200 Tablet: Caramel-1
 
 -   ThinkPad R400/T400: Malibu-3
-    -   with discrete GPU (dGPU), at board revision 0: "MLB3D-0
-    -   with only integrated GPU (iGPU), at board revision 0: "MLB3I-0"
+    -   avec carte graph. discrète (dGPU), carte révision 0: "MLB3D-0
+    -   avec seulement carte graph. intégrées (iGPU), carte révision 0: "MLB3I-0"
 
 -   ThinkPad T500/W500: Coronado-5
-    - with dGPU (radeon): "COR5D-0" (last number is the board revision)
-    - with only iGPU: "COR5I-0"
+    - avec dGPU (radeon): "COR5D-0" (le dernier chiffre est la révision de la
+      carte)
+    - avec seulement l'iGPU: "COR5I-0"
 
 -   ThinkPad T400s (slim): Shinai-MV
 -   ThinkPad R500: Waikiki-3
 
--   T6x (whole family): Davinci. They don't have codename label in
-silkscreen so you need to use FRU label of the board, which is placed
-under RAM sticks.
+-   T6x (famille entière): Davinci. 
+Ils n'ont pas de label dans la sérigraphie donc vous avez besoin d'utiliser le
+label FRU de la carte mère, qui est placé sous les barrettes de RAM.
 -   T60:
-    -   with dGPU (radeon): Magi-0 (last number is the board revision)
-    -   with iGPU: Lisa-0
+    -   avec dGPU (radeon): Magi-0 (le dernier chiffre est la révision de la
+        carte graph.)
+    -   avec iGPU: Lisa-0
 
 -   R60(e): RP-1, RP-2 - Rockwell / Picasso
 
--   With ThinkPads on Intel platforms newer than Montevina (Except T410),
-    the codenames become more consistent. All boards have the following
-    appended based on the type of graphics they have:
-    -   with dGPU: SWG (SWitchable Graphics)
-    -   with only iGPU: UMA (Unified Memory Access)
+-   Avec des ThinkPads sur les plateformes Intel plus récentes que Montevina
+    (excepté le T410), les noms de codes deviennent plus consistants. Toutes
+    les cartes ont le suivant suffixé dépendant quel type de graphique elles
+    ont:
+    -   avec dGPU: SWG (*SWitchable Graphics*, graphiques échangeables)
+    -   avec seulement iGPU: UMA (*Unified Memory Access*, Accés unifié à la
+        mémoire)
 
-*Note that Intel platforms newer than Montevina are not supported by libreboot
-yet!. Currently only Calistoga and Montevina platforms are supported.
-
--   These are the known model codenames:
+*Notez que les plateformes Intel plus récentes que Montevina ne sont pas
+encore supportées par Libreboot!. En ce moment, seulement les plateformes
+Calistoga et Montevina sont supportées.*
+-   Ceux-ci sont les noms de codes connus des modèles:
     -   ThinkPad T410: NOZOMI-1 # EXT/INT
     -   ThinkPad T410s: SHINAI-2 # SWG/UMA
     -   ThinkPad T420: NOZOMI-3 # SWG/UMA
@@ -83,34 +88,36 @@ yet!. Currently only Calistoga and Montevina platforms are supported.
     -   ThinkPad W530: KENDO-4 WS
 
 
-### Miscellaneous
+### Divers
 -   [Calistoga](https://ark.intel.com/products/codename/5950/Calistoga):
-945GM/945PM chipset family name
--   Napa: calistoga based platform
+nom de famille du jeu de puces 945GM/945PM 
+-   Napa: plateforme basée sur Calistoga
 -   [Cantiga](https://ark.intel.com/products/codename/26552/Cantiga):
-GM45/GS45/PM45 chipset family name.
-    This is the chipset used in T400,X200 and similar.
--   Montevina: cantiga based platform.
--   PMH: the Power Management Hub is a gate array for managing the power
-    up/down sequence. It is additionally tasked with extending EC's I/O.
-    Its later version was called "Thinker-1", and eventually it was merged
-    with PMIC (Rinkan) as ThinkEngine (Do not confuse it with EC chip which is also
-    has ThinkEngine logo on ThinkPad boards)
--   Kozak, Tsurumai, Rinkan: These are successive versions of power management
-    ICs for Notebook PCs. Tsurumai chip marking is "TB62501F" and datasheet
-    of it fully describes its operation.
+nom de famille du jeu de puces GM45/GS45/PM45.
+    C'est le jeu de puces utilisé dans le T400,X200 et similaire.
+-   Montevina: plateforme basée sur Cantiga.
+-   PMH: le Power Management Hub est une puce préfabriquée pour gérer
+    la séquence ouverte/fermée de l'alimentation. Il est additionnelement
+    demandé pour étendre l'entrée/sortie du contrôleur embarqué (EC).
+    Sa version plus récente était nommée "Thinker-1", et éventuellement a été
+    fusionnée avec le PMIC (Rinkan) en tant que "ThinkEngine" (ne le confondez
+    pas avec la puce EC qui a aussi le logo ThinkEngine sur les cartes mères
+-   Kozak, Tsurumai, Rinkan: ce sont les versions successives de la gestion de
+    l'alimentation IC pour les Notebook. Le marquage de la puce Tsurumai est
+    "TB62501F" et sa fiche technique décrit entiérement son fonctionnement.
 
-See also
+Voir aussi
 ========
--   Many more Intel codenames can be found at
+
+-   Bien d'autres noms de code d'Intel peuvent être trouvés sur 
     [Wikipedia](https://en.wikipedia.org/wiki/List_of_Intel_codenames).
--   For ThinkPads see [Documentation/thinkpad/codenames.csv @ Coreboot]
+-   Pour les ThinkPads, voyez [Documentation/thinkpad/codenames.csv @ Coreboot]
 (https://review.coreboot.org/cgit/coreboot.git/tree/Documentation/thinkpad/codenames.csv)
 
 Copyright © 2018 Fedja Beader <fedja@protonmail.ch>
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).

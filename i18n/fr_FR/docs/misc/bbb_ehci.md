@@ -1,136 +1,146 @@
 ---
-title: EHCI debugging on the BeagleBone Black 
+titre: Déboguage EHCI sur le BeagleBone Black
 ...
 
-EHCI debugging
+Déboguage EHCI
 ==============
 
-1.  [Find USB port on the target that supports EHCI
-    debug](#FindUSBportonthetargetthatsupportsEHCIdebug)
+1.  [Trouver un port USB sur la cible qui supporte le déboguage EHCI](#FindUSBportonthetargetthatsupportsEHCIdebug)
 
-2.  [Initial setup of BBB to act as EHCI debug
-    dongle](#InitialsetupofBBBtoactasEHCIdebugdongle)
-3.  [Patch BBB's `g_dbgp` module (optional, but highly
-    recommended)](#PatchBBBsgdbgpmoduleoptionalbuthighlyrecommended)
-4.  [Configure libreboot with EHCI
-    debug](#ConfigurelibrebootwithEHCIdebug)
-    1.  [Selecting `HCD Index` and
-        `USB Debug port`](#SelectingHCDIndexandUSBDebugport)
-5.  [How to get the debug logs](#Howtogetthedebuglogs)
-6.  [Eneble EHCI Debug on the target's kernel (optional,
-    recommended)](#EnebleEHCIDebugonthetargetskerneloptionalrecommended)
-7.  [References](#References)
+2.  [Configuration initiale du BBB pour agir en tant que dongle de déboguage
+EHCI](#InitialsetupofBBBtoactasEHCIdebugdongle)
 
-*NOTE: this documentation may be outdated, and discusses configuring
-EHCI debug on the default Debian system that the BBB sometimes comes
-with. If you want an easier time, just use [BBB
-ScrewDriver](https://www.coreboot.org/BBB_screwdriver) which comes
-pre-configured.*
+3.  [Patcher le module `g_dbgp` du BBB (optionnel, mais hautement recommandé)](#PatchBBBsgdbgpmoduleoptionalbuthighlyrecommended)
 
-If your computer does not boot after installing libreboot, it is very
-useful to get debug logs from it, from the payload (grub) and/or the
-kernel (if gets to there). All of them stream debug logs on the
-available serial (RS-232) by default. However, most of todays laptops
-lack RS-232 port. The other option is to stream the logs to USB EHCI
-debug port.
+4.  [Configurer libreboot pour le déboguage EHCI]((#ConfigurelibrebootwithEHCIdebug)
+    1.  [Sélectionner `HCD Index` et `USB Debug port`](#SelectingHCDIndexandUSBDebugport)
+5.  [Comment obtenir les journaux de déboguage](#Howtogetthedebuglogs)
+6.  [Activer le déboguage EHCI sur le kernel cible (optionnel, recommandé)](#EnebleEHCIDebugonthetargetskerneloptionalrecommended)
+7.  [Réferences](#References)
 
-This section explains step-by-step how to setup BBB as a “USB EHCI debug
-dongle” and configure libreboot and the linux kernel to stream logs to
-it (TODO: grub).
+*NOTE: cette documentation peut être périmé, et discute sur la configuration
+du déboguage EHCI sur le système Debian de base que le BBB est parfois fournit
+avec. Si vous voulez vous faciliter la taĉhe, utilisez juste le [tournevis
+BBB](https://www.coreboot.org/BBB_screwdriver) qui est fournit pré-configuré.*
 
-I will refer to three computers:
+Si votre ordinateur ne démarre pas après avoir installé libreboot, il est très
+utile d'obtenir ses journaux de debug, de la charge utile (grub) et/ou le
+kernel (si ça arrive jusqu'à là). Tous diffusent leurs journaux de déboguage
+sur le port série disponible (RS-232) par défaut. Cependant, la majorité des
+ordinateurs portables d'aujourd'hui manquent d'un port RS-232.
+L'autre option est de diffuser les journaux au port USB EHCI de déboguage.
 
--   *host* - this is the computer you use, have tools, compiler,
-    Internet, etc
--   *BBB* - Beaglebone Black (rev. B or higher, i use rev. C)
--   *target* - the computer you are trying to install liberboot
+Cette section explique étapes par étapes comment configurer le BBB comme
+"Dongle de déboguage USB EHCI" et configure libreboot et le kernel linux pour
+qu'ils diffusent les journaux dessus (TODO: grub).
 
-### Find USB port on the target that supports EHCI debug {#FindUSBportonthetargetthatsupportsEHCIdebug}
+Je ferais références à trois ordinateurs:
 
-Not all USB controllers support EHCI debug (see: [EHCI Debug
-Port](http://www.coreboot.org/EHCI_Debug_Port#Hardware_capability) ).
-Even more, if a USB controller supports EHCI debug, it is available only
-*on a single port* that might or might not be exposed externally.
+-   *hôte* - c'est l'ordinateur que vous utilisez, qui a des outils,
+    compilateurs, Internet, etc
+-   *BBB* - Beaglebone Black (rév. B ou plus haut, j'utilise la révision C.)
+-   *cible* - l'ordinateur où on essaye d'installer libreboot
 
--   You need running OS (GNU+Linux) on your target for this step (If
-    you've flashed libreboot and it does not boot, you have to flush
-    back the stock bios)
--   You need USB memory stick (the data on it will not be touched).
--   The EHCI debugging can not be done through external hub, BBB must be
-    connected directly to the debug port of the controller (so, no hubs)
+### Trouver le port USB sur la cible qui supporte le déboguage EHCI {#FindUSBportonthetargetthatsupportsEHCIdebug}
 
-<!-- -->
+Pas tous les contrôleurs USB supportent le déboguage EHCI (voyez: [Port de
+déboguage EHCI](http://www.coreboot.org/EHCI_Debug_Port#Hardware_capability) ).
+Même, de plus, si un contrôleur USB supporte le déboguage EHCI, il est
+disponible seulement *sur un port* qui peut ou ne peut pas être exposé à
+l'extérieur.
 
--   Download^[1](#___fn1)^
-    [this](http://www.coreboot.org/pipermail/coreboot/attachments/20080909/ae11c291/attachment.sh)
-    shell script.
+-   Vous avez besoin d'un système d'exploitation (GNU+Linux) en cours
+    d'exécution sur
+    votre cible pour cet étape (si vous avez flashé libreboot et ça ne démarre
+    pas, vous avez à flasher le bios d'usine).
+-   Vous avez besoin d'une clé USB mémoire (les données sur celle-ci ne seront
+    pas touchées).
+-   Le déboguage EHCI ne peut pas être fait depuis un concentrateur (*hub*) USB
+    externe, le BBB doit être connecté directement au port de déboguage du
+    contrôleur (donc, pas de concentrateurs).
 
-1.  Plug the usb stick in the first available usb port
-2.  Run the script, you will get output similar to following:
+-   Téléchargez^[1](#___fn1)^
+    [ce](http://www.coreboot.org/pipermail/coreboot/attachments/20080909/ae11c291/attachment.sh)
+    script shell.
+
+1.  Branchez la clé USB sur le premier port USB disponible.
+2.  Exécutez le script, vous obtiendrez une sortie similaire au suivant:
 3.  The buses the support debug are Bus 3 (0000:00:1a.0) on Port 1 and
     Bus 4 (0000:00:1d.0) on port 2. Your usb stick is plugged on Bus 1,
     Port 3
-4.  Repeat the steps, plugging the USB stick in the next available port
-5.  Go through all available ports and remember(write down) those for
-    which bus/port of the usb stick matches one of the bus/port that
-    support debug (bold).
+    (fr: Les bus supportant le déboguage sont le Bus 3 (0000:00:1a.0) sur le
+    Port 1, et Bus 4 (0000:00:1d.0) sur le port 2. Votre clé USB est branchée
+    sur le Bus 1, Port 3.
+4.  Répétez les étapes, en branchant la clé sur le port USB disponible
+suivant.
+5.  Faites ça pour tout les ports disponibles et souvenez-vous (mettez sur
+papier) de ceux dont le bus/port de la clé USB correspondent aux bus/port qui
+support le déboguage (en gras).
 
-Remember (write down) for each port (external plug) you found that
-supports debug: *PCI device id, the bus id, the port number, and the
-physical location of the usb plug.*
+Souvenez-vous (mettez sur papier) pour chaque port (branchement externe) que
+vous avez trouvez qui supporte le déboguage: 
+*ID du périphérique PCI, id du bus, le numéro du port, et l'emplacement
+physique du branchement USB*
 
-If you do not find a match, you can not get debug over EHCI. Sorry.
+Si vous n'avez pas trouvé de correspondant, vous ne pouvez pas déboguer à
+travers EHCI. Désolé.
 
-^1^ The guys from coreboot were talking about including the script in
-coreboot distribution (check the status).
+^1^ Les mecs de coreboot parlaient d'inclure le script dans la distribution de
+coreboot (vérifiez le status de la discussion).
 
-### Initial setup of BBB to act as EHCI debug dongle {#InitialsetupofBBBtoactasEHCIdebugdongle}
+### Configuration initiale du BBB pour agir en tant que dongle de déboguage EHCI{#InitialsetupofBBBtoactasEHCIdebugdongle}
 
-BBB must be powered with a barrel power connector since the mini-B USB
-plug will be used for the EHCI debug stream. So you will need:
+BBB doit être alimenté avec un [connecteur d'alimentation
+coaxial](https://en.wikipedia.org/wiki/Coaxial_power_connector) puisque le
+port USB mini-B sera utilisé pour la réception de la diffusion du déboguage
+EHCI. Vous aurez donc besoin:
 
--   power supply (5V, 2A(10W) is sufficient).
--   an extra usb cable: A to mini-B
+-   d'une alimentation (5V, 2A(10W) est suffisant).
+-   un câble usb en plus: A à mini-B
 
-(On BBB) The linux kernel includes module (g\_dbgp that enables one of
-the usb ports on a computer to behave as EHCI debug dongle. Make sure
-you have this module available on your BBB (Debian 7.8 that comes with
-BBB should have it), if not, you should compile it yourself (see next
-section):
+(Sur le BBB) le kernel linux inclut le module g\_dbgp qui permet à un des
+ports USB de l'ordinateur d'agir comme un dongle de déboguage EHCI.
+Assurez-vous que vous avez ce module disponible sur votre BBB (Debian version
+7.8 fournit avec le BBB devrait l'avoir), si non, vous devriez le compiler
+vous-même (voir section suivante):
 
     ls /lib/modules/3.8.13-bone70/kernel/drivers/usb/gadget/g_dbgp.ko
 
-Unload all other g\_\* modules:
+Déchargez tout les autres modules g\_\*
 
     # lsmod
     # rmmod g_multi
     ...
 
-Then load g\_dbgp :
+Puis chargez g`dbgp:
 
     # modprobe g_dbgp
     # lsmod # should show that g_dbgp is loaded, and no other g_*
 
-Plug the mini-B side of the USB cable in your BBB and the A side in your
-target. Then one of the usb devices on your target (with lsusb ) should
-be:
+Branchez le côté mini-B du câble USB dans votre BBB et le côté A dans votre
+cible. Ensuite, un des périphériques USB sur votre cible (avec `lsusb`)
+devrait être:
 
     Bus 001 Device 024: ID 0525:c0de Netchip Technology, Inc.
 
-If you see the device on the target, you are good to continue to the
-next step.
+Si vous voyez le périphérique sur la cible, vous êtes bon pour passer à l'étape
+suivante.
 
-### Patch BBB's g\_dbgp module (optional, but highly recommended) {#PatchBBBsgdbgpmoduleoptionalbuthighlyrecommended}
+### Patcher le module g\_dbgp du BBB (optionnel, mais hautement recommandé){#PatchBBBsgdbgpmoduleoptionalbuthighlyrecommended}
 
-For the reasons why you need this, see: [EHCI Gadget
-Debug](http://www.coreboot.org/EHCI_Gadget_Debug).\
-Make sure that you have cross compiling environment for
-arm-linux-gnueabihf setup on your *host*.
+Sur les raisons de pourquoi vous avez besoin de ça, voyez: [Déboguage Gadget
+EHCI](http://www.coreboot.org/EHCI_Gadget_Debug).\
 
--   On BBB: uname -r - this will give you version number like
-    3.8.13-bone70 (I will refer to this as: \$mav.\$miv-\$lv: where
-    mav=3.8, miv=13, lv=bone70
--   Get the BBB kernel ready on your host for cross-compiling:
+Soyez sur que vous avez un environnement de compilation croisée configurée sur
+votre hôte pour
+l'architecture arm-linux-gnueabihf.
+
+-   Sur le BBB: `uname -r` vous donnera le numéro de la version, tel que
+    3.8.13-bone70 (je ferais référence à celà comme tel: \$mav.\$miv-\$lv: où
+    mav=3.8, miv=13, lv=bone70).
+
+
+-   Préparez le kernel BBB sur votre hôte pour la compilation croisée:    
 
 <!-- -->
 
@@ -142,101 +152,95 @@ arm-linux-gnueabihf setup on your *host*.
     $ wget http://arago-project.org/git/projects/?p=am33x-cm3.git\;a=blob_plain\;f=bin/am335x-pm-firmware.bin\;hb=HEAD -O kernel/firmware/am335x-pm-firmware.bin
     $ cp configs/beaglebone kernel/arch/arm/configs/beaglebone_defconfig
 
--   Download the patch from
-    [coreboot.org](http://www.coreboot.org/images/8/88/Ehci-debug-gadget-patches.tar.gz)
--   tar -xf Ehci-debug-gadget-patches.tar.gz (will create dir:
-    usbdebug-gadget)
--   Note that there are two patches (patch\_1 and patch\_2) for each of
-    the two different version of the kernel (3.8 and 3.10). I will use
-    3.8. (If using kernel 3.12 patch\_1 is not needed)
--   cd kernel (note that this is one more level: you should be in
-    \$work\_dir/kernel/kernel)
--   Apply the patches:
+-   Téléchargez la rustine (*patch*) depuis [coreboot.org](http://www.coreboot.org/images/8/88/Ehci-debug-gadget-patches.tar.gz)
 
-<!-- -->
+-   `tar -xf Ehci-debug-gadget-patches.tar.gz` (créera le répertoire:
+    usbdebug-gadget)
+-   Notez qu'il y a deux rustines (patch\_1 et patch\_2) pour chacune des
+    différentes versions du kernel (3.8 et 3.10). J'utiliserais le 3.8. (Si
+    vous utilisez le kernel 3.1, patch\_1 n'est pas nécessaire)
+-   `cd kernel` (vous devriez être dans \$rep\_de\_travail/kernel/kernel)
+
+-   Appliquez les rustines:
 
     git apply ../usbdebug-gadget/v3.8-debug-gadget/0001-usb-dbgp-gadget-Fix-re-connecting-after-USB-disconne.patch
     git apply ../usbdebug-gadget/v3.8-debug-gadget/0002-usb-serial-gadget-no-TTY-hangup-on-USB-disconnect-WI.patch
     ;
     make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- beaglebone_defconfig -j4@
 
--   You should also apply the linux-libre *deblob* script to turn it
-    into linux-libre (deletes all the blobs from the linux kernel).
-    [fsfla website](http://www.fsfla.org/ikiwiki/selibre/linux-libre/) -
-    see
+-   Vous devriez aussi appliquez les scripts *deblob* de linux-libre pour le
+    transformer le kernel en linux-libre (supprime tout les blobs du kernel
+    linux). [site web de fsfla](http://www.fsfla.org/ikiwiki/selibre/linux-libre/) -
+    jetez un coup d'oeil aux
     [scripts](http://www.fsfla.org/svn/fsfla/software/linux-libre/scripts/).
--   Get your current BBB kernel config (from: /boot/config-<ver>)
-    and copy it to your host as \$work\_dir/kernel/kernel/.config
--   Set proper version number:
-    -   On your host, edit \$work\_dir/kernel/kernel/.config (the one
-        you've just copied from BBB), find the line
-        CONFIG\_LOCALVERSION="<something or empty>" and change
-        it to CONFIG\_LOCALVERSION="-\$lv", so it will look something
-        like: CONFIG\_LOCALVERSION="-bone70"
--   Also, make sure that: CONFIG\_USB\_G\_DBGP=m (If not, make
-    menuconfig, and set @Device Drivers-> USB Support -> USB
-    Gadget Support -> EHCI Debug Device Gadget=m
--   Build the module:
+-   Obtenez la configuration actuelle du kernel de votre BBB depuis le fichier
+    `/boot/config-<version>`, puis copiez là sur votre hôte en tant que
+    \$rep\_de\_travail/kernel/kernel/.config .
+-   Mettez un numéro de version propre:
+    -   Sur votre hôte, éditez le fichier de configuration du kernel que vous
+        venez juste de copier du BBB, trouvez la ligne 
+        CONFIG\_LOCALVERSION="<qqch ou vide>" et changez là par
+        CONFIG\_LOCALVERSION="-\$lv", donc ça ressemblera à quelque chose comme:
+        CONFIG\_LOCALVERSION="-bone70"
 
-<!-- -->
+-   Aussi, assurez-vous que: CONFIG\_USB\_G\_DBGP=m (si non, exécutez `make
+    menuconfig` et définissez @Device Drivers-> USB Support -> USB
+    Gadget Support -> EHCI Debug Device Gadget=m
+-   Compilez le module:
 
     $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 (is it possoble to build only the gadget modules)
     $ mkdir ../tmp && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=../tmp modules_install
 
--   on BBB, backup /lib/modules/3.8.13-bone70/kernel/drivers/usb/gadget
-    (i.e. mv /lib/modules/3.8.13-bone70/kernel/drivers/usb/gadget
+-   sur le BBB, sauvegardez
+    `/lib/modules/3.8.13-bone70/kernel/drivers/usb/gadget`
+    (p.ex en exécuant `mv /lib/modules/3.8.13-bone70/kernel/drivers/usb/gadget
     \$HOME)
--   copy the freshly compiled usb/gadget dir to
-    /lib/modules/3.8.13-bone70/kernel/drivers/usb
--   restart BBB
--   Remove all g\_\* modules (rmmod g\_<>)
--   modprobpe g\_dbgp
+-   copiez le dossier usb/gadget fraîchement compilé dans
+    `/lib/modules/3.8.13-bone70/kernel/drivers/usb`
+-   redémarrez le BBB
+-   Enlevez tout les modules g\_\* (`rmmod g\_<>`)
+-   `modprobe g\_dbgp` pour charger le module
 
-### Configure libreboot with EHCI debug {#ConfigurelibrebootwithEHCIdebug}
+### Configurer libreboot avec déboguage EHCI {#ConfigurelibrebootwithEHCIdebug}
 
-Libreboot(coreboot) should be configured with debug turned on and to
-push debug messages to the EHCI debug port.\
-If you've downloaded the binary distribution, you can check if it is
-properly configured in the following way:
+Libreboot(coreboot) devrait être configuré avec le déboguage activé, et de
+pousser les messages de déboguage vers le port de déboguage EHCI.\
+Si vous avez téléchargé la distribution binaire, vous pouvez vérifier si elle
+est proprement configurée de la manière suivante:
 
--   Go to the libreboot dist root directory cd \$libreboot\_bin
--   Locate the rom image for your target (I will call it: \$img\_path)
--   Running the following command will extract the config in a file
+-   Allez dans le répertoire racine `dist` de libreboot:
+        
+        $ cd libreboot\_bin
+-   Situez l'image ROM destinée à votre cible (je l'appelerais: \$img\_path)
+-   Exécuter la commande suivante extraira la config dans un fichier nommé
     ./my\_config:
 
-<!-- -->
+        $   ./cbfstool/i686/cbfstool $img_path extract -n config -f ./my_config
 
-    ./cbfstool/i686/cbfstool $img_path extract -n config -f ./my_config
-
--   Make sure that the following params in the config are set as
-    following:
-
-<!-- -->
+-   Soyez sûr que les paramètres suivants dans la config sont définis:
 
     CONFIG_USBDEBUG=y (Generic Drivers -> USB 2.0 EHCI debug dongle support)
     CONFIG_USBDEBUG_IN_ROMSTAGE=y (Generic Drivers -> Enable early (pre-RAM) usbdebug)
     CONFIG_USBDEBUG_HCD_INDEX=<HCD Index of usb controller - see below> (Generic Drivers -> Index for EHCI controller to use with usbdebug)
     CONFIG_USBDEBUG_DEFAULT_PORT=<USB Debug port - see below> (Generic Drivers -> Default USB port to use as Debug Port)
 
-The following three are behind radio button in the menu. Only the first
-one^[2](#___fn2)^ should be = y
+Les trois suivants sont derrières trois boutons radios dans le menu. Seulement
+le premier ^[2](#___fn2)^ devrait être égal à 'y' 
 
     USBDEBUG_DONGLE_STD=y                       (Generic Drivers -> Type of dongle (Net20DC or compatible) -> Net20DC or compatible)
     CONFIG_USBDEBUG_DONGLE_BEAGLEBONE=n         (Generic Drivers -> Type of dongle (Net20DC or compatible) -> BeagleBone)
     CONFIG_USBDEBUG_DONGLE_BEAGLEBONE_BLACK=n   (Generic Drivers -> Type of dongle (Net20DC or compatible) -> BeagleBone Black)
 
-^2^ The g\_dbgp module on BeagleBone Black (Rev. C) reports it self as
-Net20DC, the other options are for older BB(B) - ver1. This is
-documented
-[on John Lewis's blog](https://johnlewis.ie/coreboot-ehci-debug-gadget-demonstration/)
-(also tested/verified).
+^2^ Le module g\_dbpg sur le BBB (Rév. C) se rapporte lui-même en tant que
+Net20DC, les autres options étant pour des BB(B) plus vieux - ver1. C'est
+aussi testé, vérifié, et documenté [sur le blog de John Lewis](https://johnlewis.ie/coreboot-ehci-debug-gadget-demonstration/)
 
-Then:\
+Ensuite:\
 
     CONFIG_CONSOLE_USB=y (Console -> USB dongle console output)
 
-Also Debugging \---> Output verbose XYZ ) (*FIXME* somebody verify
-these):
+Aussi, les options Debugging \---> Output verbose blahblahblah)
+(*FIXME*: quelqu'un devrait vérifier celà)
 
     CONFIG_DEBUG_CBFS=y (Output verbose CBFS debug messages )
     CONFIG_HAVE_DEBUG_RAM_SETUP=y (??? What/where is this)
@@ -245,71 +249,72 @@ these):
     CONFIG_DEBUG_ACPI=y     (Output verbose ACPI debug messages )
     CONFIG_DEBUG_USBDEBUG=y (Output verbose USB 2.0 EHCI debug dongle messages)
 
-If some of the above mentioned configuration options are not as
-specified, you have to configure and compile libreboot yourself. Please
-refer to the doc(*FIXME: link* about compiling libreboot.
+Si certaines des options de configuration mentionnées ci-dessus ne sont pas
+comme spécifiée de base, vous avez à configurer et compiler libreboot
+vous-même.
 
-#### Selecting HCD Index and USB Debug port {#SelectingHCDIndexandUSBDebugport}
+#### Sélectionner l'Index HCD et le port de déboguage USB {#SelectingHCDIndexandUSBDebugport}
 
-This applies (and works) only if the USB controller that supports debug
-(found in the first section) is from Intel.\
-If the PCI ID of the port you found in the first section is 0000:00:1a.0
-or 0000:00:1d.0 , you are ok. Otherwise you have to try without
-guarantee that will work.
+Ceci s'applique (et marche) seulement si le contrôleur USB qui supporte le
+déboguage (trouvé dans la première section de ce guide) provient d'Intel.
+Si l'ID du PCI du port que vous avez trouvé dans la première section est 0000:00:1a.0
+ou 0000:00:1d.0 , vous êtes ok. Sinon vous devez réessayez sans garantie que
+ça marchera.
 
-If the externally exposed port is on a bus with PCI ID == 0000:00:1a.0
-then for CONFIG\_USBDEBUG\_HCD\_INDEX choose 2, otherwise choose 0 .
+Si le port exposé extérieurement est sur un bus avec un ID du PCI égal à 0000:00:1a.0
+alors choisissez 2 pour l'option CONFIG\_USBDEBUG\_HCD\_INDEX dans le kernel
+sinon 0.
 
-For CONFIG\_USBDEBUG\_DEFAULT\_PORT choose the port from the first
-section that correspond to the PCI ID
+Pour CONFIG\_USBDEBUG\_DEFAULT\_PORT choisissez le port qui correspond à l'ID
+du PCI, trouvé aussi dans la première section de ce guide.
 
 Notes:\
-The above is based on the implementation of
+Le dessus est basé sur l'implémentation du code
 coreboot/src/southbridge/intel/common/usb\_debug.c :
 pci\_ehci\_dbg\_dev() .\
-This is enough as it applies for the supported GM45/G45 Thinkpads.
-coreboot support some other contollers too, but they are irellevent for
-libreboot (for now).
+C'est suffisant car ça s'applique aux ThinkPads GM45/G45 supportés.
+Coreboot supporte d'autres contrôleurs aussi, mais ils n'ont pas (pour
+l'instant) d'importance pour libreboot.
 
--   On T500 (with switchable GPU) the debug ports for both intel
-    controllers is exposed.
--   On x200t the debug ports for both intel controllers is exposed.
+-   Sur le T500 (avec graphiques échangeables) les ports de déboguage pour les
+    deux contrôleurs Intel sont exposés.
+-   Sur le X200T les ports de déboguage pour les
+    deux contrôleurs Intel sont exposés.
 
-### How to get the debug logs {#Howtogetthedebuglogs}
+### Comment obtenir les journaux de déboguage {#Howtogetthedebuglogs}
 
--   Plug the USB cable in the target's debug port (the one you found in
-    step 1) and BBB's mini-B USB
--   Make sure no other then g\_dbgp of the g\_\* modules is loaded on
-    your BBB
--   On the BBB:
+-   Branchez le câble USB dans le port de déboguage de la cible (celui que
+    vous avez trouvé dans l'étape 1) et l'USB mini-B BBB (côté A) sur l'hôte.
+-   Soyez sûr qu'aucun autre modules des g\_\* à part le g\_dbpg est chargé.
+-   Sur le BBB:
 
-<!-- -->
+        $ stty -icrnl -inlcr -F /dev/ttyGS0
+        $ cat /dev/ttyGS0
 
-    stty -icrnl -inlcr -F /dev/ttyGS0
-    cat /dev/ttyGS0
+-   Allumez la cible avec Libreboot
+-   Vous devriez voir des journaux de déboguage s'afficher dans votre console
+    BBB
 
--   Power on the target with libreboot
--   You should see debug logs comming on your BBB console
+Notez que ce n'est pas permanent sur le BBB, si vous le redémarrez, vous avez
+à `rmmod g\_\*` puis `modprobe g\_dbgp`
 
-Note that this is not permanent on BBB, if you reboot it, you have to
-rmmod g\_\* and modprobe g\_dbgp
+### Activer le déboguage EHCI sur le kernel cible (optionnel, recommandé {#EnebleEHCIDebugonthetargetskerneloptionalrecommended}
 
-### Eneble EHCI Debug on the target's kernel (optional, recommended) {#EnebleEHCIDebugonthetargetskerneloptionalrecommended}
+Vous devez savoir comment compiler le kernel pour votre cible.
 
-You have to know how to compile kernel for your target.
-
-1.  Check if early debugging is already enabled: grep
-    CONFIG\_EARLY\_PRINTK\_DBGP /boot/config-<ver>
-2.  If enabled, you do not have to compile the kernel (skip this step).
-    Otherwise, prepare kernel source for your distribution and select
-    (Kernel hacking -> Early printk via EHCI debug port). Compile and
-    install the new kernel.
-3.  Edit your grub configuration and add following to the kenel
-    parameters^[20](#___fn20)[21](#___fn21)^: earlyprintk=dbgp,keep.
-    Also, try: earlyprintk=dbgp<N>,keep where N is the debug port
-    id if the first does not work.
-
-### References {#References}
+1.  Vérifiez si le déboguage précoce est déjà activé:
+        
+       $ grep CONFIG\_EARLY\_PRINTK\_DBGP /boot/config-<version>
+2.  Si c'est activé, vous n'avez pas à compiler le kernel (sautez cette
+étape). Sinon, préparez les sources du kernel pour votre distribution et
+sélectionnez l'option (Kernel hacking -> Early printk via EHCI debug port).
+Compilez et installez le nouveau kernel.
+3.  Éditez votre configuration GRUB (/etc/default/grub)  et ajoutez le suivant aux paramètres du
+kernel ^[20](#___fn20)[21](#___fn21)^: earlyprintk=dbgp,keep.
+    Aussi, essayez: earlyprintk=dbgp<N>,keep où N est l'ID du port de
+    déboguage si le premier ne marche pas.
+    
+### Réferences {#References}
 
 ^10^ [EHCI Debug Port](http://www.coreboot.org/EHCI_Debug_Port)
 
@@ -344,17 +349,20 @@ Interface](http://cs.usfca.edu/~cruse/cs698s10/)
 
 *TODO*:
 
-1.  grub does not send messages to EHCI debug. Investigate.
-2.  The section “Configure libreboot with EHCI debug” can be
-    skipped/simplified if a common configuration works for all relevant
-    targets is selected as defualt
-3.  Patch and compule g\_dbgp on BBB instead cross-compile
-4.  Find a simple way to send debug messages from targets userland
+1.  GRUB n'envoie pas les messages au déboguage EHCI. Investiguer.
+2.  La section "Configurer Libreboot avec le déboguage EHCI" peut être
+simplifiée/sautée si une configuration commune marchant pour toutes les cibles
+concernées est sélectionnée par défaut.
+3.  Patcher et compiler le module g\_dbgp sur le BBB au lieu de faire de la
+compilation croisée.
+4.  Trouver une simple façon d'envoyer les messages de débogage depuis
+l'espace utilisateur.
 
 Copyright © 2015 Alex David <opdecirkel@gmail.com>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
 A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
