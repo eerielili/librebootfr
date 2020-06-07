@@ -1,20 +1,28 @@
----
+--- 
 title: Instructions pour la compilation du code source
 x-toc-enable: true
 ...
 
-Depthcharge est actuellement non documenté depuis qu'il est dans le nouveau système de construction.
-Les instructions sur comment construire des cartes mères qui ont depthcharg sont incluses dans le fichier BUILD\_HOWTO sur libreboot.git ou \_src.
+Depthcharge est actuellement non documenté depuis qu'il est dans le nouveau
+système de construction.  Les instructions sur comment compiler des cartes
+mères qui ont depthcharg sont incluses dans le fichier BUILD\_HOWTO sur
+libreboot.git ou \_src.
 
-Cette section concerne la construction de libreboot depuis la source, et travailler avec le répertoire git.
+Cette section concerne la construction de libreboot depuis la source, et
+travailler avec le répertoire git.
 
 
-Installer les dépendances de construction
+Installer les dépendances pour la compilation
 ==========================
 
-Afin de faire quoi que soit, vous avez besoin des dépendances en premier. C'est vrai si vous voulez construire libreboot depuis la source, que ce soit avec libreboot\_src.tar.xz ou git. *Si vous utilisez libreboot\_util.tar.xz (archive binaire) alors vous pouvez ignorer celà, parce que les images ROM et les exécutables compilés statiquement pour les utilitaires sont inclus.*
+Afin de faire quoi que soit, vous avez besoin des dépendances en premier.
+C'est vrai si vous voulez compiler libreboot depuis la source, que ce soit
+avec libreboot\_src.tar.xz ou git. *Si vous utilisez libreboot\_util.tar.xz
+(archive binaire) alors vous pouvez ignorer celà, parce que les images ROM et
+les exécutables compilés statiquement pour les utilitaires sont inclus.*
 
-Pour Debian Stretch (pourrait aussi marcher avec Debian Jessie), vous pouvez exécuter la commande suivante:
+Pour Debian Stretch (pourrait aussi marcher avec Debian Jessie), vous pouvez
+exécuter la commande suivante:
 
     $ sudo ./oldbuild dependencies debian
 
@@ -28,85 +36,118 @@ ou:
 
    # ./oldbuild dependencies parabola
 
-Pour les autres distributions GNU+Linux, vous pouvez adapter les scripts existants.
+Pour les autres distributions GNU+Linux, vous pouvez adapter les scripts
+existants.
 
 
 Récupérer le code source complet depuis les métadonnées (git clon)
 ==================================================
 
-Si vous avez téléchargé Libreboot depuis git, alors il y a quelques étapes pour télécharger et patcher le code source pour toutes les dépendances importantes. L'archive dans le répertoire git était disponible en tant qu'une tarball nommée 'libreboot\_meta.tar.gz'.
-Elle contient des 'métadonnées' (scripts) qui définissent comment la source a été créée (d'où est-ce qu'elle est venue).
+Si vous avez téléchargé Libreboot depuis git, alors il y a quelques étapes
+pour télécharger et patcher le code source pour toutes les dépendances
+importantes. L'archive dans le répertoire git était disponible en tant qu'une
+tarball nommée 'libreboot\_meta.tar.gz'.  Elle contient des 'métadonnées'
+(scripts) qui définissent comment la source a été créée (d'où est-ce qu'elle
+est venue).
 
 Vous pouvez utiliser les scripts inclus pour tout télécharger.
 
-En premier, [installer les dépendances de constructions](#dependances_de_build).
+En premier, [installer les dépendances de
+constructions](#dependances_de_build).
 
-Depuis que libreboot fait une utilisation extensive, vous avez besoin de configurer git correctement.
-Si vous n'avez pas encore configuré git, alors les exigences minimales sont:
+Depuis que libreboot fait une utilisation extensive, vous avez besoin de
+configurer git correctement.  Si vous n'avez pas encore configuré git, alors
+les exigences minimales sont:
 
-    $ git config --global user.name "Your name"
-    $ git config --global user.email your@emailadress.com
+    $ git config --global user.name "Your name" $ git config --global
+    user.email your@emailadress.com
 
-C'est ce qui apparaitra aussi dans les logs de git si jamais vous commitez vos propres changements dans un répertoire donné . Pour plus d'informations, regardez <http://git-scm.com/doc>
+C'est ce qui apparaitra aussi dans les logs de git si jamais vous commitez vos
+propres changements dans un répertoire donné . Pour plus d'informations,
+regardez <http://git-scm.com/doc>
 
 Une autre bonne config pour vous (optionnelle, mais recommandée) :
 
-    $ git config --global core.editor nano
-    $ git config --global color.status auto
-    $ git config --global color.branch auto
-    $ git config --global color.interactive auto
-    $ git config --global color.diff
+    $ git config --global core.editor nano $ git config --global color.status
+    auto $ git config --global color.branch auto $ git config --global
+    color.interactive auto $ git config --global color.diff
 
 Après cela, exécutez le script:
 
     $ ./download all
 
-Ce que cela a fait est de tout télécharger (grub, coreboot, memtest86+, bucts, flashrom) des versions dernièrement testé pour cette publication, et les patchs. Lisez le script dans un éditeur de texte pour en apprendre plus.
+Ce que cela a fait est de tout télécharger (grub, coreboot, memtest86+, bucts,
+flashrom) des versions dernièrement testé pour cette publication, et les
+patchs. Lisez le script dans un éditeur de texte pour en apprendre plus.
 
-Pour construire les images ROM, regardez [\#build](#build)
+Pour compiler les images ROM, jetez un coup d'oeil à la section [\#build](#build)
 
 
-Comment construire des "bucts" (pour LenovoBIOS X60/X60S/X60T/T60)
+Comment compiler des "bucts" (pour LenovoBIOS X60/X60S/X60T/T60)
 =========================================================
 
-*Ceci est pour les utilisateurs du BIOS de Lenovo sur le ThinkPad X60/X60S, Tablette X60 et T60. Si vous exécutez déjà coreboot et libreboot, ignorez cela*
+*Ceci est pour les utilisateurs du BIOS de Lenovo sur le ThinkPad X60/X60S,
+Tablette X60 et T60. Si vous exécutez déjà coreboot et libreboot, ignorez
+cela*
 
-BUC.TS n'est pas réellement spécifique à ces ordinateurs portables,  mais c'est un bit dans le registre dans le jeu de puces (chipset) sur certains systèmes Intel.
+BUC.TS n'est pas réellement spécifique à ces ordinateurs portables,  mais
+c'est un bit dans le registre dans le jeu de puces (chipset) sur certains
+systèmes Intel.
 
-Bucts est nécessaire lors du flashage de logiciel sur la X60/X60S/X60T/T60 ROM pendant que le BIOS Lenovo s'exécute; hors de ça le flashage externe sera sans danger
+Bucts est nécessaire lors du flashage de logiciel sur la X60/X60S/X60T/T60 ROM
+pendant que le BIOS Lenovo s'exécute; hors de ça le flashage externe sera sans
+danger
 
-Chaque ROM contient des données identiques à l'intérieur des deux régions finales de 64K dans le fichier \*. Cela correspond aux deux regions finales de 64K dans la puce flash.
-Le BIOS de Lenovo vous empêchera d'écrire la dernière région, donc exécuter `bucts 1` paramètrera le système pour démarrer sur l'autre bloc (qui est écrivable ainsi tout en dessous quand vous utilisez une flashrom patchée. Regardez [\#build\_flashrom](#build_flashrom )).
-Après l'arrêt et le démarrage après le premier flash de lireboot, le bloc final de 64K est écrivable donc vous pouvez encore flasher la ROM avec une flashrom non patchée et exécuter `butcs 0` pour faire encore démarrer le système du bloc normal (le plus haut).
-
-
-\*Les images de ROM Libreboot ont des données identiques dans ces deux régions de 64Ko car dd est utilisé pour faire ça par l'intermédiaire du système de construction.
-Si vous contruisez depuis l'amont (coreboot), vous devez le faire manuellement.
-
-BUC.TS est soutenu (alimenté) par la batterie NVRAM (ou la batterie CMOS, comme certaines personnes l'appelent).
-Sur les thinkpads, c'est typiquement dans un paquet en plastique jaune avec la batterie à l'intérieur, connecté via les lignes électriques à la carte mère.
-Enlever cette batterie enlève l'alimentation au BUC.TS, réinitialisant le bit à 0 (si vous l'avez mis précédemment à 1).
-
-L'utilitaire BUC.TS est inclus dans libreboot\_src.tar.xz et libreboot\_util.tar.xz.
-
-Si vous avez téléchargé depuis git, suivez la [\#build\_meta](#build_meta) avant de procéder.
-
-*BUC* signifie "*B*ack*u*p *C*ontrol" (c'est un registre) et "TS" signifie *T*op *S*wap" (c'est un bit de status).
-D'où le nom "bucts" (BUC.TS). TS 1 et TS 0 correspondent à bucts 1 et bucts 0.
+Chaque ROM contient des données identiques à l'intérieur des deux régions
+finales de 64K dans le fichier \*. Cela correspond aux deux regions finales de
+64K dans la puce flash.  Le BIOS de Lenovo vous empêchera d'écrire la dernière
+région, donc exécuter `bucts 1` paramètrera le système pour démarrer sur
+l'autre bloc (qui est écrivable ainsi tout en dessous quand vous utilisez une
+flashrom patchée. Regardez [\#build\_flashrom](#build_flashrom )).  Après
+l'arrêt et le démarrage après le premier flash de lireboot, le bloc final de
+64K est écrivable donc vous pouvez encore flasher la ROM avec une flashrom non
+patchée et exécuter `butcs 0` pour faire encore démarrer le système du bloc
+normal (le plus haut).
 
 
-If you downloaded from git, follow [\#build\_meta](#build_meta) before
-you proceed.
+\*Les images de ROM Libreboot ont des données identiques dans ces deux régions
+de 64Ko car dd est utilisé pour faire ça par l'intermédiaire du système de
+construction.  Si vous contruisez depuis l'amont (coreboot), vous devez le
+faire manuellement.
 
-"BUC" means "*B*ack*u*p *C*ontrol" (it's a register) and
-"TS" means "*T*op *S*wap" (it's a status bit). Hence "bucts"
-(BUC.TS). TS 1 and TS 0 corresponds to bucts 1 and bucts 0.
+BUC.TS est alimenté par la batterie NVRAM (ou la batterie CMOS, comme
+certaines personnes l'appelent).  Sur les thinkpads, c'est typiquement dans un
+paquet en plastique jaune avec la batterie à l'intérieur, connecté via les
+lignes électriques à la carte mère.  Enlever cette batterie enlève
+l'alimentation au BUC.TS, réinitialisant le bit à 0 (si vous l'avez mis
+précédemment à 1).
 
-Si vous avez l'archive de publications des binaires, vous trouverez des exécutables en dessous ./bucts/. Sinon si vous avez besoin de construire depuis la source, continuez à lire.
+L'utilitaire BUC.TS est inclus dans libreboot\_src.tar.xz et
+libreboot\_util.tar.xz.
 
-Premièrement, [installez les dépendances de constructions](#build_dependencies).
+Si vous avez téléchargé depuis git, suivez la [\#build\_meta](#build_meta)
+avant de procéder.
 
-Pour construire les ducts, faîtes ceci dans le répertoire principal:
+*BUC* signifie "*B*ack*u*p *C*ontrol" (c'est un registre) et "TS" signifie
+*T*op *S*wap" (c'est un bit de status).  D'où le nom "bucts" (BUC.TS). TS 1 et
+TS 0 correspondent à bucts 1 et bucts 0.
+
+
+If you downloaded from git, follow [\#build\_meta](#build_meta) before you
+proceed.
+
+"BUC" means "*B*ack*u*p *C*ontrol" (it's a register) and "TS" means "*T*op
+*S*wap" (it's a status bit). Hence "bucts" (BUC.TS). TS 1 and TS 0 corresponds
+to bucts 1 and bucts 0.
+
+Si vous avez l'archive de publications des binaires, vous trouverez des
+exécutables en dessous ./bucts/. Sinon si vous avez besoin de compiler
+depuis la source, continuez à lire.
+
+Premièrement, [installez les dépendances de
+constructions](#build_dependencies).
+
+Pour compiler les bucts, faîtes ceci dans le répertoire principal:
 
     $ ./oldbuild module bucts
 
@@ -114,207 +155,213 @@ Pour le compiler statiquement, faîtes ceci:
 
     $ ./oldbuild module bucts static
 
-Le script "builddeps" dans libreboot\_src fait aussi l'utlisation de builddeps-bucts.
+Le script "builddeps" dans libreboot\_src fait aussi l'utlisation de
+builddeps-bucts.
 
-
-How to build "flashrom" 
+Comment compiler "flashrom"
 =========================
 
-Flashrom is the utility for flashing/dumping ROM images. This is what
-you will use to install libreboot.
+Flashrom est l'utilitaire pour flasher ou faire un cliché mémoire des images
+ROM. C'est ce que vous utiliserez pour installer Libreboot.
 
-Flashrom source code is included in libreboot\_src.tar.xz and
+Le code source de flashrom est inclut dans libreboot\_src.tar.xz et
 libreboot\_util.tar.xz.
 
-*If you downloaded from git, follow [\#build\_meta](#build_meta) before
-you proceed.*
+*Si vous l'avez téléchargé depuis git, suivez la section
+[\#build\_meta](#build_meta) avant de continuer.*
 
-If you are using the binary release archive, then there are already
-binaries included under ./flashrom/. The flashing scripts will try to
-choose the correct one for you. Otherwise if you wish to re-build
-flashrom from source, continue reading.
+Si vous utilisez l'archive des publications des binaires, alors il y a déjà
+des binaires inclus sous ./flashrom/. Les scripts de flashage essaieront de
+choisir le bon pour vous. Sinon, si vous souhaitez re-compiler flashrom depuis
+la source, continuez à lire.
 
-First, [install the build dependencies](#build_dependencies).
+Premiérement, [installez les dépendances de compilation](#build_dependencies)
 
-To build it, do the following in the main directory:
+Pour le compiler, exécutez le suivant dans le répertoire principal:
 
     $ ./oldbuild module flashrom
 
-To statically compile it, do the following in the main directory:
+Pour le compiler statiquement, exécutez le suivant dans le répertoire
+principal:
 
     $ ./oldbuild module flashrom static
 
-After you've done that, under ./flashrom/ you will find the following
-executables:
+Après que vous avez fait ceci, vous trouverez les exécutables suivants dans le
+répertoire ./flashrom/ :
 
 -   `flashrom`
-    -   For flashing while coreboot or libreboot is running.
+    -   Pour le flashage pendant que coreboot ou libreboot est en cours
+        d'exécution.
 -   `flashrom_lenovobios_sst`
-    -   This is patched for flashing while Lenovo BIOS is running on an
-        X60 or T60 with the SST25VF016B (SST) flash chip.
+    -   Il est patché pour le flashage pendant que le BIOS Lenovo est en cours
+        d'exécution sur un X60 ou T60 avec la puce flash SST25VF016B (SST).
 -   `flashrom_lenovobios_macronix`
-    -   This is patched for flashing while Lenovo BIOS is running on an
-        X60 or T60 with the MX25L1605D (Macronix) flash chip.
+    -   Il est patché pour le flashage pendant que le BIOS Lenovo est en cours
+        d'exécution sur un X60 ou T60 avec la puce flash SMX25L1605D (Macronix).
 
-The "builddeps" script in libreboot\_src also makes use of
-builddeps-flashrom.
+Le script "builddeps" dans libreboot\_src se sert aussi du script builddeps-flashrom.
 
-How to build the ROM images 
+Comment compiler les images ROM
 ===========================
 
-You don't need to do much, as there are scripts already written for you
-that can build everything automatically.
+Vous n'avez pas besoin de faire grand chose, puisqu'il y a des scripts déjà
+écrit pour vous qui peuvent compiler tout automatiquement.
 
-You can build libreboot from source on a 32-bit (i686) or 64-bit
-(x86\_64) system. Recommended (if possible): x86\_64. ASUS KFSN4-DRE has
-64-bit CPUs. On a ThinkPad T60, you can replace the CPU (Core 2 Duo
-T5600, T7200 or T7600. T5600 recommended) for 64-bit support. On an
-X60s, you can replace the board with one that has a Core 2 Duo L7400
-(you could also use an X60 Tablet board with the same CPU). On an X60,
-you can replace the board with one that has a Core 2 Duo T5600 or T7200
-(T5600 is recommended). All MacBook2,1 laptops are 64-bit, as are all
-ThinkPad X200, X200S, X200 Tablet, R400, T400 and T500 laptops. Warning:
-MacBook1,1 laptops are all 32-bit only.
+Vous pouvez compiler libreboot depuis la source sur un système à architecture
+32bit (i686) ou 64bit (x86\_64).
+Recommandé (si possible): x86\_64. La carte mère ASUS KFSN4-DRE a des
+processeurs 64-bit, par exemple.
+Sur un ThinkPad T60, vous pouvez remplacer le processeur (Core 2 Duo T5600, T7200 or T7600.
+T5600 recommended) pour avoir un support 64bit. 
+Sur un X60s, vous pouvez remplacer la carte avec une qui a un Core 2 Duo L7400
+(vous pourrez aussi utiliser une carte mère d'un X60 Tablet avec le même
+processeur). Sur un X60, vous pouvez remplacez la carte mère avec une qui a un
+Core 2 Duo T5600 (recommandé) ou T7200. Tout les ordinateurs portables
+Macbook2,1 sont d'architecture 64-bit, comme tout les ordinateurs portables
+ThinkPad X200, X200S, X200 Tablet, R400, T400 et T500.
+Avertissement: tout les ordinateurs portables Macbook1,1 sont 32bit seulement.
 
-First, [install the build dependencies](#build_dependencies).
+Premièrement, [installez les dépendances de compilation](#build_dependencies)
 
-If you downloaded libreboot from git, refer to
-[\#build\_meta](#build_meta).
+Si vous avez téléchargé libreboot depuis git, référez-vous à
+la section [\#build\_meta](#build_meta).
 
-Build all of the components used in libreboot:
+Compilez tout les composants utilisés dans Libreboot:
 
     $ ./oldbuild module all
 
-You can also build each modules separately, using *./oldbuild module
-modulename*. To see the possible values for *modulename*, use:
+Vous pouvez aussi compiler chaque modules séparément, en utilisant *./oldbuild
+module nom_du_module*. Pour les valeurs possibles pour *nom_du_module*,
+utilisez:
 
     $ ./oldbuild module list
 
-After that, build the ROM images (for all boards):
+Après ça, compilez les images ROM (pour toutes les cartes):
 
     $ ./oldbuild roms withgrub
 
-Alternatively, you can build for a specific board or set of boards. For
-example:
+Alternativement, vous pouvez compiler pour une carte mère spécifique ou un
+ensemble de cartes. Par exemple:
 
-    $ ./oldbuild roms withgrub x60
-    $ ./oldbuild roms withgrub x200_8mb
-    $ ./oldbuild roms withgrub x60 x200_8mb
+    $ ./oldbuild roms withgrub x60 $ ./oldbuild roms withgrub x200_8mb $
+    ./oldbuild roms withgrub x60 x200_8mb
 
-The list of board options can be found by looking at the directory names
-in `resources/libreboot/config/grub/`.
+La liste des options de carte mère peut être trouvé en regardant les noms de
+répertoire dans `resources/libreboot/config/grub/`.
 
-To clean (reverse) everything, do the following:
+Pour tout (inverser) nettoyer, faites le suivant:
 
     $ ./oldbuild clean all
 
-The ROM images will be stored under `bin/payload/`, where `payload`
-could be `grub`, `seabios`, or whatever other payload those images were
-built for.
+Les images ROM seront stockées sous `bin/payload`, où `payload` pourrait être
+`grub`, `seabios`, ou n'importe quel autre charge utile pour lesquelle les
+images ont été compilés pour.
 
-Preparing release archives (optional)
+Préparer l'archive des publications/versions (optionnel)
 -------------------------------------
 
-*This is only confirmed to work (tested) in Debian Stretch. Parabola fails at
-this stage (for now). For all other distros, YMMV. This will also work in
-Devuan.*
+*C'est seulement confirmé être fonctionnel (testé) sur Debian Stretch. Ça
+marchera également sur Devuan. Parabola échoue à cette étape (pour l'instant).
+Pour tout autre distribution, votre expérience peut varier.*
 
-This is mainly intended for use with the git repository. These commands
-will work in the release archive (\_src), unless otherwise noted below.
+C'est principalement prévu pour l'utilisation avec le répertoire git. Ces
+commandes marcheront dans l'archive des publications (\_src), à moins qu'autre
+chose soit noté ci-dessous.
 
-The archives will appear under *release/oldbuildsystem/\${version}/*;
-\${version} will either be set using *git describe* or, if a *version*
-file already exists (\_src release archive), then it will simply re-use
-that.
+Les archives apparaitront sous le répertoire
+*release/oldbuildsystem/\${version}/*; \${version} sera soit défini en
+utilisant *git describe* ou, si un fichier *version* existe déjà (archive des
+versions \_src), alors ça le réutilisera tout simplement.
 
-Tag the current commit, and that version will appear in both the
-\${version} string on the directory under *release/oldbuildsystem/*, and
-in the file names of the archives. Otherwise, whatever git uses for *git
-describe --tags HEAD* will be used.
+Marquez (*tag*) le commit en cours, et cette version apparaîtra à la fois dans
+la chaîne de caractère \${version} sur le nom du répertoire dans
+*release/oldbuildsystem/*, et dans les noms de fichier des archives. Sinon,
+n'importe quoi que git utilise pour *git describe --tags HEAD* sera utilisé.
 
-Utilities (static executables):
+Utilitaires (exécutables statiques):
 
     $ ./oldbuild release util
 
-Archive containing flashrom and bucts source code:
+Archive contenant le code source de flashrom et bucts:
 
     $ ./oldbuild release tobuild
 
-Documentation archive (*does not work on \_src release archive, only
-git*):
+Archive de la documentation (*ne marchera pas sur l'archive des versions
+\_src, seulement git*):
 
     $ ./oldbuild release docs
 
-ROM image archives:
+Archives des images ROM
 
     $ ./oldbuild release roms
 
-Source code archive:
+Archive du code source:
 
     $ ./oldbuild release src
 
-SHA512 sums of all other release archives that have been generated:
+Sommes de contrôle SHA512 de toutes les autres archives de versions qui ont
+été générée:
 
     $ ./oldbuild release sha512sums
 
-If you are building on an i686 host, this will build statically linked
-32-bit binaries in the binary release archive that you created, for:
+Si vous compilez sur une hôte à architecture i686, ça compilera statiquement
+des binaires 32bit dans l'archive des versions des binaires que vous avez
+créé, pour:
 
     nvramtool, cbfstool, ich9deblob, cbmem
 
-If you are building on an x86\_64 host, this will build statically
-linked 32- \*and\* 64-bit binaries for `cbmem`, `ich9deblob`,
-`cbfstool` and `nvramtool`.
+Si vous compilez sur un hôte à architecture x86\_64, ça compilera statiquement
+des binaires 32bit \*et\* 64bit pour `cbmem`, `ich9deblob`, `cbfstool` and
+`nvramtool`.
 
-*To include statically linked i686 and x86\_64 binaries for bucts and
-flashrom, you will need to build them on a chroot, a virtual system or a
-real system where the host uses each given architecture. These packages
-are difficult to cross-compile, and the libreboot project is still
-figuring out how to deal with them.*
+*Pour inclure des binaires d'architecture i686 et x86\_64 liés statiquement pour bucts
+et flashrom, vous aurez besoin de les compiler dans une chroot, un système
+virtuel ou un vrai système où l’hôte utilise chaque architecture donnée. Ces
+paquets sont difficile à compiler de façon croisée, et le projet libreboot est
+toujours en train de chercher comment les gérer.*
 
-The same applies if you want to include statically linked flashrom
-binaries for ARM.
+La même s'applique si vous voulez inclure des binaires de flashrom
+statiquements liés pour l'architecture ARM.
 
-armv7l binaries (tested on a BeagleBone Black) are also included in
-libreboot\_util, for:
+Les binaires d'arch. armv7l (testés sur un BeagleBone Black) sont aussi inclus
+dans libreboot\_util, pour:
 
 -   cbfstool
 -   ich9gen
 -   ich9deblob
 -   flashrom
 
-If you are building binaries on a live system or chroot (for
-flashrom/bucts), you can use the following to statically link them:
+Si vous compilez les binaires sur un système en direct (live) ou une chroot
+(pour flashrom/bucts) vous pouvez utiliser le suivant pour les lier
+statiquement:
 
-    $ ./oldbuild module flashrom static
-    $ ./oldbuild module bucts static
+    $ ./oldbuild module flashrom static $ ./oldbuild module bucts static
 
-The same conditions as above apply for ARM (except, building bucts on
-ARM is pointless, and for flashrom you only need the normal executable
-since the lenovobios\_sst and \_macronix executables are meant to run on
-an X60/T60 while lenovo bios is present, working around the security
-restrictions).
+Les mêmes conditions que ci-dessus s'appliquent pour ARM (excepté, compiler
+bucts sur ARM est inutile, et pour flashrom vous avez seulement besoin de
+l'exécutable normal, puisque les exécutables lenovobios\_sst et \_macronix
+sont conçus pour être exécuté sur un X60/T60 pendant que le BIOS Lenovo est
+présent, contournant les restrictions de sécurité).
 
-The command that you used for generating the release archives will also
-run the following command:
+La commande que vous avez utilisé pour générer l'archives des versions
+exécutera aussi la commande suivante:
 
     $ ./oldbuild release tobuild
 
-The archive `tobuild.tar.xz` will have been created under
-`release/oldbuildsystem/`, containing bucts, flashrom and all other
-required resources for building them.
+L'archive `tobuild.tar.xz` aura été créé sous `release/oldbuildsystem/`,
+contenant bucts, flashrom et toutes les autres ressources requises pour les
+compiler.
 
-You'll find that the files libreboot\_util.tar.xz and
-libreboot\_src.tar.xz have been created, under
-`release/oldbuildsystem/`.
+Vous trouvez que les fichiers libreboot\_util.tar.xz et libreboot\_src.tar.xz
+ont été créé, sous le répertoire `release/oldbuildsystem/`.
 
-The ROM images will be stored in separate archives for each system,
-under `release/oldbuildsystem/rom/`.
+Les images ROM seront créés dans des archives séparées pour chaque système,
+dans le répertoire  `release/oldbuildsystem/rom/`.
 
 Copyright © 2014, 2015, 2016 Leah Rowe <info@minifree.org>\
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License Version 1.3 or any later
-version published by the Free Software Foundation
-with no Invariant Sections, no Front Cover Texts, and no Back Cover Texts.
-A copy of this license is found in [../fdl-1.3.md](../fdl-1.3.md)
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
