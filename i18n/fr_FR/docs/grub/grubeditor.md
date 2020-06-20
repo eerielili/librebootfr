@@ -1,121 +1,163 @@
-# GRUB EDITOR
+---
+title: ÉDITEUR DE GRUB
+x-toc-enable: true
+...
 
-Libreboot ROM images now support fluid _grub.cfg_ and _grubtest.cfg_
-configuration editing with the grubeditor.sh script! Instead of manually running
-cbfstool to manipulate these configuration files, this script will handle the
-work for you so you can focus on actually modifying your GRUB configuration
-files to your setup's needs.
+Cette section concerne l'édition des fichiers de configurations GRUB à
+l'intérieur des images ROM libreboot grâce à un éditeur.
 
-At the time of this writing, grubeditor.sh supports extracting and editing
-either the grub.cfg or grubtest.cfg file in any cbfstool-compatible Libreboot
-ROM image that contains these files, even ones that have been previously
-modified. It can also swap these configuration files in an existing ROM image,
-handy if you have a working grubtest.cfg and want to make it the default or if
-you broke the main grub.cfg and know that your grubtest.cfg still works. Lastly,
-it can also run diff on these two configuration files to show you how they
-differ.
+Éditeur de GRUB
+================
 
-## Requirements
+Les images ROM de Libreboot supportent maintenant une fluide édition de
+_grub.cfg_ et _grubtest.cfg_ grâce au script grubeditor.sh! Au lieu d'exécuter
+manuellement cbfstool pour manipuler ces fichiers de configuration, ce script
+prendra la tâche en charge afin que vous puissiez véritablement vous
+concentrer sur la modification des fichiers de configuration GRUB selon vos
+besoins.
 
-grubeditor.sh requires an x86, x86\_64, or armv7l environment, since these are
-the environments for which cbfstools binaries are provided. Additionally,
-grubeditor.sh needs a Bash environment with extended getopt functionality that
-can run the **diff** command and write to /tmp. Lastly, the script expects to
-live in the top directory of the Libreboot utilities package so it can properly
-call cbfstool.
+Au moment de cet écrit, grubeditor.sh supporte l'extraction et l'édition de
+soit le fichier grub.cfg ou grubtest.cfg dans n'importe quelle image ROM
+Libreboot compatible cbfstool contenant ces fichiers, même celles qui ont été
+précédemment modifiées. Il peut aussi échanger ces fichiers de configuration
+dans une image ROM existante, pratique si vous avez un grubtest.cfg qui marche
+et vous voulez le mettre par défaut, ou si vous avez 'cassé' le grub.cfg
+principal, et que vous savez que votre grubtest.cfg marche encore.
+Dernièrement, ça peut aussi faire la diff de ces deux fichiers de
+configurations pour montrer leurs différences.
 
-Chances are that you already meet these requirements if you are on a Linux
-environment of the listed architectures and downloaded the Libreboot utilities
-package from an official source. If not, it shouldn't be too hard to use a
-Linux LiveCD of your choice which provides these essentials.
 
-Optionally, you should make sure your EDITOR variable is set. Otherwise,
-grubeditor.sh will default to using vi, which may not exist on your system. You
-can override this default or the contents of your EDITOR variable using the
-**-e** or **--editor** command.
+Nécessités
+=========
 
-## Usage help
+grubeditor.sh nécessite un environnement d'architecture x86, x86_64 ou armv7l,
+puisque ce sont ceux pour lesquels les exécutables de cbfstools sont fournis.
+Additionnellement, grubeditor.sh nécessite un environnement bash avec la
+fonctionnalité getopt étendue qui peut exécuter la commande **diff** et écrire
+dans /tmp. Enfin, le script s'attend à être placé dans le répertoire
+racine des paquets utilitaires de Libreboot afin de bien exécuter
+cbfstool.
 
-grubeditor.sh takes a number of options, the only one which is required being a
-valid Libreboot ROM image that uses the GRUB2 payload and contains both
-_grub.cfg_ and _grubtest.cfg_ files. Additional options should come _before_ the
-ROM image file on the command line.
+Il y a des chances que vous remplissez déjà ces préréquis si vous êtes dans un
+environnement Linux sur l'une des architectures listées, et que vous avez
+téléchargé les utilitaires libreboot depuis une source officielle.
+Sinon, ça ne devrait pas être trop difficile d'utiliser un LiveCD Linux de
+votre choix qui fournissent l'essentiel.
 
-grubeditor.sh supports combining several short options with a single hyphen
-like **-ris**, but you can also list them separately like **-r -i -s**. Long
-options must always be written as standalone arguments.
+Optionnellement, vous devriez vous assurer que votre variable EDITOR est
+définie. Sinon, grubeditor.sh utilisera vi par défaut, qui peut ne pas exister
+sur votre système. Vous pouvez supplanter ce choix par défaut ou le contenu de
+votre variable EDITOR en utilisant l'option **-e** ou **--editor**.
 
-You can use the **-h** or **--help** option to view a brief summary of the
-options available. Consider this guide a more extensive version of this screen.
+Aide à l'utilisation
+====================
 
-Lastly, you can check which version of grubeditor.sh you are using with the
-**-v** or **--version** option.
+grubeditor.sh a quelques options, la seule étant requise est une image ROM
+libreboot valide utilisant une charge utile GRUB2 et contient les fichiers
+_grub.cfg_ et _grubtest.cfg_. Les options additionnelles devrait être mise
+avant l'image ROM sur la ligne de commande.
 
-## Editing configuration files
+grubeditor.sh supporte la combinaison de plusieurs courtes options avec un
+seul tiret tel que **-ris**, mais vous pouvez toujours les séparer comme ceci:
+**-r -i -s**. Les longues options doivent être toujours écrites en tant
+qu'arguments séparés/seuls.
 
-Invoked without any arguments except for the ROM image, grubeditor.sh will
-attempt to extract the _grubtest.cfg_ file from the provided ROM image and
-launch it in your editor of choice. If you make changes to the file,
-grubeditor.sh will incorporate your changes into a new ROM image with the same
-name in the same directory, except that the new ROM file will end with
-".modified". You can then flash this ROM image to your platform's BIOS chip.
+Vous pouvez utiliser l'option **-h** ou **--help** pour voir un bref résumé
+des options disponibles. Considérez le guide ici présent comme une version
+plus étendue de cette option/écran.
 
-If you would prefer to edit the actual _grub.cfg_ configuration file, use the
-**-r** or the **--realcfg** option. Everything else will work the same except
-that your editor will open the _grub.cfg_ instead. 
+Enfin, vous pouvez vérifier quelle version de grubeditor.sh vous être en train
+d'utiliser avec l'option **-v** ou **--version**.
 
-If you would prefer to overwrite your existing ROM image instead of creating a
-new one ending in ".modified" use the **-i** or **--inplace** option.
-Naturally, you can combine this option with the **-r/--realcfg** option
-described above.
+Éditer les fichiers de configuration
+------------------------------------
 
-## Swapping grub.cfg and grubtest.cfg
+Invoqué sans aucun arguments excepté pour l'image ROM, grubeditor.sh tentera
+d'extraire le fichier _grubtest.cfg_ de l'image ROM fournie et lancera son
+édition dans l'éditeur de votre choix. Si vous faites des changements,
+grubeditor.sh les intégrera dans une nouvelle image ROM avec le même nom dans
+le même répertoire, excepté que le nouveau fichier ROM terminera par
+".modified". Vous pouvez ensuite flasher cette image ROM dans la puce BIOS de
+votre machine.
 
-grubeditor.sh supports swapping the _grub.cfg_ and _grubtest.cfg_ configuration
-files with the **-s** or **--swap** option. This will create a new ROM image
-alongside the existing ROM image ending with ".modified" which has these files
-swapped. Naturally, you can request this operation overwrite the existing file
-instead using the **-i/--inplace** option.
+Si vous préférez éditer le véritable fichier de configuration _grub.cfg_,
+utilisez l'option **-r** ou **--realcfg**. Tout marchera pareil sauf que votre
+éditeur ouvrira _grub.cfg_ à la place.
 
-Note that the script will automatically modify the "Load test configuration
-(grubtest.cfg)" menu entry in both configuration files during this operation.
-If this was not done, these entries would end up being self-referential after
-the rename, breaking their intended functionality of changing between the
-configuration files.
+Si vous préférez écraser votre image ROM existante au lieu d'en créer une
+nouvelle terminant par ".modified", utilisez l'option **-i** ou **--inplace**.
+Naturellement, vous pouvez combiner cette option avec l'option
+**-r/--realcfg** décrite ci-dessus.
 
-For best results, please do not modify this section without studying the source
-code of _grubeditor.sh_ and making sure your edits do not impact the script's
-ability to perform this modification
+Échanger grub.cfg et grubtest.cfg
+---------------------------------
 
-## Swapping grub.cfg and grubtest.cfg
+grubeditor.sh supporte l'échangee des fichiers de configuration _grub.cfg_ et
+_grubtest.cfg_ grâce à l'option **-s** ou **--swap**. Ça créera une nouvelle
+image ROM au côté de l'image ROM existante avec l'extension ".modified",
+contenant ces fichiers mais échangés.
+Naturellement, vous pouvez demandez l'écrasement de la ROM existante en
+ajoutant l'option **-i** ou **--inplace**.
 
-grubeditor.sh supports comparing _grub.cfg_ and _grubtest.cfg_ files for
-differences with the **-d** or **--diffcfg** option. This uses the diff command
-by default, but if you want to use another program (e.g. vimdiff), you can
-specify it with the **-D** or **--differ** option. Note that this mode is only
-intended to show differences in the files and does not support updating the
-configs themselves, so any changes you make in an interactive differ will be
-ignored.
+Notez que le script modifiera automatiquement l'entrée de menu "Charger la
+configuration de test (grubtest.cfg)" dans les deux fichiers de configurations
+pendant cette opération.
+Si ça ne faisait pas, ces entrées finirait par s'auto-référencer après le
+renommage, cassant la fonctionnalité attendue d'échange entre les deux
+fichiers.
 
-## Extracting a configuration file
+Pour des résultats optimal, ne modifiez pas silvouplaît cette section sans
+étudier le code source de _grubeditor.sh_ et soyez sûr que vos changements
+n'impactent pas la capacité du script à faire cette modification.
 
-You can simply extract a configuration file using the **-x** or **--extract**
-option. This option is responsive to the **-r/--realcfg** option for choosing
-between grubtest.cfg and grub.cfg.
 
-## Pending development
+Faire la différence entre grub.cfg et grubtest.cfg
+--------------------------------------------------
 
-TODO:
--   allow injecting configuration files to complement the extractor.
--   detect potentially devastating corner cases, however rare they may actually be
--   i can't specify a quoted command line with arguments to -e or -D, why?
--   support editing both config files if using an interactive differ
--   work with other types of files besides the grub configuration files.
+grubeditor.sh supporte la comparaison des fichiers _grub.cfg_ et
+_grubtest.cfg_ pour trouver des différences, à l'aide de l'option **-d** ou
+**--diffcfg**. Ça utilise la commande diff par défaut, mais si vous voulez
+utiliser un autre progralle (p.ex vimdiff), vous pouvez le spécifier avec
+l'option **-D** ou **--differ**. Notez que ce mode est seulement fait pour
+montrer les différences dans les fichiers et ne supporte pas la mise à jour
+des configurations en elles-même, donc n'importe quels changements faits dans
+un différenciateur interactif seront ignorés.
 
-## Conclusion
+Extraire un fichier de configuration
+------------------------------------
 
-I hope that grubeditor.sh will significantly ease modifying your configuration
-files in your Libreboot ROM files.
+Vous pouvez simplement extraire un fichier de configuration en utilisant
+l'option **-x** ou **--extract**. Cette option s'adapte à l'option
+**-r**/**--realcfg** pour choisir entre grubtest.cfg et grub.cfg.
 
-Should you find any bugs or want any feature requests, please don't hesitate to
-email me or bug me on IRC.
+Développement en attente
+========================
+
+À FAIRE:
+-   permettre l'injection de fichiers de configurations pour complémenter
+    l'extracteur.
+-   détecter des cas d'exceptions potentiellement dévastateurs, aussi rare
+    qu'ils pourraient être
+-   je ne peux pas spécifier des arguments apostrophés sur la ligne de
+    commandes pour les options **-e** ou **-D**, pourquoi?
+-   supporter l'édition des deux fichiers de configurations à la fois si on
+    est en train d'utiliser un différenciateur intéractif
+-   fonctionner avec d'autres types de fichiers en dehors des fichiers de
+    configuration GRUB.
+
+Conclusion
+==========
+
+J'espère que grubeditor.sh facilitera significativement la modification des
+fichiers de configuration dans vos fichiers ROM Libreboot.
+
+Trouveriez-vous quelconque bugs ou avez des demandes de fonctionnalité,
+n'hésitez pas silvouplaît à me faire un email ou me déranger sur IRC.
+
+Copyright © 2014 Leah Rowe <info@minifree.org>\
+
+Permission est donnée de copier, distribuer et/ou modifier ce document
+sous les termes de la Licence de documentation libre GNU version 1.3 ou
+quelconque autre versions publiées plus tard par la Free Software Foundation
+sans Sections Invariantes,  Textes de Page de Garde, et Textes de Dernière de Couverture.
+Une copie de cette license peut être trouvé dans [../fdl-1.3.md](fdl-1.3.md).
